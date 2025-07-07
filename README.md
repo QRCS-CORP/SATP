@@ -25,13 +25,13 @@ SATP is a drop-in replacement for TLS/SSH wherever **public-key overhead, certif
 | **SCB-KDF**          | Password hardening          | ≥ 2²⁰ CPU·MiB per guess        |
 
 
-
 ## 3  Protocol in 30 s
 
-Client                           Server
-ID || Nonce  ───────────────▶    Derive Rk, Sk
-Derive Rk, Sk                    Compute Hc
-                                ◀── Hc (enc+MAC)
+Client                  Server
+--------------------------------
+ID || Nonce  --> 	Derive Rk, Sk
+Derive Rk, Sk           Compute Hc
+                    <-- Hc(enc+MAC)
 Verify Hc
 TUNNEL ESTABLISHED
 Hc = SHAKE256( nonce ‖ Kc,i ‖ branch-secret )
@@ -41,11 +41,11 @@ Two packets, two SHAKE calls, sub-millisecond handshake.
 
 ## 4 Key Hierarchy
 
-Kroot  (16-bit domain)
- ├─ Kbr[0]  (16-bit branch)
- │    ├─ Kc,i[0] … (device key-tree)
- │    └─ …
- └─ Kbr[n]
+Kroot  (16-bit domain)  
+ ├─ Kbr[0]  (16-bit branch)  
+ │    ├─ Kc,i[0] … (device key-tree)  
+ │    └─ …  
+ └─ Kbr[n]  
 
 65 536 branches per root · 4 294 967 296 one-time keys per device.
 
