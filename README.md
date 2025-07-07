@@ -25,44 +25,20 @@ SATP is a drop-in replacement for TLS/SSH wherever **public-key overhead, certif
 | **SCB-KDF**          | Password hardening          | ≥ 2²⁰ CPU·MiB per guess        |
 
 
-## 3  Protocol in 30 s
-
-Client			Server
-
-ID || Nonce -->		Derive Rk, Sk  
-Derive Rk, Sk		Compute Hc  
-			<-- Hc(enc+MAC)  
-Verify Hc
-TUNNEL ESTABLISHED  
-Hc = SHAKE256( nonce ‖ Kc,i ‖ branch-secret )  
-Two packets, two SHAKE calls, sub-millisecond handshake.  
-
-
-## 4 Key Hierarchy
-
-Kroot  (16-bit domain)  
- ├─ Kbr[0]  (16-bit branch)  
- │    ├─ Kc,i[0] … (device key-tree)  
- │    └─ …  
- └─ Kbr[n]  
-
-65 536 branches per root · 4 294 967 296 one-time keys per device.
-
-
-## 5 Deployment Snapshots
-5.1 Instant Contactless Payments
+## 3 Deployment Snapshots
+### 3.1 Instant Contactless Payments
 Tap latency drops from 120 ms to 12 ms; no CA fees; lost cards revoked overnight via branch-epoch roll.
 
-### 5.2 Zero-Trust Micro-Services
+### 3.2 Zero-Trust Micro-Services
 Internal API calls authenticate in < 0.5 ms. 65 % TLS CPU reclaimed; certificate pipeline removed.
 
-### 5.3 Smart-Grid & Massive IoT
+### 3.3 Smart-Grid & Massive IoT
 Sensors authenticate with a single SHAKE hash; field battery life +25 %.
 
-### 5.4 SCADA Retrofits
+### 3.4 SCADA Retrofits
 28 kB firmware upgrade brings quantum-safe tunnels to legacy PLCs; site re-key via USB epoch bump.
 
-### 5.5 CubeSat Telemetry
+### 3.5 CubeSat Telemetry
 One 256-bit key per day ⇒ decade-long mission with deterministic CPU budget; no cert uplinks.
 
 
