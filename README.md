@@ -28,10 +28,10 @@ SATP is a drop-in replacement for TLS/SSH wherever **public-key overhead, certif
 ## 3  Protocol in 30 s
 
 Client                  Server
---------------------------------
-ID || Nonce  --> 	Derive Rk, Sk
-Derive Rk, Sk           Compute Hc
-                    <-- Hc(enc+MAC)
+_____________________________________
+ID || Nonce  --> 	Derive Rk, Sk  
+Derive Rk, Sk           Compute Hc  
+                    <-- Hc(enc+MAC)  
 Verify Hc
 TUNNEL ESTABLISHED
 Hc = SHAKE256( nonce ‖ Kc,i ‖ branch-secret )
