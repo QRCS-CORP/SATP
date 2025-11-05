@@ -74,12 +74,13 @@ static bool client_initialize(satp_kex_client_state* cls, satp_connection_state*
 	return res;
 }
 
-static satp_errors client_receive_loop(client_receiver_state* prcv)
+static satp_errors client_receive_loop(void* prcv)
 {
 	assert(prcv != NULL);
 
 	satp_network_packet pkt = { 0U };
 	char cadd[QSC_SOCKET_ADDRESS_MAX_SIZE] = { 0U };
+	client_receiver_state* pprcv;
 	uint8_t* rbuf;
 	size_t mlen;
 	size_t plen;
@@ -87,19 +88,20 @@ static satp_errors client_receive_loop(client_receiver_state* prcv)
 	satp_errors err;
 
 	err = satp_error_general_failure;
-	qsc_memutils_copy(cadd, (const char*)prcv->pcns->target.address, sizeof(cadd));
+	pprcv = (client_receiver_state*)prcv;
+	qsc_memutils_copy(cadd, (const char*)pprcv->pcns->target.address, sizeof(cadd));
 
 	rbuf = (uint8_t*)qsc_memutils_malloc(SATP_HEADER_SIZE);
 
 	if (rbuf != NULL)
 	{
-		while (prcv->pcns->target.connection_status == qsc_socket_state_connected)
+		while (pprcv->pcns->target.connection_status == qsc_socket_state_connected)
 		{
 			mlen = 0U;
 			slen = 0U;
 			qsc_memutils_clear(rbuf, SATP_HEADER_SIZE);
 
-			plen = qsc_socket_peek(&prcv->pcns->target, rbuf, SATP_HEADER_SIZE);
+			plen = qsc_socket_peek(&pprcv->pcns->target, rbuf, SATP_HEADER_SIZE);
 
 			if (plen == SATP_HEADER_SIZE)
 			{
@@ -113,7 +115,7 @@ static satp_errors client_receive_loop(client_receiver_state* prcv)
 					if (rbuf != NULL)
 					{
 						qsc_memutils_clear(rbuf, plen);
-						mlen = qsc_socket_receive(&prcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
+						mlen = qsc_socket_receive(&pprcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
 
 						if (mlen > 0U)
 						{
@@ -130,11 +132,11 @@ static satp_errors client_receive_loop(client_receiver_state* prcv)
 								if (rmsg != NULL)
 								{
 									qsc_memutils_clear(rmsg, slen);
-									err = satp_decrypt_packet(prcv->pcns, &pkt, rmsg, &mlen);
+									err = satp_decrypt_packet(pprcv->pcns, &pkt, rmsg, &mlen);
 
 									if (err == satp_error_none)
 									{
-										prcv->callback(prcv->pcns, rmsg, mlen);
+										pprcv->callback(pprcv->pcns, rmsg, mlen);
 									}
 									else
 									{
@@ -154,7 +156,7 @@ static satp_errors client_receive_loop(client_receiver_state* prcv)
 							}
 							else if (pkt.flag == satp_flag_error_condition)
 							{
-								err = satp_decrypt_error_message(prcv->pcns, rbuf);
+								err = satp_decrypt_error_message(pprcv->pcns, rbuf);
 								break;
 							}
 							else

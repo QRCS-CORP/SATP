@@ -88,12 +88,13 @@ static bool server_authentication_response(server_receiver_state* prcv)
 	return (mlen == SERVER_AUTHENTICATION_RESPONSE_PACKET_SIZE);
 }
 
-static satp_errors server_receive_loop(server_receiver_state* prcv)
+static satp_errors server_receive_loop(void* prcv)
 {
 	assert(prcv != NULL);
 
 	satp_network_packet pkt = { 0U };
 	char cadd[QSC_SOCKET_ADDRESS_MAX_SIZE] = { 0U };
+	server_receiver_state* pprcv;
 	satp_kex_server_state* pkss;
 	uint8_t* rbuf;
 	size_t mlen;
@@ -103,14 +104,15 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 	bool auth;
 
 	auth = false;
-	qsc_memutils_copy(cadd, (const char*)prcv->pcns->target.address, sizeof(cadd));
+	pprcv = (server_receiver_state*)prcv;
+	qsc_memutils_copy(cadd, (const char*)pprcv->pcns->target.address, sizeof(cadd));
 	pkss = (satp_kex_server_state*)qsc_memutils_malloc(sizeof(satp_kex_server_state));
 
 	if (pkss != NULL)
 	{
 		/* initialze the key state and run the key exchange */
 		server_state_initialize(pkss, prcv);
-		err = satp_kex_server_key_exchange(pkss, prcv->pcns);
+		err = satp_kex_server_key_exchange(pkss, pprcv->pcns);
 
 		/* release the kex state */
 		qsc_memutils_alloc_free(pkss);
@@ -122,12 +124,12 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 
 			if (rbuf != NULL)
 			{
-				while (prcv->pcns->target.connection_status == qsc_socket_state_connected)
+				while (pprcv->pcns->target.connection_status == qsc_socket_state_connected)
 				{
 					mlen = 0U;
 					slen = 0U;
 
-					plen = qsc_socket_peek(&prcv->pcns->target, rbuf, SATP_HEADER_SIZE);
+					plen = qsc_socket_peek(&pprcv->pcns->target, rbuf, SATP_HEADER_SIZE);
 
 					if (plen == SATP_HEADER_SIZE)
 					{
@@ -142,7 +144,7 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 						if (rbuf != NULL)
 						{
 							qsc_memutils_clear(rbuf, plen);
-							mlen = qsc_socket_receive(&prcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
+							mlen = qsc_socket_receive(&pprcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
 
 							if (mlen != 0U)
 							{
@@ -159,20 +161,20 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 									{
 										qsc_memutils_clear(mstr, slen);
 
-										err = satp_decrypt_packet(prcv->pcns, &pkt, mstr, &mlen);
+										err = satp_decrypt_packet(pprcv->pcns, &pkt, mstr, &mlen);
 
 										if (err == satp_error_none)
 										{
 											if (auth)
 											{
-												prcv->receive_callback(prcv->pcns, (char*)mstr, mlen);
+												pprcv->receive_callback(pprcv->pcns, (char*)mstr, mlen);
 											}
 											else
 											{
-												if (prcv->authentication_callback(prcv->pcns, (char*)mstr, mlen) == true)
+												if (pprcv->authentication_callback(pprcv->pcns, (char*)mstr, mlen) == true)
 												{
 													/* authentication challenge succeeded, the client is authenticated */
-													if (server_authentication_response(prcv) == true)
+													if (server_authentication_response(pprcv) == true)
 													{
 														auth = true;
 													}
@@ -209,7 +211,7 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 								}
 								else if (pkt.flag == satp_flag_error_condition)
 								{
-									err = satp_decrypt_error_message(prcv->pcns, rbuf);
+									err = satp_decrypt_error_message(pprcv->pcns, rbuf);
 									break;
 								}
 								else
@@ -260,9 +262,9 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 				err = satp_error_allocation_failure;
 			}
 
-			if (prcv->disconnect_callback != NULL)
+			if (pprcv->disconnect_callback != NULL)
 			{
-				prcv->disconnect_callback(prcv->pcns);
+				pprcv->disconnect_callback(pprcv->pcns);
 			}
 		}
 		else
@@ -270,11 +272,11 @@ static satp_errors server_receive_loop(server_receiver_state* prcv)
 			err = satp_error_kex_auth_failure;
 		}
 
-		if (prcv != NULL)
+		if (pprcv != NULL)
 		{
-			satp_connections_reset(prcv->pcns->cid);
-			qsc_memutils_alloc_free(prcv);
-			prcv = NULL;
+			satp_connections_reset(pprcv->pcns->cid);
+			qsc_memutils_alloc_free(pprcv);
+			pprcv = NULL;
 		}
 	}
 	else
@@ -325,7 +327,7 @@ static satp_errors server_start(const satp_server_key* skey,
 					qsc_memutils_copy(prcv->sid, skey->sid, SATP_SID_SIZE);
 					prcv->skey = skey;
 
-					qsc_async_thread_create((void*)&server_receive_loop, prcv);
+					qsc_async_thread_create(&server_receive_loop, prcv);
 					server_poll_sockets();
 				}
 				else
