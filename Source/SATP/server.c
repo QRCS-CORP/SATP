@@ -72,7 +72,7 @@ static bool server_authentication_response(server_receiver_state* prcv)
 {
 	satp_network_packet pkt = { 0U };
 	uint8_t sbuf[SERVER_AUTHENTICATION_RESPONSE_PACKET_SIZE] = { 0U };
-	char msgstr[SERVER_AUTHENTICATION_RESPONSE_PACKET_SIZE] = { 0U };
+	uint8_t smsg[SERVER_AUTHENTICATION_RESPONSE_PACKET_SIZE] = { 0U };
 	size_t mlen;
 
 	mlen = 0;
@@ -82,8 +82,8 @@ static bool server_authentication_response(server_receiver_state* prcv)
 	satp_encrypt_packet(prcv->pcns, prcv->sid, SATP_SID_SIZE, &pkt);
 
 	/* serialize and send to the client */
-	mlen = satp_packet_to_stream(&pkt, msgstr);
-	qsc_socket_send(&prcv->pcns->target, msgstr, mlen, qsc_socket_send_flag_none);
+	mlen = satp_packet_to_stream(&pkt, smsg);
+	qsc_socket_send(&prcv->pcns->target, smsg, mlen, qsc_socket_send_flag_none);
 
 	return (mlen == SERVER_AUTHENTICATION_RESPONSE_PACKET_SIZE);
 }
@@ -167,11 +167,11 @@ static void server_receive_loop(void* prcv)
 										{
 											if (auth)
 											{
-												pprcv->receive_callback(pprcv->pcns, (char*)mstr, mlen);
+												pprcv->receive_callback(pprcv->pcns, mstr, mlen);
 											}
 											else
 											{
-												if (pprcv->authentication_callback(pprcv->pcns, (char*)mstr, mlen) == true)
+												if (pprcv->authentication_callback(pprcv->pcns, mstr, mlen) == true)
 												{
 													/* authentication challenge succeeded, the client is authenticated */
 													if (server_authentication_response(pprcv) == true)
@@ -401,7 +401,7 @@ void satp_server_passphrase_generate(char* passphrase, size_t length)
 
 		for (size_t i = 0; i < sizeof(trnd); ++i)
 		{
-			if (trnd[i] > 32U && trnd[i] < 127U)
+			if (trnd[i] > 32 && trnd[i] < 127)
 			{
 				passphrase[clen] = trnd[i];
 				++clen;
@@ -421,7 +421,7 @@ void satp_server_passphrase_hash_generate(uint8_t* phash, const char* passphrase
 {
 	qsc_scb_state sscb = { 0U };
 
-	qsc_scb_initialize(&sscb, passphrase, passlen, NULL, 0, 1U, 1U);
+	qsc_scb_initialize(&sscb, (uint8_t*)passphrase, passlen, NULL, 0, 1U, 1U);
 	qsc_scb_generate(&sscb, phash, SATP_HASH_SIZE);
 	qsc_scb_dispose(&sscb);
 }
