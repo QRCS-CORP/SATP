@@ -3,7 +3,7 @@
 #include "memutils.h"
 
 /** \cond */
-QSC_SIMD_ALIGN typedef struct satp_connection_set
+typedef struct satp_connection_set
 {
 	satp_connection_state* conset;
 	bool* active;
@@ -223,6 +223,7 @@ size_t satp_connections_size()
 	return m_connection_set.length;
 }
 
+#if defined(SATP_DEBUG_MODE)
 void satp_connections_self_test()
 {
 	satp_connection_state* xn[20] = { 0 };
@@ -262,3 +263,4 @@ void satp_connections_self_test()
 	satp_connections_clear();
 	satp_connections_dispose();
 }
+#endif

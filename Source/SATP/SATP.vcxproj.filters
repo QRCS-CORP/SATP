@@ -33,10 +33,10 @@
     <ClInclude Include="kex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="connections.h">
+    <ClInclude Include="logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="logger.h">
+    <ClInclude Include="connections.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,10 +53,10 @@
     <ClCompile Include="kex.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="connections.c">
+    <ClCompile Include="logger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="logger.c">
+    <ClCompile Include="connections.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
