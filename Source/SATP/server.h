@@ -41,8 +41,8 @@
 #define SATP_SERVER_H
 
 #include "satp.h"
-#include "../../QSC/QSC/rcs.h"
-#include "../../QSC/QSC/socketserver.h"
+#include "rcs.h"
+#include "socketserver.h"
 
 /**
  * \file server.h
