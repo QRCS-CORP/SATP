@@ -1,0 +1,62 @@
+\chapter{Symmetric Authenticated Tunneling Protocol (SATP) }
+\hypertarget{index}{}\label{index}\index{Symmetric Authenticated Tunneling Protocol (SATP)@{Symmetric Authenticated Tunneling Protocol (SATP)}}
+\hypertarget{index_introduction}{}\doxysection{\texorpdfstring{Introduction}{Introduction}}\label{index_introduction}
+The Symmetric Authenticated Tunneling Protocol (SATP) is a next-\/generation secure communications framework designed to establish cryptographically authenticated and confidential tunnels using only symmetric primitives. SATP eliminates the reliance on online public-\/key infrastructures (PKI) and ephemeral asymmetric exchanges, achieving equivalent levels of confidentiality, integrity, and forward secrecy through pre-\/provisioned hierarchical symmetric keys and authenticated encryption.
+
+SATP is optimized for environments where centralized trust authorities exist, such as industrial control, secure embedded systems, field communications, and closed network infrastructures. Its lightweight design enables high-\/speed, low-\/latency encryption without the computational cost of traditional hybrid or asymmetric protocols.\hypertarget{index_problem}{}\doxysection{\texorpdfstring{Statement of the Problem}{Statement of the Problem}}\label{index_problem}
+Traditional secure tunneling protocols such as TLS, SSH, and IKE rely on asymmetric key exchange mechanisms and certificate-\/based authentication. These systems present challenges in environments where\+:
+
+
+\begin{DoxyItemize}
+\item Certificate issuance and revocation infrastructure is unavailable.
+\item Devices must operate offline or under intermittent connectivity.
+\item Long-\/term cryptographic independence from public-\/key systems is required.
+\end{DoxyItemize}
+
+In such cases, asymmetric operations increase computational cost and complexity, while their key lifecycles remain vulnerable to compromise or certificate mismanagement. SATP was designed to provide a provably secure alternative in these constrained or regulated environments.\hypertarget{index_satp_solution}{}\doxysection{\texorpdfstring{The SATP Solution}{The SATP Solution}}\label{index_satp_solution}
+SATP uses a hierarchical symmetric key structure combined with ephemeral per-\/session derivations to establish a tunnel with full AEAD protection. The protocol consists of two phases\+:
+
+
+\begin{DoxyItemize}
+\item {\bfseries{Handshake Phase\+:}} The client and server exchange nonces and derive session transmit and receive keys ({\itshape Kt}, {\itshape Kr}) using SHAKE256-\/based expansion from a pre-\/provisioned device key ({\itshape Kc,i}). A session hash confirms mutual possession of the shared key material.
+\item {\bfseries{Encrypted Channel Phase\+:}} All communication occurs through an AEAD stream cipher (RCS or AES-\/\+GCM). Packet headers are serialized and included as associated data to bind sequence numbers and timestamps into the authentication domain.
+\end{DoxyItemize}
+
+The server then performs optional client authentication using a hardened SCB (SHAKE Cost-\/\+Based) passphrase verification. This process occurs after the encrypted channel is active, ensuring that credentials are never exposed in plaintext.\hypertarget{index_hierarchy}{}\doxysection{\texorpdfstring{Hierarchical Key Structure}{Hierarchical Key Structure}}\label{index_hierarchy}
+SATP employs a secure hierarchical key derivation system\+:
+
+
+\begin{DoxyItemize}
+\item A master domain key ({\itshape K₀}) generates branch keys ({\itshape Kb}).
+\item Each branch key derives device keys ({\itshape Kc,i}), each unique to a device.
+\item Device keys are single-\/use\+: they are burned after one session to ensure perfect forward secrecy.
+\end{DoxyItemize}
+
+Session keys ({\itshape Kt} and {\itshape Kr}) are further derived from {\itshape Kc,i} and a mixed nonce ({\itshape Nh = SHAKE256(Nh\+\_\+c ‖ Nh\+\_\+s)}), ensuring bidirectional key independence. This structure isolates compromise to a single device and session, maintaining network-\/wide containment.\hypertarget{index_advantages}{}\doxysection{\texorpdfstring{Advantages of SATP}{Advantages of SATP}}\label{index_advantages}
+
+\begin{DoxyItemize}
+\item {\bfseries{Post-\/\+Quantum Symmetric Security\+:}} Uses SHAKE256 and RCS, offering resilience against quantum adversaries within symmetric bounds.
+\item {\bfseries{Forward Secrecy\+:}} Each session uses a unique one-\/time device key and nonce, preventing retrospective decryption.
+\item {\bfseries{Low Computational Cost\+:}} No elliptic-\/curve or modular exponentiation operations; handshake completes in two messages.
+\item {\bfseries{Replay Resistance\+:}} Timestamp and sequence enforcement validated before decryption.
+\item {\bfseries{Implementation Simplicity\+:}} Compact and MISRA-\/compliant codebase suitable for embedded and industrial systems.
+\end{DoxyItemize}\hypertarget{index_applications}{}\doxysection{\texorpdfstring{Applications}{Applications}}\label{index_applications}
+SATP is applicable to\+:
+
+
+\begin{DoxyItemize}
+\item Industrial and SCADA networks requiring secure but deterministic links.
+\item Field-\/deployed or mobile systems operating offline from a central authority.
+\item Embedded devices with hardware-\/enrolled symmetric credentials.
+\item High-\/performance servers or IoT gateways needing rapid, low-\/overhead tunnels.
+\item Environments where PKI management or asymmetric cryptography is impractical.
+\end{DoxyItemize}\hypertarget{index_conclusion}{}\doxysection{\texorpdfstring{Conclusion}{Conclusion}}\label{index_conclusion}
+SATP provides a fully symmetric, authenticated encryption framework with forward secrecy and high operational efficiency. Its reliance on hierarchical symmetric derivations instead of online public-\/key exchanges allows deployment in closed or offline systems while preserving the cryptographic strength and integrity of traditional secure tunnels. By integrating SCB-\/based authentication, timestamp-\/bound replay protection, and deterministic AEAD operations, SATP achieves strong, scalable, and verifiable tunnel security within a lightweight implementation footprint.\hypertarget{index_license_sec}{}\doxysection{\texorpdfstring{License}{License}}\label{index_license_sec}
+QRCS-\/\+PL private license. See license file for details. All rights reserved by QRCS Corporation, copyrighted and patents pending.
+
+\begin{DoxyAuthor}{Author}
+John G. Underhill 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2025-\/11-\/04 
+\end{DoxyDate}

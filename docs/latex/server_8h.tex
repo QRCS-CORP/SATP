@@ -1,0 +1,238 @@
+\doxysection{C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/server.h File Reference}
+\hypertarget{server_8h}{}\label{server_8h}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/server.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/server.h}}
+
+
+SATP Server functions.  
+
+
+{\ttfamily \#include "{}satp.\+h"{}}\newline
+{\ttfamily \#include "{}../../\+QSC/\+QSC/rcs.\+h"{}}\newline
+{\ttfamily \#include "{}../../\+QSC/\+QSC/socketserver.\+h"{}}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{server_8h_a19c4f705dc0f5391c818e2adbdf38d19}{SATP\+\_\+\+SERVER\+\_\+\+PAUSE\+\_\+\+INTERVAL}}~100
+\begin{DoxyCompactList}\small\item\em The pause interval used by the server pause function. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{server_8h_aac3be884b20e6536287356259d07f064}{satp\+\_\+server\+\_\+broadcast}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}message, size\+\_\+t msglen)
+\begin{DoxyCompactList}\small\item\em Broadcast a message to all connected hosts. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{server_8h_af7eac8357b12e2c10ff715f25fedcdb8}{satp\+\_\+server\+\_\+passphrase\+\_\+generate}} (char \texorpdfstring{$\ast$}{*}passphrase, size\+\_\+t length)
+\begin{DoxyCompactList}\small\item\em Generate a readable pseudo-\/random passphrase. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{server_8h_a7f5f50e9690c0b1ecda58df73571a945}{satp\+\_\+server\+\_\+passphrase\+\_\+hash\+\_\+generate}} (uint8\+\_\+t \texorpdfstring{$\ast$}{*}phash, char \texorpdfstring{$\ast$}{*}passphrase, size\+\_\+t passlen)
+\begin{DoxyCompactList}\small\item\em Generate the passphrase hash. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API bool \mbox{\hyperlink{server_8h_a31e9c52ba066db270efac8124b594326}{satp\+\_\+server\+\_\+passphrase\+\_\+hash\+\_\+verify}} (const uint8\+\_\+t \texorpdfstring{$\ast$}{*}phash, char \texorpdfstring{$\ast$}{*}passphrase, size\+\_\+t passlen)
+\begin{DoxyCompactList}\small\item\em Verify a passphrase against the hash. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{server_8h_a5a7afabe273556acc91e882e477e0717}{satp\+\_\+server\+\_\+pause}} (void)
+\begin{DoxyCompactList}\small\item\em Pause the server. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{server_8h_a7acff025eda4a49b7d8352e1a21a491f}{satp\+\_\+server\+\_\+quit}} (void)
+\begin{DoxyCompactList}\small\item\em Quit the server. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{server_8h_a44e32c8ed1968f069113d01793e9a3c9}{satp\+\_\+server\+\_\+resume}} (void)
+\begin{DoxyCompactList}\small\item\em Resume the server listener. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} \mbox{\hyperlink{server_8h_a97dc2aa81fab68cbd0101771bb1f74dc}{satp\+\_\+server\+\_\+start\+\_\+ipv4}} (const \mbox{\hyperlink{structsatp__server__key}{satp\+\_\+server\+\_\+key}} \texorpdfstring{$\ast$}{*}skey, void(\texorpdfstring{$\ast$}{*}receive\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t), void(\texorpdfstring{$\ast$}{*}disconnect\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), bool(\texorpdfstring{$\ast$}{*}authentication\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Start the IPv4 multi-\/threaded server. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} \mbox{\hyperlink{server_8h_a48dc8c5a67ef23fa58d053d38432df71}{satp\+\_\+server\+\_\+start\+\_\+ipv6}} (const \mbox{\hyperlink{structsatp__server__key}{satp\+\_\+server\+\_\+key}} \texorpdfstring{$\ast$}{*}skey, void(\texorpdfstring{$\ast$}{*}receive\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t), void(\texorpdfstring{$\ast$}{*}disconnect\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), bool(\texorpdfstring{$\ast$}{*}authentication\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Start the IPv6 multi-\/threaded server. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+SATP Server functions. 
+
+This header declares the functions used to implement the server component of the Symmetric Authenticated Tunneling Protocol (SATP). The server functions manage client connections, broadcast messages, and control the server lifecycle through operations such as pausing, resuming, and quitting. SATP employs a multi-\/threaded server design that supports both IPv4 and IPv6 connections.
+
+The functions provided in this header include\+:
+\begin{DoxyItemize}
+\item Broadcasting a message to all connected hosts.
+\item Pausing the server to suspend acceptance of new connections.
+\item Quitting the server by closing all active connections.
+\item Resuming the server listener from a paused state.
+\item Starting the multi-\/threaded server on IPv4 and IPv6 interfaces with support for callback functions to process incoming data and handle disconnect events.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+SATP\+\_\+\+EXPORT\+\_\+\+API is used to ensure proper symbol visibility. 
+\end{DoxyNote}
+
+
+\label{doc-define-members}
+\Hypertarget{server_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{server_8h_a19c4f705dc0f5391c818e2adbdf38d19}\index{server.h@{server.h}!SATP\_SERVER\_PAUSE\_INTERVAL@{SATP\_SERVER\_PAUSE\_INTERVAL}}
+\index{SATP\_SERVER\_PAUSE\_INTERVAL@{SATP\_SERVER\_PAUSE\_INTERVAL}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{SATP\_SERVER\_PAUSE\_INTERVAL}{SATP\_SERVER\_PAUSE\_INTERVAL}}
+{\footnotesize\ttfamily \label{server_8h_a19c4f705dc0f5391c818e2adbdf38d19} 
+\#define SATP\+\_\+\+SERVER\+\_\+\+PAUSE\+\_\+\+INTERVAL~100}
+
+
+
+The pause interval used by the server pause function. 
+
+This macro defines the time interval (in milliseconds) that the server will pause before resuming operations or processing new connection requests. 
+
+\label{doc-func-members}
+\Hypertarget{server_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{server_8h_aac3be884b20e6536287356259d07f064}\index{server.h@{server.h}!satp\_server\_broadcast@{satp\_server\_broadcast}}
+\index{satp\_server\_broadcast@{satp\_server\_broadcast}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_broadcast()}{satp\_server\_broadcast()}}
+{\footnotesize\ttfamily \label{server_8h_aac3be884b20e6536287356259d07f064} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+server\+\_\+broadcast (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{message}{, }\item[{size\+\_\+t}]{msglen}{}\end{DoxyParamCaption})}
+
+
+
+Broadcast a message to all connected hosts. 
+
+This function iterates over all active connections managed by the server and transmits the specified message to each connected host. It is useful for disseminating announcements or control messages across the network.
+
+
+\begin{DoxyParams}{Parameters}
+{\em message} & \mbox{[}const\mbox{]} A pointer to the message data to be broadcast. \\
+\hline
+{\em msglen} & The length (in bytes) of the message. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{server_8h_af7eac8357b12e2c10ff715f25fedcdb8}\index{server.h@{server.h}!satp\_server\_passphrase\_generate@{satp\_server\_passphrase\_generate}}
+\index{satp\_server\_passphrase\_generate@{satp\_server\_passphrase\_generate}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_passphrase\_generate()}{satp\_server\_passphrase\_generate()}}
+{\footnotesize\ttfamily \label{server_8h_af7eac8357b12e2c10ff715f25fedcdb8} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+server\+\_\+passphrase\+\_\+generate (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{passphrase}{, }\item[{size\+\_\+t}]{length}{}\end{DoxyParamCaption})}
+
+
+
+Generate a readable pseudo-\/random passphrase. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em passphrase} & A pointer to the passphrase array. \\
+\hline
+{\em length} & The passphrase length. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{server_8h_a7f5f50e9690c0b1ecda58df73571a945}\index{server.h@{server.h}!satp\_server\_passphrase\_hash\_generate@{satp\_server\_passphrase\_hash\_generate}}
+\index{satp\_server\_passphrase\_hash\_generate@{satp\_server\_passphrase\_hash\_generate}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_passphrase\_hash\_generate()}{satp\_server\_passphrase\_hash\_generate()}}
+{\footnotesize\ttfamily \label{server_8h_a7f5f50e9690c0b1ecda58df73571a945} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+server\+\_\+passphrase\+\_\+hash\+\_\+generate (\begin{DoxyParamCaption}\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{phash}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{passphrase}{, }\item[{size\+\_\+t}]{passlen}{}\end{DoxyParamCaption})}
+
+
+
+Generate the passphrase hash. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em phash} & A pointer to the passphrase hash. \\
+\hline
+{\em passphrase} & \mbox{[}const\mbox{]} A pointer to the passphrase. \\
+\hline
+{\em passlen} & The passphrase length. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{server_8h_a31e9c52ba066db270efac8124b594326}\index{server.h@{server.h}!satp\_server\_passphrase\_hash\_verify@{satp\_server\_passphrase\_hash\_verify}}
+\index{satp\_server\_passphrase\_hash\_verify@{satp\_server\_passphrase\_hash\_verify}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_passphrase\_hash\_verify()}{satp\_server\_passphrase\_hash\_verify()}}
+{\footnotesize\ttfamily \label{server_8h_a31e9c52ba066db270efac8124b594326} 
+SATP\+\_\+\+EXPORT\+\_\+\+API bool satp\+\_\+server\+\_\+passphrase\+\_\+hash\+\_\+verify (\begin{DoxyParamCaption}\item[{const uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{phash}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{passphrase}{, }\item[{size\+\_\+t}]{passlen}{}\end{DoxyParamCaption})}
+
+
+
+Verify a passphrase against the hash. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em phash} & \mbox{[}const\mbox{]} A pointer to the passphrase hash. \\
+\hline
+{\em passphrase} & \mbox{[}const\mbox{]} A pointer to the passphrase. \\
+\hline
+{\em passlen} & The passphrase length.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the passphrase hash matches. 
+\end{DoxyReturn}
+\Hypertarget{server_8h_a5a7afabe273556acc91e882e477e0717}\index{server.h@{server.h}!satp\_server\_pause@{satp\_server\_pause}}
+\index{satp\_server\_pause@{satp\_server\_pause}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_pause()}{satp\_server\_pause()}}
+{\footnotesize\ttfamily \label{server_8h_a5a7afabe273556acc91e882e477e0717} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+server\+\_\+pause (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Pause the server. 
+
+This function temporarily suspends the acceptance of new client connections. While paused, the server continues to service existing connections but does not allow any new joins until it is resumed. \Hypertarget{server_8h_a7acff025eda4a49b7d8352e1a21a491f}\index{server.h@{server.h}!satp\_server\_quit@{satp\_server\_quit}}
+\index{satp\_server\_quit@{satp\_server\_quit}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_quit()}{satp\_server\_quit()}}
+{\footnotesize\ttfamily \label{server_8h_a7acff025eda4a49b7d8352e1a21a491f} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+server\+\_\+quit (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Quit the server. 
+
+This function gracefully shuts down the server by closing all active client connections and terminating the server\textquotesingle{}s listener. It is used to perform a complete shutdown of the server operations. \Hypertarget{server_8h_a44e32c8ed1968f069113d01793e9a3c9}\index{server.h@{server.h}!satp\_server\_resume@{satp\_server\_resume}}
+\index{satp\_server\_resume@{satp\_server\_resume}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_resume()}{satp\_server\_resume()}}
+{\footnotesize\ttfamily \label{server_8h_a44e32c8ed1968f069113d01793e9a3c9} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+server\+\_\+resume (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Resume the server listener. 
+
+This function resumes the server\textquotesingle{}s listener functionality after it has been paused. Once resumed, the server will once again accept new incoming client connections. \Hypertarget{server_8h_a97dc2aa81fab68cbd0101771bb1f74dc}\index{server.h@{server.h}!satp\_server\_start\_ipv4@{satp\_server\_start\_ipv4}}
+\index{satp\_server\_start\_ipv4@{satp\_server\_start\_ipv4}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_start\_ipv4()}{satp\_server\_start\_ipv4()}}
+{\footnotesize\ttfamily \label{server_8h_a97dc2aa81fab68cbd0101771bb1f74dc} 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} satp\+\_\+server\+\_\+start\+\_\+ipv4 (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structsatp__server__key}{satp\+\_\+server\+\_\+key}} \texorpdfstring{$\ast$}{*}}]{skey}{, }\item[{void(\texorpdfstring{$\ast$}{*}}]{receive\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t), }\item[{void(\texorpdfstring{$\ast$}{*}}]{disconnect\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), }\item[{bool(\texorpdfstring{$\ast$}{*}}]{authentication\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}\end{DoxyParamCaption})}
+
+
+
+Start the IPv4 multi-\/threaded server. 
+
+This function initializes and starts the SATP server for IPv4 connections using a multi-\/threaded architecture. It listens on the provided socket and uses the specified SATP private key for secure key exchange and authentication. Two callback functions are provided\+:
+\begin{DoxyItemize}
+\item A receive callback to process incoming client data streams.
+\item A disconnect callback to handle cleanup and resource deallocation when a client disconnects.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em skey} & \mbox{[}const\mbox{]} A pointer to the SATP server private signature key used for key exchange. \\
+\hline
+{\em receive\+\_\+callback} & A pointer to the function that processes incoming client data. \\
+\hline
+{\em disconnect\+\_\+callback} & A pointer to the function that handles client disconnect events. \\
+\hline
+{\em authentication\+\_\+callback} & A pointer to the function that handles client authentication events.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a SATP error code indicating the success or failure of starting the IPv4 server. 
+\end{DoxyReturn}
+\Hypertarget{server_8h_a48dc8c5a67ef23fa58d053d38432df71}\index{server.h@{server.h}!satp\_server\_start\_ipv6@{satp\_server\_start\_ipv6}}
+\index{satp\_server\_start\_ipv6@{satp\_server\_start\_ipv6}!server.h@{server.h}}
+\doxysubsubsection{\texorpdfstring{satp\_server\_start\_ipv6()}{satp\_server\_start\_ipv6()}}
+{\footnotesize\ttfamily \label{server_8h_a48dc8c5a67ef23fa58d053d38432df71} 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} satp\+\_\+server\+\_\+start\+\_\+ipv6 (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{structsatp__server__key}{satp\+\_\+server\+\_\+key}} \texorpdfstring{$\ast$}{*}}]{skey}{, }\item[{void(\texorpdfstring{$\ast$}{*}}]{receive\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t), }\item[{void(\texorpdfstring{$\ast$}{*}}]{disconnect\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), }\item[{bool(\texorpdfstring{$\ast$}{*}}]{authentication\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}\end{DoxyParamCaption})}
+
+
+
+Start the IPv6 multi-\/threaded server. 
+
+This function initializes and starts the SATP server for IPv6 connections using a multi-\/threaded design. It listens on the provided IPv6 socket and employs the specified SATP private key for secure communications. The server uses two callback functions to process incoming client data and handle disconnect events.
+
+
+\begin{DoxyParams}{Parameters}
+{\em kset} & \mbox{[}const\mbox{]} A pointer to the SATP server private signature key used for key exchange and authentication. \\
+\hline
+{\em receive\+\_\+callback} & A pointer to the function that processes incoming client data. \\
+\hline
+{\em disconnect\+\_\+callback} & A pointer to the function that handles client disconnect events. \\
+\hline
+{\em authentication\+\_\+callback} & A pointer to the function that handles client authentication events.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a SATP error code indicating the outcome of starting the IPv6 server. 
+\end{DoxyReturn}

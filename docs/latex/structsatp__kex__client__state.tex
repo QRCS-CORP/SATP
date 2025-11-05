@@ -1,0 +1,85 @@
+\doxysection{satp\+\_\+kex\+\_\+client\+\_\+state Struct Reference}
+\hypertarget{structsatp__kex__client__state}{}\label{structsatp__kex__client__state}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+
+
+The SATP client state structure.  
+
+
+
+
+{\ttfamily \#include $<$kex.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_a298b7b0ec67e19004949923263c6a93a}{dk}} \mbox{[}\mbox{\hyperlink{satp_8h_a21645295558e27eed64fc61b87116747}{SATP\+\_\+\+DKEY\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_a6aa11b3be71a2d41b2c6249aeeb8e931}{kid}} \mbox{[}\mbox{\hyperlink{satp_8h_a92dfd14570beaf5e896495405760777b}{SATP\+\_\+\+KID\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_adc87a285cc4afd6d2202334666960f9a}{hc}} \mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_a4d76d8d8a6b86c5769f24a9700c4041c}{hp}} \mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_ae692475230e282e6df51006ca56e281d}{stc}} \mbox{[}\mbox{\hyperlink{satp_8h_abd6e04bbc39dffe4395782d752919e40}{SATP\+\_\+\+SALT\+\_\+\+SIZE}}\mbox{]}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_a6d579765908169e6fcb1bdc8f105132d}{expiration}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structsatp__kex__client__state_add3eb95b082d4a50d86c74c6876e5d4b}{kidx}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP client state structure. 
+
+This structure holds the state information for an SATP client during a key exchange and ongoing communication session. 
+
+\label{doc-variable-members}
+\Hypertarget{structsatp__kex__client__state_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structsatp__kex__client__state_a298b7b0ec67e19004949923263c6a93a}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!dk@{dk}}
+\index{dk@{dk}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{dk}{dk}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_a298b7b0ec67e19004949923263c6a93a} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t dk\mbox{[}\mbox{\hyperlink{satp_8h_a21645295558e27eed64fc61b87116747}{SATP\+\_\+\+DKEY\+\_\+\+SIZE}}\mbox{]}}
+
+The device derivation key \Hypertarget{structsatp__kex__client__state_a6d579765908169e6fcb1bdc8f105132d}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!expiration@{expiration}}
+\index{expiration@{expiration}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{expiration}{expiration}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_a6d579765908169e6fcb1bdc8f105132d} 
+uint64\+\_\+t expiration}
+
+The expiration time, in seconds from epoch \Hypertarget{structsatp__kex__client__state_adc87a285cc4afd6d2202334666960f9a}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!hc@{hc}}
+\index{hc@{hc}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{hc}{hc}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_adc87a285cc4afd6d2202334666960f9a} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t hc\mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}}
+
+The device session hash \Hypertarget{structsatp__kex__client__state_a4d76d8d8a6b86c5769f24a9700c4041c}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!hp@{hp}}
+\index{hp@{hp}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{hp}{hp}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_a4d76d8d8a6b86c5769f24a9700c4041c} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t hp\mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}}
+
+The device passphrase hash \Hypertarget{structsatp__kex__client__state_a6aa11b3be71a2d41b2c6249aeeb8e931}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!kid@{kid}}
+\index{kid@{kid}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{kid}{kid}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_a6aa11b3be71a2d41b2c6249aeeb8e931} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t kid\mbox{[}\mbox{\hyperlink{satp_8h_a92dfd14570beaf5e896495405760777b}{SATP\+\_\+\+KID\+\_\+\+SIZE}}\mbox{]}}
+
+The device key identity string \Hypertarget{structsatp__kex__client__state_add3eb95b082d4a50d86c74c6876e5d4b}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!kidx@{kidx}}
+\index{kidx@{kidx}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{kidx}{kidx}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_add3eb95b082d4a50d86c74c6876e5d4b} 
+uint32\+\_\+t kidx}
+
+The current key index \Hypertarget{structsatp__kex__client__state_ae692475230e282e6df51006ca56e281d}\index{satp\_kex\_client\_state@{satp\_kex\_client\_state}!stc@{stc}}
+\index{stc@{stc}!satp\_kex\_client\_state@{satp\_kex\_client\_state}}
+\doxysubsubsection{\texorpdfstring{stc}{stc}}
+{\footnotesize\ttfamily \label{structsatp__kex__client__state_ae692475230e282e6df51006ca56e281d} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t stc\mbox{[}\mbox{\hyperlink{satp_8h_abd6e04bbc39dffe4395782d752919e40}{SATP\+\_\+\+SALT\+\_\+\+SIZE}}\mbox{]}}
+
+The server session salt 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/kex.\+h\end{DoxyCompactItemize}

@@ -1,0 +1,375 @@
+\doxysection{satp.\+h}
+\hypertarget{satp_8h_source}{}\label{satp_8h_source}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/satp.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/satp.h}}
+\mbox{\hyperlink{satp_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ 2025\ Quantum\ Resistant\ Cryptographic\ Solutions\ Corporation}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ All\ Rights\ Reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ NOTICE:\ This\ software\ and\ all\ accompanying\ materials\ are\ the\ exclusive\ }}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ property\ of\ Quantum\ Resistant\ Cryptographic\ Solutions\ Corporation\ (QRCS).}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ The\ intellectual\ and\ technical\ concepts\ contained\ within\ this\ implementation\ }}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ are\ proprietary\ to\ QRCS\ and\ its\ authorized\ licensors\ and\ are\ protected\ under\ }}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ applicable\ U.S.\ and\ international\ copyright,\ patent,\ and\ trade\ secret\ laws.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ CRYPTOGRAPHIC\ STANDARDS:}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ -\/\ This\ software\ includes\ implementations\ of\ cryptographic\ algorithms\ such\ as\ }}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ \ \ SHA3,\ AES,\ and\ others.\ These\ algorithms\ are\ public\ domain\ or\ standardized\ }}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ by\ organizations\ such\ as\ NIST\ and\ are\ NOT\ the\ property\ of\ QRCS.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ -\/\ However,\ all\ source\ code,\ optimizations,\ and\ implementations\ in\ this\ library\ }}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ \ \ are\ original\ works\ of\ QRCS\ and\ are\ protected\ under\ this\ license.}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ RESTRICTIONS:}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ -\/\ Redistribution,\ modification,\ or\ unauthorized\ distribution\ of\ this\ software,\ }}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ \ \ in\ whole\ or\ in\ part,\ is\ strictly\ prohibited.}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ -\/\ This\ software\ is\ provided\ for\ non-\/commercial,\ educational,\ and\ research\ }}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ \ \ purposes\ only.\ Commercial\ use\ in\ any\ form\ is\ expressly\ forbidden.}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ -\/\ Licensing\ and\ authorized\ distribution\ are\ solely\ at\ the\ discretion\ of\ QRCS.}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ -\/\ Any\ use\ of\ this\ software\ implies\ acceptance\ of\ these\ restrictions.}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ *\ DISCLAIMER:}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ *\ This\ software\ is\ provided\ "{}as\ is,"{}\ without\ warranty\ of\ any\ kind,\ express\ or\ }}
+\DoxyCodeLine{00027\ \textcolor{comment}{\ *\ implied,\ including\ but\ not\ limited\ to\ warranties\ of\ merchantability\ or\ fitness\ }}
+\DoxyCodeLine{00028\ \textcolor{comment}{\ *\ for\ a\ particular\ purpose.\ QRCS\ disclaims\ all\ liability\ for\ any\ direct,\ indirect,\ }}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ *\ incidental,\ or\ consequential\ damages\ resulting\ from\ the\ use\ or\ misuse\ of\ this\ software.}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ *\ FULL\ LICENSE:}}
+\DoxyCodeLine{00032\ \textcolor{comment}{\ *\ This\ software\ is\ subject\ to\ the\ **Quantum\ Resistant\ Cryptographic\ Solutions\ }}
+\DoxyCodeLine{00033\ \textcolor{comment}{\ *\ Proprietary\ License\ (QRCS-\/PL)**.\ The\ complete\ license\ terms\ are\ included\ }}
+\DoxyCodeLine{00034\ \textcolor{comment}{\ *\ in\ the\ LICENSE.txt\ file\ distributed\ with\ this\ software.}}
+\DoxyCodeLine{00035\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ *\ Written\ by:\ John\ G.\ Underhill}}
+\DoxyCodeLine{00037\ \textcolor{comment}{\ *\ Contact:\ contact@qrcscorp.ca}}
+\DoxyCodeLine{00038\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#ifndef\ SATP\_H}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ SATP\_H}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ "{}satpcommon.h"{}}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ "{}sha3.h"{}}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}socket.h"{}}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ "{}socketclient.h"{}}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\#define\ SATP\_USE\_RCS\_ENCRYPTION}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#if\ defined(SATP\_USE\_RCS\_ENCRYPTION)}}
+\DoxyCodeLine{00062\ \textcolor{preprocessor}{\#\ \ \ include\ "{}rcs.h"{}}}
+\DoxyCodeLine{00063\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_state\ qsc\_rcs\_state}}
+\DoxyCodeLine{00064\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_dispose\ qsc\_rcs\_dispose}}
+\DoxyCodeLine{00065\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_initialize\ qsc\_rcs\_initialize}}
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_keyparams\ qsc\_rcs\_keyparams}}
+\DoxyCodeLine{00067\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_set\_associated\ qsc\_rcs\_set\_associated}}
+\DoxyCodeLine{00068\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_transform\ qsc\_rcs\_transform}}
+\DoxyCodeLine{00069\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#\ \ \ include\ "{}aes.h"{}}}
+\DoxyCodeLine{00071\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_state\ qsc\_aes\_gcm256\_state}}
+\DoxyCodeLine{00072\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_dispose\ qsc\_aes\_gcm256\_dispose}}
+\DoxyCodeLine{00073\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_initialize\ qsc\_aes\_gcm256\_initialize}}
+\DoxyCodeLine{00074\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_keyparams\ qsc\_aes\_keyparams}}
+\DoxyCodeLine{00075\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_set\_associated\ qsc\_aes\_gcm256\_set\_associated}}
+\DoxyCodeLine{00076\ \textcolor{preprocessor}{\#\ \ \ define\ satp\_cipher\_transform\ qsc\_aes\_gcm256\_transform}}
+\DoxyCodeLine{00077\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00121\ \textcolor{preprocessor}{\#define\ SATP\_CLIENT\_PASSWORD\_MAX\ 256U}}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00127\ \textcolor{preprocessor}{\#define\ SATP\_CLIENT\_USERNAME\_MAX\ 256U}}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\#define\ SATP\_CONNECTIONS\_INIT\ 1000U}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#define\ SATP\_CONNECTIONS\_MAX\ 50000U}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#define\ SATP\_CONFIG\_SIZE\ 25U}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#define\ SATP\_ERROR\_SIZE\ 1U}}
+\DoxyCodeLine{00152\ }
+\DoxyCodeLine{00157\ \textcolor{preprocessor}{\#define\ SATP\_EXPIRATION\_SIZE\ 8U}}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00163\ \textcolor{preprocessor}{\#define\ SATP\_HASH\_SIZE\ 32U}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00169\ \textcolor{preprocessor}{\#define\ SATP\_HEADER\_SIZE\ 21U}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00175\ \textcolor{preprocessor}{\#define\ SATP\_KEEPALIVE\_MESSAGE\ 8U}}
+\DoxyCodeLine{00176\ }
+\DoxyCodeLine{00181\ \textcolor{preprocessor}{\#define\ SATP\_KEEPALIVE\_STRING\ 20U}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00187\ \textcolor{preprocessor}{\#define\ SATP\_KEEPALIVE\_TIMEOUT\ (300U\ *\ 1000U)}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00193\ \textcolor{preprocessor}{\#define\ SATP\_KEY\_TREE\_COUNT\ 1024}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00198\ \textcolor{preprocessor}{\#if\ defined(SATP\_USE\_RCS\_ENCRYPTION)}}
+\DoxyCodeLine{00199\ \textcolor{preprocessor}{\#\ \ \ define\ SATP\_MACTAG\_SIZE\ 32U}}
+\DoxyCodeLine{00200\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00201\ \textcolor{preprocessor}{\#\ \ \ define\ SATP\_MACTAG\_SIZE\ 16U}}
+\DoxyCodeLine{00202\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00208\ \textcolor{preprocessor}{\#define\ SATP\_MESSAGE\_SIZE\ 1024U}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00214\ \textcolor{preprocessor}{\#define\ SATP\_MESSAGE\_MAX\ (SATP\_MESSAGE\_SIZE\ +\ SATP\_HEADER\_SIZE)}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\#define\ SATP\_CONNECTION\_MTU\ 1500U}}
+\DoxyCodeLine{00221\ }
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\#if\ defined(SATP\_USE\_RCS\_ENCRYPTION)}}
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\#\ \ \ define\ SATP\_NONCE\_SIZE\ 32U}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00229\ \textcolor{preprocessor}{\#\ \ \ define\ SATP\_NONCE\_SIZE\ 16U}}
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00236\ \textcolor{preprocessor}{\#define\ SATP\_SALT\_SIZE\ 32U}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00242\ \textcolor{preprocessor}{\#define\ SATP\_SERVER\_PORT\ 2701U}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00248\ \textcolor{preprocessor}{\#define\ SATP\_SEQUENCE\_TERMINATOR\ 0xFFFFFFFFUL}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00253\ \textcolor{preprocessor}{\#if\ defined(SATP\_USE\_RCS\_ENCRYPTION)}}
+\DoxyCodeLine{00254\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ SATP\_CONFIG\_STRING[\mbox{\hyperlink{satp_8h_afea8720f234f62f4a19f6d951b54d58d}{SATP\_CONFIG\_SIZE}}\ +\ 1U]\ =\ \textcolor{stringliteral}{"{}r01-\/satp-\/rcs256-\/keccak256"{}};}
+\DoxyCodeLine{00255\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ SATP\_CONFIG\_STRING[\mbox{\hyperlink{satp_8h_afea8720f234f62f4a19f6d951b54d58d}{SATP\_CONFIG\_SIZE}}\ +\ 1U]\ =\ \textcolor{stringliteral}{"{}r02-\/satp-\/aes256-\/keccak256"{}};}
+\DoxyCodeLine{00257\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ \textcolor{comment}{/*\ Exchange\ thresholds\ */}}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\#define\ SATP\_KEY\_DURATION\_DAYS\ 365U}}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00275\ \textcolor{preprocessor}{\#define\ SATP\_PACKET\_TIME\_THRESHOLD\ 60U}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00281\ \textcolor{preprocessor}{\#define\ SATP\_KEY\_DURATION\_SECONDS\ (SATP\_KEY\_DURATION\_DAYS\ *\ 24U\ *\ 60U\ *\ 60U)}}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \textcolor{comment}{/*\ Key\ identity\ elements\ */}}
+\DoxyCodeLine{00284\ }
+\DoxyCodeLine{00289\ \textcolor{preprocessor}{\#define\ SATP\_BRANCH\_ID\_SIZE\ 2U}}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00295\ \textcolor{preprocessor}{\#define\ SATP\_DOMAIN\_ID\_SIZE\ 2U}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00301\ \textcolor{preprocessor}{\#define\ SATP\_DEVICE\_ID\_SIZE\ 4U}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00307\ \textcolor{preprocessor}{\#define\ SATP\_EPOCH\_SIZE\ 2U}}
+\DoxyCodeLine{00308\ }
+\DoxyCodeLine{00313\ \textcolor{preprocessor}{\#define\ SATP\_ERROR\_MESSAGE\_SIZE\ 1U}}
+\DoxyCodeLine{00314\ }
+\DoxyCodeLine{00319\ \textcolor{preprocessor}{\#define\ SATP\_ERROR\_SEQUENCE\ 0xFF00000000000000ULL}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00325\ \textcolor{preprocessor}{\#define\ SATP\_FLAG\_SIZE\ 1}}
+\DoxyCodeLine{00326\ }
+\DoxyCodeLine{00331\ \textcolor{preprocessor}{\#define\ SATP\_KEY\_ID\_SIZE\ 4U}}
+\DoxyCodeLine{00332\ }
+\DoxyCodeLine{00337\ \textcolor{preprocessor}{\#define\ SATP\_SERVICE\_ID\_SIZE\ 2U}}
+\DoxyCodeLine{00338\ }
+\DoxyCodeLine{00343\ \textcolor{preprocessor}{\#define\ SATP\_DID\_SIZE\ (SATP\_DOMAIN\_ID\_SIZE\ +\ SATP\_BRANCH\_ID\_SIZE\ +\ SATP\_EPOCH\_SIZE\ +\ SATP\_SERVICE\_ID\_SIZE\ +\ SATP\_DEVICE\_ID\_SIZE)}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00349\ \textcolor{preprocessor}{\#define\ SATP\_MID\_SIZE\ (SATP\_DOMAIN\_ID\_SIZE)}}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00355\ \textcolor{preprocessor}{\#define\ SATP\_SID\_SIZE\ (SATP\_DOMAIN\_ID\_SIZE\ +\ SATP\_BRANCH\_ID\_SIZE)}}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00361\ \textcolor{preprocessor}{\#define\ SATP\_KID\_SIZE\ (SATP\_DID\_SIZE\ +\ SATP\_KEY\_ID\_SIZE)}}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ \textcolor{comment}{/*\ key\ sizes\ */}}
+\DoxyCodeLine{00364\ }
+\DoxyCodeLine{00369\ \textcolor{preprocessor}{\#define\ SATP\_DKEY\_SIZE\ 32U}}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00375\ \textcolor{preprocessor}{\#define\ SATP\_MKEY\_SIZE\ 32U}}
+\DoxyCodeLine{00376\ }
+\DoxyCodeLine{00381\ \textcolor{preprocessor}{\#define\ SATP\_SKEY\_SIZE\ 32U}}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00387\ \textcolor{preprocessor}{\#define\ SATP\_KTREE\_SIZE\ (SATP\_DKEY\_SIZE\ *\ SATP\_KEY\_TREE\_COUNT)}}
+\DoxyCodeLine{00388\ }
+\DoxyCodeLine{00393\ \textcolor{preprocessor}{\#define\ SATP\_DKEY\_ENCODED\_SIZE\ (SATP\_KID\_SIZE\ +\ SATP\_SKEY\_SIZE\ +\ SATP\_EXPIRATION\_SIZE\ +\ (SATP\_DKEY\_SIZE\ *\ SATP\_KEY\_TREE\_COUNT))}}
+\DoxyCodeLine{00394\ }
+\DoxyCodeLine{00399\ \textcolor{preprocessor}{\#define\ SATP\_MKEY\_ENCODED\_SIZE\ (SATP\_MKEY\_SIZE\ +\ SATP\_MID\_SIZE\ +\ SATP\_EXPIRATION\_SIZE)}}
+\DoxyCodeLine{00400\ }
+\DoxyCodeLine{00405\ \textcolor{preprocessor}{\#define\ SATP\_SKEY\_ENCODED\_SIZE\ (SATP\_SKEY\_SIZE\ +\ SATP\_SKEY\_SIZE\ +\ SATP\_SID\_SIZE\ +\ SATP\_EXPIRATION\_SIZE)}}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00411\ \textcolor{preprocessor}{\#define\ SATP\_STOK\_SIZE\ 32U}}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \textcolor{comment}{/*\ error\ code\ strings\ */}}
+\DoxyCodeLine{00414\ }
+\DoxyCodeLine{00416\ \textcolor{preprocessor}{\#define\ SATP\_ERROR\_STRING\_DEPTH\ 22U}}
+\DoxyCodeLine{00417\ \textcolor{preprocessor}{\#define\ SATP\_ERROR\_STRING\_WIDTH\ 128U}}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00419\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ SATP\_ERROR\_STRINGS[SATP\_ERROR\_STRING\_DEPTH][SATP\_ERROR\_STRING\_WIDTH]\ =}
+\DoxyCodeLine{00420\ \{}
+\DoxyCodeLine{00421\ \ \ \ \ \textcolor{stringliteral}{"{}No\ error\ was\ detected"{}},}
+\DoxyCodeLine{00422\ \ \ \ \ \textcolor{stringliteral}{"{}The\ keep\ alive\ check\ failed"{}},}
+\DoxyCodeLine{00423\ \ \ \ \ \textcolor{stringliteral}{"{}The\ cipher\ authentication\ has\ failed"{}},}
+\DoxyCodeLine{00424\ \ \ \ \ \textcolor{stringliteral}{"{}The\ communications\ channel\ has\ failed"{}},}
+\DoxyCodeLine{00425\ \ \ \ \ \textcolor{stringliteral}{"{}The\ device\ could\ not\ make\ a\ connection\ to\ the\ remote\ host"{}},}
+\DoxyCodeLine{00426\ \ \ \ \ \textcolor{stringliteral}{"{}The\ decryption\ authentication\ has\ failed"{}},}
+\DoxyCodeLine{00427\ \ \ \ \ \textcolor{stringliteral}{"{}The\ device\ identity\ is\ unrecognized"{}},}
+\DoxyCodeLine{00428\ \ \ \ \ \textcolor{stringliteral}{"{}The\ transmission\ failed\ at\ the\ key\ exchange\ establish\ phase"{}},}
+\DoxyCodeLine{00429\ \ \ \ \ \textcolor{stringliteral}{"{}The\ input\ provided\ is\ invalid"{}},}
+\DoxyCodeLine{00430\ \ \ \ \ \textcolor{stringliteral}{"{}The\ keep\ alive\ has\ expired\ with\ no\ response"{}},}
+\DoxyCodeLine{00431\ \ \ \ \ \textcolor{stringliteral}{"{}The\ key\ exchange\ authentication\ has\ failed"{}},}
+\DoxyCodeLine{00432\ \ \ \ \ \textcolor{stringliteral}{"{}The\ SATP\ public\ key\ has\ expired"{}},}
+\DoxyCodeLine{00433\ \ \ \ \ \textcolor{stringliteral}{"{}The\ key\ identity\ is\ not\ recognized"{}},}
+\DoxyCodeLine{00434\ \ \ \ \ \textcolor{stringliteral}{"{}The\ packet\ keep\ alive\ is\ invalid"{}},}
+\DoxyCodeLine{00435\ \ \ \ \ \textcolor{stringliteral}{"{}The\ packet\ was\ received\ out\ of\ sequence"{}},}
+\DoxyCodeLine{00436\ \ \ \ \ \textcolor{stringliteral}{"{}The\ random\ generator\ has\ failed"{}},}
+\DoxyCodeLine{00437\ \ \ \ \ \textcolor{stringliteral}{"{}The\ receiver\ failed\ at\ the\ network\ layer"{}},}
+\DoxyCodeLine{00438\ \ \ \ \ \textcolor{stringliteral}{"{}The\ transmitter\ failed\ at\ the\ network\ layer"{}},}
+\DoxyCodeLine{00439\ \ \ \ \ \textcolor{stringliteral}{"{}The\ protocol\ string\ was\ not\ recognized"{}},}
+\DoxyCodeLine{00440\ \ \ \ \ \textcolor{stringliteral}{"{}The\ packets\ sequence\ number\ is\ out\ of\ sync"{}},}
+\DoxyCodeLine{00441\ \ \ \ \ \textcolor{stringliteral}{"{}The\ expected\ data\ could\ not\ be\ verified"{}},}
+\DoxyCodeLine{00442\ \ \ \ \ \textcolor{stringliteral}{"{}A\ general\ failure\ occurred"{}},}
+\DoxyCodeLine{00443\ \};}
+\DoxyCodeLine{00445\ }
+\DoxyCodeLine{00451\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}}
+\DoxyCodeLine{00452\ \{}
+\DoxyCodeLine{00453\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aae0bd1ffa173ecefde1602fc4312b82d2}{satp\_error\_none}}\ =\ 0x00U,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00454\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aae9ed7692ea5ebb387f5ad7ab551675ec}{satp\_error\_accept\_fail}}\ =\ 0x01,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00455\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa201ca1ee4a2d2a7b46ca15ce60c70c73}{satp\_error\_authentication\_failure}}\ =\ 0x02U,\ }
+\DoxyCodeLine{00456\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aae319c9039652d5dc7fdeece9e2c0323b}{satp\_error\_authentication\_success}}\ =\ 0x03U,\ }
+\DoxyCodeLine{00457\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa298d0eeaed1477349c6e03d5ed535c0d}{satp\_erroe\_listen\_fail}}\ =\ 0x04U,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00458\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa4b0c8f20e3212dd1a32cfd4c6f5dabb8}{satp\_error\_allocation\_failure}}\ =\ 0x05U,\ \ \ \ \ }
+\DoxyCodeLine{00459\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa5b4dd0b9aac0f5da5a393c67ea3212fd}{satp\_error\_bad\_keep\_alive}}\ =\ 0x06U,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00460\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa9c818a084e31c65dac8a64ecd3561b77}{satp\_error\_cipher\_auth\_failure}}\ =\ 0x07U,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00461\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aac82788262b7d94d77cd96448c2c1046f}{satp\_error\_channel\_down}}\ =\ 0x08U,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00462\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aab067e0737d6e3ddeb948937fc2f2a20a}{satp\_error\_connection\_failure}}\ =\ 0x09U,\ \ \ \ \ }
+\DoxyCodeLine{00463\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa6773dd68788a41abaafad2626fc66f36}{satp\_error\_decryption\_failure}}\ =\ 0x0AU,\ \ \ \ \ }
+\DoxyCodeLine{00464\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aaf54201a835177b6e645071eef3f4690f}{satp\_error\_device\_unrecognized}}\ =\ 0x0BU,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00465\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa904e1e37972dd8d5b6ef11c822183c16}{satp\_error\_establish\_failure}}\ =\ 0x0CU,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00466\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa7c1510995d45f8ac5efad74764eb6947}{satp\_error\_hosts\_exceeded}}\ =\ 0x0DU,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00467\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa0f36a9a467bca90f55dcf574505315cd}{satp\_error\_invalid\_input}}\ =\ 0x0EU,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00468\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa9de012221558389cfcba4f20471d53fe}{satp\_error\_invalid\_request}}\ =\ 0x0FU,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00469\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa8f1b47365c31d684ae30eb80622d3282}{satp\_error\_keep\_alive\_expired}}\ =\ 0x10U,\ \ \ \ \ }
+\DoxyCodeLine{00470\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa2c6e1ff643be3df77b13edcffe9d6f87}{satp\_error\_kex\_auth\_failure}}\ =\ 0x11U,\ \ \ \ \ }
+\DoxyCodeLine{00471\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa95c284acdbb9926ffa35f11d1b26a809}{satp\_error\_key\_expired}}\ =\ 0x12U,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00472\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa7c9daf25b67b3467154d82da7c4a184d}{satp\_error\_key\_not\_recognized}}\ =\ 0x13U,\ \ \ \ \ }
+\DoxyCodeLine{00473\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa5b3b79d832d4124935169bf67be1cbf7}{satp\_error\_listener\_fail}}\ =\ 0x14U,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00474\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aaf59560eee974a0abb7ae8bc1a7b7001e}{satp\_error\_message\_time\_invalid}}\ =\ 0x15U,\ }
+\DoxyCodeLine{00475\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa8217e9c14802c70fdf7800a4bd784c12}{satp\_error\_packet\_expired}}\ =\ 0x16U,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00476\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa846f1642f543dd051d40db797f5039db}{satp\_error\_packet\_unsequenced}}\ =\ 0x17U,\ \ \ \ \ }
+\DoxyCodeLine{00477\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa0d95f0095b9015fcc63c557957a678f6}{satp\_error\_random\_failure}}\ =\ 0x18U,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00478\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aaf978ec059e4a360e2d2f3e1e12b79618}{satp\_error\_receive\_failure}}\ =\ 0x19U,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00479\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aac827f214b70ab0a2a415bd6004418da0}{satp\_error\_transmit\_failure}}\ =\ 0x1AU,\ \ \ \ \ }
+\DoxyCodeLine{00480\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa0a53f61ddd8c8dd1aab552a7e72a746e}{satp\_error\_unknown\_protocol}}\ =\ 0x1BU,\ \ \ \ \ }
+\DoxyCodeLine{00481\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aae4ae8e656692a07a8c36a38ebf16dfac}{satp\_error\_unsequenced}}\ =\ 0x1CU,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00482\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aaef9010303da834586eb63e71664f6962}{satp\_error\_verify\_failure}}\ =\ 0x1DU,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00483\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5aa3d706ae2143988c8e1cdbf31703589da}{satp\_error\_general\_failure}}\ =\ 0xFFU\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00484\ \}\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}};}
+\DoxyCodeLine{00485\ }
+\DoxyCodeLine{00491\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\_flags}}}
+\DoxyCodeLine{00492\ \{}
+\DoxyCodeLine{00493\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea28bca8366091302d8ea83fbcb27c8414}{satp\_flag\_none}}\ =\ 0x00U,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00494\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4eac589dc859e24be990d2f883382dbb8ec}{satp\_flag\_connect\_request}}\ =\ 0x01U,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00495\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea4734a78ed94a982901291eb6da46f093}{satp\_flag\_connect\_response}}\ =\ 0x02U,\ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00496\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea28b787cd4b0990423d6287ff7e7e023b}{satp\_flag\_connection\_terminate}}\ =\ 0x03U,\ \ \ \ \ \ \ }
+\DoxyCodeLine{00497\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea8788180430fed49cc83a6f558322194b}{satp\_flag\_encrypted\_message}}\ =\ 0x04U,\ \ \ \ \ }
+\DoxyCodeLine{00498\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea5ccea056fdb79fcfaea6e21307348e17}{satp\_flag\_authentication\_request}}\ =\ 0x05U,\ \ \ }
+\DoxyCodeLine{00499\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea54b0410100520e2009f636c639ec2fc5}{satp\_flag\_authentication\_response}}\ =\ 0x06U,\ }
+\DoxyCodeLine{00500\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea628018af4907fd9d45a58fea8aba343e}{satp\_flag\_auth\_verify}}\ =\ 0x08U,\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00501\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4eab8fe0aa54700879bac861d7b564522ed}{satp\_flag\_keepalive\_request}}\ =\ 0x09U,\ \ \ \ \ }
+\DoxyCodeLine{00502\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4eaa741c190841ad6cf4a18d36f38c2a992}{satp\_flag\_session\_established}}\ =\ 0x0AU,\ \ \ \ \ }
+\DoxyCodeLine{00503\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4ea424f30de28eb65d70844f879e5e3b484}{satp\_flag\_error\_condition}}\ =\ 0xFFU,\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00504\ \}\ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\_flags}};}
+\DoxyCodeLine{00505\ }
+\DoxyCodeLine{00510\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}}
+\DoxyCodeLine{00511\ \{}
+\DoxyCodeLine{00512\ \ \ \ \ qsc\_socket\ \mbox{\hyperlink{structsatp__connection__state_ae6865db404fdc42e72fdb48510d5a558}{target}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00513\ \ \ \ \ qsc\_rcs\_state\ \mbox{\hyperlink{structsatp__connection__state_aec1bc59ca91d898f673d2ca825c02853}{rxcpr}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00514\ \ \ \ \ qsc\_rcs\_state\ \mbox{\hyperlink{structsatp__connection__state_a9016aef42a7046d75b7d0d01f1f5cddb}{txcpr}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00515\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__connection__state_a9bc7a133c2f47895567d675d3679e15a}{rxseq}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00516\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__connection__state_a1b9dac0a156c3747fc39192a04f01aa0}{txseq}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00517\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structsatp__connection__state_acb6c79f809882b2d62ccaab26ab8d945}{cid}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00518\ \ \ \ \ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\_flags}}\ \mbox{\hyperlink{structsatp__connection__state_af43c00a009a652fcfd1b7feb9acab4b2}{exflag}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00519\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{structsatp__connection__state_a5bcb0abef75bec8baadc9cf3c1eaf19d}{receiver}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00520\ \}\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}};}
+\DoxyCodeLine{00521\ }
+\DoxyCodeLine{00528\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__device__key}{satp\_device\_key}}}
+\DoxyCodeLine{00529\ \{}
+\DoxyCodeLine{00530\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__device__key_a00b0407ef2aa5e814fd651e84587587e}{ktree}}[\mbox{\hyperlink{satp_8h_a21645295558e27eed64fc61b87116747}{SATP\_DKEY\_SIZE}}\ *\ \mbox{\hyperlink{satp_8h_a7f8c8dfaa8d1d7099820c1ccef5b2672}{SATP\_KEY\_TREE\_COUNT}}];\ \ \ }
+\DoxyCodeLine{00531\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__device__key_a6aa11b3be71a2d41b2c6249aeeb8e931}{kid}}[\mbox{\hyperlink{satp_8h_a92dfd14570beaf5e896495405760777b}{SATP\_KID\_SIZE}}];\ \ }
+\DoxyCodeLine{00532\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__device__key_a8d08b7e206abb85c29ad5256a84a2b42}{stc}}[\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\_SKEY\_SIZE}}];\ }
+\DoxyCodeLine{00533\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__device__key_a6d579765908169e6fcb1bdc8f105132d}{expiration}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00534\ \ \ \ \ uint8\_t*\ \mbox{\hyperlink{structsatp__device__key_add9f33b267f2e3694198763fc633feff}{spass}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00535\ \}\ \mbox{\hyperlink{structsatp__device__key}{satp\_device\_key}};}
+\DoxyCodeLine{00536\ }
+\DoxyCodeLine{00543\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__master__key}{satp\_master\_key}}}
+\DoxyCodeLine{00544\ \{}
+\DoxyCodeLine{00545\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__master__key_a1bd713b1d27604605af8f317dd34e029}{mdk}}[\mbox{\hyperlink{satp_8h_a8ff169084319c479c3a8e01addeb3098}{SATP\_MKEY\_SIZE}}];\ \ \ \ }
+\DoxyCodeLine{00546\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__master__key_ab5438540d3582bc07649a11bcdf57300}{mid}}[\mbox{\hyperlink{satp_8h_afad2aa0a7009769010e4fbd5b3229ae2}{SATP\_MID\_SIZE}}];\ \ }
+\DoxyCodeLine{00547\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__master__key_a6d579765908169e6fcb1bdc8f105132d}{expiration}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00548\ \}\ \mbox{\hyperlink{structsatp__master__key}{satp\_master\_key}};}
+\DoxyCodeLine{00549\ }
+\DoxyCodeLine{00556\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__server__key}{satp\_server\_key}}}
+\DoxyCodeLine{00557\ \{}
+\DoxyCodeLine{00558\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__server__key_aac9f69b45b27e37b04081c3bce03c1e9}{sdk}}[\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\_SKEY\_SIZE}}];\ }
+\DoxyCodeLine{00559\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__server__key_a91017fe21ff65720f2ce0f806220179f}{sid}}[\mbox{\hyperlink{satp_8h_a16b831ff71e2d15a824a890f542e24f0}{SATP\_SID\_SIZE}}];\ \ }
+\DoxyCodeLine{00560\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__server__key_a8d08b7e206abb85c29ad5256a84a2b42}{stc}}[\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\_SKEY\_SIZE}}];\ }
+\DoxyCodeLine{00561\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__server__key_a6d579765908169e6fcb1bdc8f105132d}{expiration}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00562\ \}\ \mbox{\hyperlink{structsatp__server__key}{satp\_server\_key}};}
+\DoxyCodeLine{00563\ }
+\DoxyCodeLine{00570\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structqsmp__keep__alive__state}{qsmp\_keep\_alive\_state}}}
+\DoxyCodeLine{00571\ \{}
+\DoxyCodeLine{00572\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structqsmp__keep__alive__state_af9c9d33a13c7df6c73f89251087a823b}{etime}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00573\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structqsmp__keep__alive__state_a66dfa775bb1a394931daa9db9c9770c1}{seqctr}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00574\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{structqsmp__keep__alive__state_a25991bf44108e2f9d21a6eb1d92e377e}{recd}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00575\ \}\ satp\_keep\_alive\_state;}
+\DoxyCodeLine{00576\ }
+\DoxyCodeLine{00583\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}}
+\DoxyCodeLine{00584\ \{}
+\DoxyCodeLine{00585\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{structsatp__network__packet_aff31312fb16705aa73c53b945a1a6b30}{flag}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00586\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structsatp__network__packet_a907c53abb8da7fb88a7681171ffb51cd}{msglen}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00587\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__network__packet_acb520b7f5d67b3209787f3edb26d34fe}{sequence}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00588\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__network__packet_aa9e6c59abfe8b07a96afb6594e90dcb1}{utctime}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00589\ \ \ \ \ uint8\_t*\ \mbox{\hyperlink{structsatp__network__packet_a2a5694ff039cef244c87e65f549e2f98}{pmessage}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00590\ \}\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}};}
+\DoxyCodeLine{00591\ }
+\DoxyCodeLine{00599\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a9b7fb21d98c6ca889a0053a2fb8e685c}{satp\_connection\_close}}(\mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns,\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ err,\ \textcolor{keywordtype}{bool}\ notify);}
+\DoxyCodeLine{00600\ }
+\DoxyCodeLine{00606\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a730dc6b96a4fc8b9880552f02e74e1a6}{satp\_connection\_dispose}}(\mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns);}
+\DoxyCodeLine{00607\ }
+\DoxyCodeLine{00616\ SATP\_EXPORT\_API\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ \mbox{\hyperlink{satp_8h_aadf6227ad6889be02b6321c23ed822f8}{satp\_decrypt\_error\_message}}(\mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns,\ uint8\_t*\ message);}
+\DoxyCodeLine{00617\ }
+\DoxyCodeLine{00632\ SATP\_EXPORT\_API\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ \mbox{\hyperlink{satp_8h_a99fbb5fb645a8da4665f1c7b3a8a2075}{satp\_decrypt\_packet}}(\mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packetin,\ uint8\_t*\ message,\ \textcolor{keywordtype}{size\_t}*\ msglen);}
+\DoxyCodeLine{00633\ }
+\DoxyCodeLine{00649\ SATP\_EXPORT\_API\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ \mbox{\hyperlink{satp_8h_a0c056dd561cc1e3d59136fbf934dac12}{satp\_encrypt\_packet}}(\mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns,\ \textcolor{keyword}{const}\ uint8\_t*\ message,\ \textcolor{keywordtype}{size\_t}\ msglen,\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packetout);}
+\DoxyCodeLine{00650\ }
+\DoxyCodeLine{00658\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a1c4bab130e2a50f12a332e78c31dba37}{satp\_deserialize\_device\_key}}(\mbox{\hyperlink{structsatp__device__key}{satp\_device\_key}}*\ dkey,\ \textcolor{keyword}{const}\ uint8\_t*\ input);}
+\DoxyCodeLine{00659\ }
+\DoxyCodeLine{00667\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a48d598ef3325f5fbe95a3ed88a017088}{satp\_serialize\_device\_key}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__device__key}{satp\_device\_key}}*\ dkey);}
+\DoxyCodeLine{00668\ }
+\DoxyCodeLine{00677\ SATP\_EXPORT\_API\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{satp_8h_aee061dfbc12a598fb47393ee37288be5}{satp\_error\_to\_string}}(\mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ error);}
+\DoxyCodeLine{00678\ }
+\DoxyCodeLine{00687\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{satp_8h_aaa2e0f35cac6e54840a8796077096bc0}{satp\_extract\_device\_key}}(uint8\_t*\ dk,\ \textcolor{keyword}{const}\ uint8\_t*\ sk,\ \textcolor{keyword}{const}\ uint8\_t*\ kid);}
+\DoxyCodeLine{00688\ }
+\DoxyCodeLine{00695\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a3a799bd9ea26e386e6fead4a6b43ca64}{satp\_packet\_error\_message}}(\mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet,\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ error);}
+\DoxyCodeLine{00696\ }
+\DoxyCodeLine{00704\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_ab1c0af0699f00c99b2922c5a0de00ccf}{satp\_deserialize\_master\_key}}(\mbox{\hyperlink{structsatp__master__key}{satp\_master\_key}}*\ mkey,\ \textcolor{keyword}{const}\ uint8\_t*\ input);}
+\DoxyCodeLine{00705\ }
+\DoxyCodeLine{00713\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_ae99fd2e7baae45f495dc6233320362cf}{satp\_serialize\_master\_key}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__master__key}{satp\_master\_key}}*\ mkey);}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00722\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a7998cf2a551b7c4fcf6fbdfcf9ba6ec9}{satp\_deserialize\_server\_key}}(\mbox{\hyperlink{structsatp__server__key}{satp\_server\_key}}*\ skey,\ \textcolor{keyword}{const}\ uint8\_t*\ input);}
+\DoxyCodeLine{00723\ }
+\DoxyCodeLine{00731\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a47a1c8f31535ac24db7aa5aa6baf9817}{satp\_serialize\_server\_key}}(uint8\_t*\ output,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__server__key}{satp\_server\_key}}*\ skey);}
+\DoxyCodeLine{00732\ }
+\DoxyCodeLine{00739\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a0cc1070b8e5286a63d637aa24bf1850c}{satp\_increment\_device\_key}}(uint8\_t*\ sdkey);}
+\DoxyCodeLine{00740\ }
+\DoxyCodeLine{00752\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{satp_8h_a281a41da487bc334fab7819ee9c02945}{satp\_generate\_master\_key}}(\mbox{\hyperlink{structsatp__master__key}{satp\_master\_key}}*\ mkey,\ \textcolor{keyword}{const}\ uint8\_t*\ mid);}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00765\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{satp_8h_a59c530e1cf72b42b6f52771d9afecb15}{satp\_generate\_server\_key}}(\mbox{\hyperlink{structsatp__server__key}{satp\_server\_key}}*\ skey,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__master__key}{satp\_master\_key}}*\ mkey,\ \textcolor{keyword}{const}\ uint8\_t*\ sid);}
+\DoxyCodeLine{00766\ }
+\DoxyCodeLine{00776\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a77c0d2627e573b0ab6392e020f2827fc}{satp\_generate\_device\_key}}(\mbox{\hyperlink{structsatp__device__key}{satp\_device\_key}}*\ dkey,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__server__key}{satp\_server\_key}}*\ skey,\ \textcolor{keyword}{const}\ uint8\_t*\ did);}
+\DoxyCodeLine{00777\ }
+\DoxyCodeLine{00784\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a1f46c173b5fb7d35837a70403572a407}{satp\_packet\_clear}}(\mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet);}
+\DoxyCodeLine{00785\ }
+\DoxyCodeLine{00794\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_acf0a09fd626ef1c139b89f0c1f3ba025}{satp\_packet\_header\_create}}(\mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packetout,\ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\_flags}}\ flag,\ uint64\_t\ sequence,\ uint32\_t\ msglen);}
+\DoxyCodeLine{00795\ }
+\DoxyCodeLine{00803\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a9e349323de91e572ec561f0178e65c80}{satp\_packet\_header\_deserialize}}(\textcolor{keyword}{const}\ uint8\_t*\ header,\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet);}
+\DoxyCodeLine{00804\ }
+\DoxyCodeLine{00812\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a4a2e702a3fc5f396d04d3e6154a99e7b}{satp\_packet\_header\_serialize}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet,\ uint8\_t*\ header);}
+\DoxyCodeLine{00813\ }
+\DoxyCodeLine{00824\ SATP\_EXPORT\_API\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ \mbox{\hyperlink{satp_8h_a0b08296d5bd696384523cdf09a228b6b}{satp\_packet\_header\_validate}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packetin,\ \mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\_flags}}\ pktflag,\ uint64\_t\ sequence,\ uint32\_t\ msglen);}
+\DoxyCodeLine{00825\ }
+\DoxyCodeLine{00832\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_affba3463edb0696a2478b3c488292cae}{satp\_packet\_set\_utc\_time}}(\mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet);}
+\DoxyCodeLine{00833\ }
+\DoxyCodeLine{00843\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{satp_8h_a2d7472a57310d89dea3fe523071cf3cc}{satp\_packet\_time\_valid}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet);}
+\DoxyCodeLine{00844\ }
+\DoxyCodeLine{00854\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{satp_8h_a397497c605ec6309d2bf676596037f40}{satp\_packet\_to\_stream}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet,\ uint8\_t*\ pstream);}
+\DoxyCodeLine{00855\ }
+\DoxyCodeLine{00863\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a1bd090965292a0a9e373b26751a9bbe2}{satp\_send\_network\_error}}(\textcolor{keyword}{const}\ qsc\_socket*\ sock,\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ error);}
+\DoxyCodeLine{00864\ }
+\DoxyCodeLine{00872\ SATP\_EXPORT\_API\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{satp_8h_a87ff5101cfbe562d11ae3acab708d638}{satp\_stream\_to\_packet}}(\textcolor{keyword}{const}\ uint8\_t*\ pstream,\ \mbox{\hyperlink{structsatp__network__packet}{satp\_network\_packet}}*\ packet);}
+\DoxyCodeLine{00873\ }
+\DoxyCodeLine{00874\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

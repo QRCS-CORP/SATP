@@ -1,0 +1,77 @@
+\doxysection{satp\+\_\+kex\+\_\+server\+\_\+state Struct Reference}
+\hypertarget{structsatp__kex__server__state}{}\label{structsatp__kex__server__state}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+
+
+The SATP server state structure.  
+
+
+
+
+{\ttfamily \#include $<$kex.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__server__state_adc87a285cc4afd6d2202334666960f9a}{hc}} \mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__server__state_aac9f69b45b27e37b04081c3bce03c1e9}{sdk}} \mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__server__state_a91017fe21ff65720f2ce0f806220179f}{sid}} \mbox{[}\mbox{\hyperlink{satp_8h_a16b831ff71e2d15a824a890f542e24f0}{SATP\+\_\+\+SID\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__server__state_aa2f6b0d54217666d9653b819cccfbc4c}{sp}} \mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__kex__server__state_ae692475230e282e6df51006ca56e281d}{stc}} \mbox{[}\mbox{\hyperlink{satp_8h_abd6e04bbc39dffe4395782d752919e40}{SATP\+\_\+\+SALT\+\_\+\+SIZE}}\mbox{]}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__kex__server__state_a6d579765908169e6fcb1bdc8f105132d}{expiration}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP server state structure. 
+
+This structure maintains the state of an SATP server connection during the key exchange and secure communication session. It includes the cipher states for both the receive and transmit channels, identity and session hashes, as well as the server derivation key. The structure also holds expiration information and packet sequence numbers for both receiving and transmitting messages. The {\ttfamily exflag} field indicates the current position within the key exchange process. 
+
+\label{doc-variable-members}
+\Hypertarget{structsatp__kex__server__state_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structsatp__kex__server__state_a6d579765908169e6fcb1bdc8f105132d}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}!expiration@{expiration}}
+\index{expiration@{expiration}!satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+\doxysubsubsection{\texorpdfstring{expiration}{expiration}}
+{\footnotesize\ttfamily \label{structsatp__kex__server__state_a6d579765908169e6fcb1bdc8f105132d} 
+uint64\+\_\+t expiration}
+
+The expiration time in seconds from epoch \Hypertarget{structsatp__kex__server__state_adc87a285cc4afd6d2202334666960f9a}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}!hc@{hc}}
+\index{hc@{hc}!satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+\doxysubsubsection{\texorpdfstring{hc}{hc}}
+{\footnotesize\ttfamily \label{structsatp__kex__server__state_adc87a285cc4afd6d2202334666960f9a} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t hc\mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}}
+
+The device session hash \Hypertarget{structsatp__kex__server__state_aac9f69b45b27e37b04081c3bce03c1e9}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}!sdk@{sdk}}
+\index{sdk@{sdk}!satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+\doxysubsubsection{\texorpdfstring{sdk}{sdk}}
+{\footnotesize\ttfamily \label{structsatp__kex__server__state_aac9f69b45b27e37b04081c3bce03c1e9} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t sdk\mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}}
+
+The server derivation key \Hypertarget{structsatp__kex__server__state_a91017fe21ff65720f2ce0f806220179f}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}!sid@{sid}}
+\index{sid@{sid}!satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+\doxysubsubsection{\texorpdfstring{sid}{sid}}
+{\footnotesize\ttfamily \label{structsatp__kex__server__state_a91017fe21ff65720f2ce0f806220179f} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t sid\mbox{[}\mbox{\hyperlink{satp_8h_a16b831ff71e2d15a824a890f542e24f0}{SATP\+\_\+\+SID\+\_\+\+SIZE}}\mbox{]}}
+
+The server identity string \Hypertarget{structsatp__kex__server__state_aa2f6b0d54217666d9653b819cccfbc4c}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}!sp@{sp}}
+\index{sp@{sp}!satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+\doxysubsubsection{\texorpdfstring{sp}{sp}}
+{\footnotesize\ttfamily \label{structsatp__kex__server__state_aa2f6b0d54217666d9653b819cccfbc4c} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t sp\mbox{[}\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\+\_\+\+HASH\+\_\+\+SIZE}}\mbox{]}}
+
+The passphrase token hash \Hypertarget{structsatp__kex__server__state_ae692475230e282e6df51006ca56e281d}\index{satp\_kex\_server\_state@{satp\_kex\_server\_state}!stc@{stc}}
+\index{stc@{stc}!satp\_kex\_server\_state@{satp\_kex\_server\_state}}
+\doxysubsubsection{\texorpdfstring{stc}{stc}}
+{\footnotesize\ttfamily \label{structsatp__kex__server__state_ae692475230e282e6df51006ca56e281d} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t stc\mbox{[}\mbox{\hyperlink{satp_8h_abd6e04bbc39dffe4395782d752919e40}{SATP\+\_\+\+SALT\+\_\+\+SIZE}}\mbox{]}}
+
+The server session salt 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/kex.\+h\end{DoxyCompactItemize}

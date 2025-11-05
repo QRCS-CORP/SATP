@@ -1,0 +1,132 @@
+\doxysection{C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/client.h File Reference}
+\hypertarget{client_8h}{}\label{client_8h}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/client.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/client.h}}
+
+
+The SATP client.  
+
+
+{\ttfamily \#include "{}satpcommon.\+h"{}}\newline
+{\ttfamily \#include "{}satp.\+h"{}}\newline
+{\ttfamily \#include "{}socketclient.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{client_8h_ae64b4f5191521ff775757f69ca5b19d7}{satp\+\_\+client\+\_\+send\+\_\+error}} (const qsc\+\_\+socket \texorpdfstring{$\ast$}{*}sock, \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} error)
+\begin{DoxyCompactList}\small\item\em Send an error code to the remote host. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} \mbox{\hyperlink{client_8h_a925a8c49a96bd40728a07f8a7811b1a7}{satp\+\_\+client\+\_\+connect\+\_\+ipv4}} (\mbox{\hyperlink{structsatp__device__key}{satp\+\_\+device\+\_\+key}} \texorpdfstring{$\ast$}{*}ckey, const qsc\+\_\+ipinfo\+\_\+ipv4\+\_\+address \texorpdfstring{$\ast$}{*}address, uint16\+\_\+t port, void(\texorpdfstring{$\ast$}{*}send\+\_\+func)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), void(\texorpdfstring{$\ast$}{*}receive\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Establish an IPv4 connection and perform the SATP key exchange. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} \mbox{\hyperlink{client_8h_a20ec5a783f72e90b6e84996b5758c252}{satp\+\_\+client\+\_\+connect\+\_\+ipv6}} (\mbox{\hyperlink{structsatp__device__key}{satp\+\_\+device\+\_\+key}} \texorpdfstring{$\ast$}{*}ckey, const qsc\+\_\+ipinfo\+\_\+ipv6\+\_\+address \texorpdfstring{$\ast$}{*}address, uint16\+\_\+t port, void(\texorpdfstring{$\ast$}{*}send\+\_\+func)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), void(\texorpdfstring{$\ast$}{*}receive\+\_\+callback)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t))
+\begin{DoxyCompactList}\small\item\em Establish an IPv6 connection and perform the SATP key exchange. \end{DoxyCompactList}\item 
+SATP\+\_\+\+EXPORT\+\_\+\+API void \mbox{\hyperlink{client_8h_ad912e10f05eefbcf9cf6ea0af5906a87}{satp\+\_\+client\+\_\+connection\+\_\+close}} (\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}cns, \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} error)
+\begin{DoxyCompactList}\small\item\em Close the remote session and dispose of client resources. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP client. 
+
+This header defines the client-\/side functions and state structures for the Symmetric Key Distribution Protocol (SATP). The SATP client is responsible for initiating secure key exchange sessions with an SATP server, managing encryption and decryption of messages, and handling key ratcheting to provide forward secrecy. It supports network connections over both IPv4 and IPv6.
+
+The key exchange process in SATP involves several stages, including connection, exchange, establish, and ratchet operations. In each phase, ephemeral keys are derived from pre-\/shared keys so that even if a device\textquotesingle{}s embedded key is compromised, past communications remain secure.
+
+\begin{DoxyNote}{Note}
+All functions and structures defined in this header are part of the internal client implementation. 
+\end{DoxyNote}
+
+
+\label{doc-func-members}
+\Hypertarget{client_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{client_8h_a925a8c49a96bd40728a07f8a7811b1a7}\index{client.h@{client.h}!satp\_client\_connect\_ipv4@{satp\_client\_connect\_ipv4}}
+\index{satp\_client\_connect\_ipv4@{satp\_client\_connect\_ipv4}!client.h@{client.h}}
+\doxysubsubsection{\texorpdfstring{satp\_client\_connect\_ipv4()}{satp\_client\_connect\_ipv4()}}
+{\footnotesize\ttfamily \label{client_8h_a925a8c49a96bd40728a07f8a7811b1a7} 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} satp\+\_\+client\+\_\+connect\+\_\+ipv4 (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsatp__device__key}{satp\+\_\+device\+\_\+key}} \texorpdfstring{$\ast$}{*}}]{ckey}{, }\item[{const qsc\+\_\+ipinfo\+\_\+ipv4\+\_\+address \texorpdfstring{$\ast$}{*}}]{address}{, }\item[{uint16\+\_\+t}]{port}{, }\item[{void(\texorpdfstring{$\ast$}{*}}]{send\+\_\+func~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), }\item[{void(\texorpdfstring{$\ast$}{*}}]{receive\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}\end{DoxyParamCaption})}
+
+
+
+Establish an IPv4 connection and perform the SATP key exchange. 
+
+This function connects to an SATP server over IPv4 and performs the key exchange protocol. It updates the client state with session parameters including cipher states and sequence numbers, and returns the connected socket via the provided socket pointer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ckey} & A pointer to the key state structure. \\
+\hline
+{\em address} & A pointer to the server\textquotesingle{}s IPv4 network address. \\
+\hline
+{\em port} & The server\textquotesingle{}s port number. \\
+\hline
+{\em send\+\_\+func} & A pointer to the send callback function responsible for transmitting messages. \\
+\hline
+{\em receive\+\_\+callback} & A pointer to the receive callback function used to process incoming data.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a value of type {\ttfamily \doxylink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} indicating the success or failure of the connection and key exchange process. 
+\end{DoxyReturn}
+\Hypertarget{client_8h_a20ec5a783f72e90b6e84996b5758c252}\index{client.h@{client.h}!satp\_client\_connect\_ipv6@{satp\_client\_connect\_ipv6}}
+\index{satp\_client\_connect\_ipv6@{satp\_client\_connect\_ipv6}!client.h@{client.h}}
+\doxysubsubsection{\texorpdfstring{satp\_client\_connect\_ipv6()}{satp\_client\_connect\_ipv6()}}
+{\footnotesize\ttfamily \label{client_8h_a20ec5a783f72e90b6e84996b5758c252} 
+SATP\+\_\+\+EXPORT\+\_\+\+API \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} satp\+\_\+client\+\_\+connect\+\_\+ipv6 (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsatp__device__key}{satp\+\_\+device\+\_\+key}} \texorpdfstring{$\ast$}{*}}]{ckey}{, }\item[{const qsc\+\_\+ipinfo\+\_\+ipv6\+\_\+address \texorpdfstring{$\ast$}{*}}]{address}{, }\item[{uint16\+\_\+t}]{port}{, }\item[{void(\texorpdfstring{$\ast$}{*}}]{send\+\_\+func~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}), }\item[{void(\texorpdfstring{$\ast$}{*}}]{receive\+\_\+callback~}{)(\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}, const uint8\+\_\+t \texorpdfstring{$\ast$}{*}, size\+\_\+t)}\end{DoxyParamCaption})}
+
+
+
+Establish an IPv6 connection and perform the SATP key exchange. 
+
+This function connects to an SATP server over IPv4 and performs the key exchange protocol. It updates the client state with session parameters including cipher states and sequence numbers, and returns the connected socket via the provided socket pointer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ckey} & A pointer to the key state structure. \\
+\hline
+{\em address} & A pointer to the server\textquotesingle{}s IPv6 network address. \\
+\hline
+{\em port} & The server\textquotesingle{}s port number. \\
+\hline
+{\em send\+\_\+func} & A pointer to the send callback function responsible for transmitting messages. \\
+\hline
+{\em receive\+\_\+callback} & A pointer to the receive callback function used to process incoming data.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a value of type {\ttfamily \doxylink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}} indicating the success or failure of the connection and key exchange process. 
+\end{DoxyReturn}
+\Hypertarget{client_8h_ad912e10f05eefbcf9cf6ea0af5906a87}\index{client.h@{client.h}!satp\_client\_connection\_close@{satp\_client\_connection\_close}}
+\index{satp\_client\_connection\_close@{satp\_client\_connection\_close}!client.h@{client.h}}
+\doxysubsubsection{\texorpdfstring{satp\_client\_connection\_close()}{satp\_client\_connection\_close()}}
+{\footnotesize\ttfamily \label{client_8h_ad912e10f05eefbcf9cf6ea0af5906a87} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+client\+\_\+connection\+\_\+close (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*}}]{cns}{, }\item[{\mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}}}]{error}{}\end{DoxyParamCaption})}
+
+
+
+Close the remote session and dispose of client resources. 
+
+This function closes the SATP client session by sending an error notification (if necessary) to the remote host, and then disposing of the client state and releasing the associated socket resources.
+
+
+\begin{DoxyParams}{Parameters}
+{\em cns} & A pointer to the connection state structure. \\
+\hline
+{\em error} & The SATP error code indicating the reason for closing the session. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{client_8h_ae64b4f5191521ff775757f69ca5b19d7}\index{client.h@{client.h}!satp\_client\_send\_error@{satp\_client\_send\_error}}
+\index{satp\_client\_send\_error@{satp\_client\_send\_error}!client.h@{client.h}}
+\doxysubsubsection{\texorpdfstring{satp\_client\_send\_error()}{satp\_client\_send\_error()}}
+{\footnotesize\ttfamily \label{client_8h_ae64b4f5191521ff775757f69ca5b19d7} 
+SATP\+\_\+\+EXPORT\+\_\+\+API void satp\+\_\+client\+\_\+send\+\_\+error (\begin{DoxyParamCaption}\item[{const qsc\+\_\+socket \texorpdfstring{$\ast$}{*}}]{sock}{, }\item[{\mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\+\_\+errors}}}]{error}{}\end{DoxyParamCaption})}
+
+
+
+Send an error code to the remote host. 
+
+This function transmits an SATP error code over the specified socket, thereby informing the remote host of an error condition encountered during communication.
+
+
+\begin{DoxyParams}{Parameters}
+{\em sock} & A pointer to the initialized socket structure. \\
+\hline
+{\em error} & The SATP error code to be sent. \\
+\hline
+\end{DoxyParams}

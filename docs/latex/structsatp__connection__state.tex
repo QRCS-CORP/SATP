@@ -1,0 +1,91 @@
+\doxysection{satp\+\_\+connection\+\_\+state Struct Reference}
+\hypertarget{structsatp__connection__state}{}\label{structsatp__connection__state}\index{satp\_connection\_state@{satp\_connection\_state}}
+
+
+The SATP socket connection state structure.  
+
+
+
+
+{\ttfamily \#include $<$satp.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+qsc\+\_\+socket \mbox{\hyperlink{structsatp__connection__state_ae6865db404fdc42e72fdb48510d5a558}{target}}
+\item 
+qsc\+\_\+rcs\+\_\+state \mbox{\hyperlink{structsatp__connection__state_aec1bc59ca91d898f673d2ca825c02853}{rxcpr}}
+\item 
+qsc\+\_\+rcs\+\_\+state \mbox{\hyperlink{structsatp__connection__state_a9016aef42a7046d75b7d0d01f1f5cddb}{txcpr}}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__connection__state_a9bc7a133c2f47895567d675d3679e15a}{rxseq}}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__connection__state_a1b9dac0a156c3747fc39192a04f01aa0}{txseq}}
+\item 
+uint32\+\_\+t \mbox{\hyperlink{structsatp__connection__state_acb6c79f809882b2d62ccaab26ab8d945}{cid}}
+\item 
+\mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\+\_\+flags}} \mbox{\hyperlink{structsatp__connection__state_af43c00a009a652fcfd1b7feb9acab4b2}{exflag}}
+\item 
+bool \mbox{\hyperlink{structsatp__connection__state_a5bcb0abef75bec8baadc9cf3c1eaf19d}{receiver}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP socket connection state structure. 
+
+\label{doc-variable-members}
+\Hypertarget{structsatp__connection__state_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structsatp__connection__state_acb6c79f809882b2d62ccaab26ab8d945}\index{satp\_connection\_state@{satp\_connection\_state}!cid@{cid}}
+\index{cid@{cid}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{cid}{cid}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_acb6c79f809882b2d62ccaab26ab8d945} 
+uint32\+\_\+t cid}
+
+The connections instance count \Hypertarget{structsatp__connection__state_af43c00a009a652fcfd1b7feb9acab4b2}\index{satp\_connection\_state@{satp\_connection\_state}!exflag@{exflag}}
+\index{exflag@{exflag}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{exflag}{exflag}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_af43c00a009a652fcfd1b7feb9acab4b2} 
+\mbox{\hyperlink{satp_8h_ad066a34f2d7493aac88b3d386f0bbd4e}{satp\+\_\+flags}} exflag}
+
+The KEX position flag \Hypertarget{structsatp__connection__state_a5bcb0abef75bec8baadc9cf3c1eaf19d}\index{satp\_connection\_state@{satp\_connection\_state}!receiver@{receiver}}
+\index{receiver@{receiver}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{receiver}{receiver}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_a5bcb0abef75bec8baadc9cf3c1eaf19d} 
+bool receiver}
+
+The instance was initialized in listener mode \Hypertarget{structsatp__connection__state_aec1bc59ca91d898f673d2ca825c02853}\index{satp\_connection\_state@{satp\_connection\_state}!rxcpr@{rxcpr}}
+\index{rxcpr@{rxcpr}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{rxcpr}{rxcpr}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_aec1bc59ca91d898f673d2ca825c02853} 
+qsc\+\_\+rcs\+\_\+state rxcpr}
+
+The receive channel cipher state \Hypertarget{structsatp__connection__state_a9bc7a133c2f47895567d675d3679e15a}\index{satp\_connection\_state@{satp\_connection\_state}!rxseq@{rxseq}}
+\index{rxseq@{rxseq}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{rxseq}{rxseq}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_a9bc7a133c2f47895567d675d3679e15a} 
+uint64\+\_\+t rxseq}
+
+The receive channels packet sequence number \Hypertarget{structsatp__connection__state_ae6865db404fdc42e72fdb48510d5a558}\index{satp\_connection\_state@{satp\_connection\_state}!target@{target}}
+\index{target@{target}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{target}{target}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_ae6865db404fdc42e72fdb48510d5a558} 
+qsc\+\_\+socket target}
+
+The target socket structure \Hypertarget{structsatp__connection__state_a9016aef42a7046d75b7d0d01f1f5cddb}\index{satp\_connection\_state@{satp\_connection\_state}!txcpr@{txcpr}}
+\index{txcpr@{txcpr}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{txcpr}{txcpr}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_a9016aef42a7046d75b7d0d01f1f5cddb} 
+qsc\+\_\+rcs\+\_\+state txcpr}
+
+The transmit channel cipher state \Hypertarget{structsatp__connection__state_a1b9dac0a156c3747fc39192a04f01aa0}\index{satp\_connection\_state@{satp\_connection\_state}!txseq@{txseq}}
+\index{txseq@{txseq}!satp\_connection\_state@{satp\_connection\_state}}
+\doxysubsubsection{\texorpdfstring{txseq}{txseq}}
+{\footnotesize\ttfamily \label{structsatp__connection__state_a1b9dac0a156c3747fc39192a04f01aa0} 
+uint64\+\_\+t txseq}
+
+The transmit channels packet sequence number 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/\mbox{\hyperlink{satp_8h}{satp.\+h}}\end{DoxyCompactItemize}

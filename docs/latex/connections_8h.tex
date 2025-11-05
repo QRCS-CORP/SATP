@@ -1,0 +1,275 @@
+\doxysection{C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/connections.h File Reference}
+\hypertarget{connections_8h}{}\label{connections_8h}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/connections.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/connections.h}}
+
+
+The server connection collection.  
+
+
+{\ttfamily \#include "{}satp.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{connections_8h_ad12249b9062ad578408eb09a350c7a57}{satp\+\_\+connections\+\_\+active}} (size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Determine if a connection state at the specified index is active. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{connections_8h_a93c89c960900d109df536a7469ed2c5a}{satp\+\_\+connections\+\_\+add}} (void)
+\begin{DoxyCompactList}\small\item\em Add a new connection state to the collection and mark it as active. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{connections_8h_a1c7877bfc51daa7f6e69a80eb7edf0e4}{satp\+\_\+connections\+\_\+available}} (void)
+\begin{DoxyCompactList}\small\item\em Get the number of available (inactive) connection states in the collection. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{connections_8h_a6643f1fdf427e38cb4f279e0da4faf90}{satp\+\_\+connections\+\_\+get}} (uint32\+\_\+t instance)
+\begin{DoxyCompactList}\small\item\em Retrieve a connection state by its unique instance number. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{connections_8h_af0bf0c306861cd02a1980b3dcdf3c9f8}{satp\+\_\+connections\+\_\+initialize}} (size\+\_\+t count, size\+\_\+t maximum)
+\begin{DoxyCompactList}\small\item\em Initialize the SATP connections collection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{connections_8h_a58bbb1cf15df05a812602e829f3e7938}{satp\+\_\+connections\+\_\+clear}} (void)
+\begin{DoxyCompactList}\small\item\em Clear all connection states in the collection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{connections_8h_a2336e64524e876849960195f3ba55bb9}{satp\+\_\+connections\+\_\+dispose}} (void)
+\begin{DoxyCompactList}\small\item\em Dispose of the SATP connections collection. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{connections_8h_aadbefb714b24b5667875540d704c853c}{satp\+\_\+connections\+\_\+index}} (size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em Retrieve a connection state pointer by its collection index. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{connections_8h_ac394cddcfe7fa4973b5d9bd4f640e797}{satp\+\_\+connections\+\_\+full}} (void)
+\begin{DoxyCompactList}\small\item\em Check if the connections collection is full. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{connections_8h_a8d2da1302a02fe5ff3b8fecc6985b5e1}{satp\+\_\+connections\+\_\+next}} (void)
+\begin{DoxyCompactList}\small\item\em Retrieve the next available (inactive) connection state from the collection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{connections_8h_a8ca97c73ce0072d6842c9f155c8fd733}{satp\+\_\+connections\+\_\+reset}} (uint32\+\_\+t instance)
+\begin{DoxyCompactList}\small\item\em Reset a specific connection state in the collection. \end{DoxyCompactList}\item 
+size\+\_\+t \mbox{\hyperlink{connections_8h_a51bf618d6ca0ed427b9fa7d455b854b1}{satp\+\_\+connections\+\_\+size}} (void)
+\begin{DoxyCompactList}\small\item\em Get the total number of connection state items in the collection. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{connections_8h_a51bc6c5ed3e51c75699a85b7cc8cbaf8}{satp\+\_\+connections\+\_\+self\+\_\+test}} (void)
+\begin{DoxyCompactList}\small\item\em Run the self-\/test routine for the connections collection. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The server connection collection. 
+
+This header file defines internal functions for managing the collection of connection state objects used by the SATP server. The connections collection maintains an array of connection states (of type {\ttfamily \doxylink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}}), each representing an active or available socket connection. The functions declared herein allow for\+:
+
+
+\begin{DoxyItemize}
+\item Checking the active status of a connection slot.
+\item Adding new connection states to the collection.
+\item Retrieving connection states by instance or index.
+\item Initializing and disposing of the connections collection.
+\item Resetting and clearing connection states.
+\item Determining the capacity and availability of the collection.
+\item Running self-\/tests to ensure the collection operates correctly.
+\end{DoxyItemize}
+
+\begin{DoxyNote}{Note}
+These functions are internal and non-\/exportable. 
+\end{DoxyNote}
+
+
+\label{doc-func-members}
+\Hypertarget{connections_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{connections_8h_ad12249b9062ad578408eb09a350c7a57}\index{connections.h@{connections.h}!satp\_connections\_active@{satp\_connections\_active}}
+\index{satp\_connections\_active@{satp\_connections\_active}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_active()}{satp\_connections\_active()}}
+{\footnotesize\ttfamily \label{connections_8h_ad12249b9062ad578408eb09a350c7a57} 
+bool satp\+\_\+connections\+\_\+active (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{index}{}\end{DoxyParamCaption})}
+
+
+
+Determine if a connection state at the specified index is active. 
+
+This function checks whether the connection state at the provided index in the connections collection is currently marked as active. This is useful for verifying if a connection slot is in use.
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The index number of the connection slot in the collection.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns true if the connection at the specified index is active; otherwise, false. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_a93c89c960900d109df536a7469ed2c5a}\index{connections.h@{connections.h}!satp\_connections\_add@{satp\_connections\_add}}
+\index{satp\_connections\_add@{satp\_connections\_add}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_add()}{satp\_connections\_add()}}
+{\footnotesize\ttfamily \label{connections_8h_a93c89c960900d109df536a7469ed2c5a} 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} satp\+\_\+connections\+\_\+add (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Add a new connection state to the collection and mark it as active. 
+
+This function creates a new connection state, adds it to the SATP connections collection, and sets its status to active. If the collection has reached its maximum capacity or if the allocation fails, the function returns NULL.
+
+\begin{DoxyReturn}{Returns}
+A pointer to the newly added connection state, or NULL on failure. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_a1c7877bfc51daa7f6e69a80eb7edf0e4}\index{connections.h@{connections.h}!satp\_connections\_available@{satp\_connections\_available}}
+\index{satp\_connections\_available@{satp\_connections\_available}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_available()}{satp\_connections\_available()}}
+{\footnotesize\ttfamily \label{connections_8h_a1c7877bfc51daa7f6e69a80eb7edf0e4} 
+size\+\_\+t satp\+\_\+connections\+\_\+available (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Get the number of available (inactive) connection states in the collection. 
+
+This function returns the count of connection slots in the collection that are currently available (i.\+e., not active). This number indicates how many additional connections can be accommodated.
+
+\begin{DoxyReturn}{Returns}
+The number of available connection state items. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_a58bbb1cf15df05a812602e829f3e7938}\index{connections.h@{connections.h}!satp\_connections\_clear@{satp\_connections\_clear}}
+\index{satp\_connections\_clear@{satp\_connections\_clear}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_clear()}{satp\_connections\_clear()}}
+{\footnotesize\ttfamily \label{connections_8h_a58bbb1cf15df05a812602e829f3e7938} 
+void satp\+\_\+connections\+\_\+clear (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Clear all connection states in the collection. 
+
+This function resets or erases all entries in the connections collection, marking each as inactive. This operation prepares the collection for new connection assignments without disposing of the collection itself. \Hypertarget{connections_8h_a2336e64524e876849960195f3ba55bb9}\index{connections.h@{connections.h}!satp\_connections\_dispose@{satp\_connections\_dispose}}
+\index{satp\_connections\_dispose@{satp\_connections\_dispose}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_dispose()}{satp\_connections\_dispose()}}
+{\footnotesize\ttfamily \label{connections_8h_a2336e64524e876849960195f3ba55bb9} 
+void satp\+\_\+connections\+\_\+dispose (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Dispose of the SATP connections collection. 
+
+This function releases all resources allocated for the connections collection and cleans up its internal state. It should be called when the connections collection is no longer required. \Hypertarget{connections_8h_ac394cddcfe7fa4973b5d9bd4f640e797}\index{connections.h@{connections.h}!satp\_connections\_full@{satp\_connections\_full}}
+\index{satp\_connections\_full@{satp\_connections\_full}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_full()}{satp\_connections\_full()}}
+{\footnotesize\ttfamily \label{connections_8h_ac394cddcfe7fa4973b5d9bd4f640e797} 
+bool satp\+\_\+connections\+\_\+full (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Check if the connections collection is full. 
+
+This function determines whether the connections collection has reached its maximum capacity. When the collection is full, no additional connection states can be added.
+
+\begin{DoxyReturn}{Returns}
+Returns true if the collection is full; otherwise, false. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_a6643f1fdf427e38cb4f279e0da4faf90}\index{connections.h@{connections.h}!satp\_connections\_get@{satp\_connections\_get}}
+\index{satp\_connections\_get@{satp\_connections\_get}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_get()}{satp\_connections\_get()}}
+{\footnotesize\ttfamily \label{connections_8h_a6643f1fdf427e38cb4f279e0da4faf90} 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} satp\+\_\+connections\+\_\+get (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Retrieve a connection state by its unique instance number. 
+
+This function locates and returns the connection state corresponding to the specified instance number. The instance number uniquely identifies a connection within the collection.
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The unique instance number of the connection.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the connection state if found; otherwise, NULL. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_aadbefb714b24b5667875540d704c853c}\index{connections.h@{connections.h}!satp\_connections\_index@{satp\_connections\_index}}
+\index{satp\_connections\_index@{satp\_connections\_index}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_index()}{satp\_connections\_index()}}
+{\footnotesize\ttfamily \label{connections_8h_aadbefb714b24b5667875540d704c853c} 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} satp\+\_\+connections\+\_\+index (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{index}{}\end{DoxyParamCaption})}
+
+
+
+Retrieve a connection state pointer by its collection index. 
+
+This function returns the connection state pointer located at the specified index in the collection. If the index is invalid or out of bounds, the function returns NULL.
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & The index of the connection state within the collection.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the connection state if the index is valid; otherwise, NULL. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_af0bf0c306861cd02a1980b3dcdf3c9f8}\index{connections.h@{connections.h}!satp\_connections\_initialize@{satp\_connections\_initialize}}
+\index{satp\_connections\_initialize@{satp\_connections\_initialize}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_initialize()}{satp\_connections\_initialize()}}
+{\footnotesize\ttfamily \label{connections_8h_af0bf0c306861cd02a1980b3dcdf3c9f8} 
+void satp\+\_\+connections\+\_\+initialize (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{count}{, }\item[{size\+\_\+t}]{maximum}{}\end{DoxyParamCaption})}
+
+
+
+Initialize the SATP connections collection. 
+
+This function sets up the internal connections collection by creating an initial set of connection states. The {\ttfamily count} parameter specifies the number of connection states to create initially (minimum of one), and {\ttfamily maximum} defines the upper limit of connection states the collection can hold.
+
+
+\begin{DoxyParams}{Parameters}
+{\em count} & The initial number of connection states to create (must be at least one). \\
+\hline
+{\em maximum} & The maximum number of connection states allowed in the collection (must be greater than or equal to {\ttfamily count}). \\
+\hline
+\end{DoxyParams}
+\Hypertarget{connections_8h_a8d2da1302a02fe5ff3b8fecc6985b5e1}\index{connections.h@{connections.h}!satp\_connections\_next@{satp\_connections\_next}}
+\index{satp\_connections\_next@{satp\_connections\_next}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_next()}{satp\_connections\_next()}}
+{\footnotesize\ttfamily \label{connections_8h_a8d2da1302a02fe5ff3b8fecc6985b5e1} 
+\mbox{\hyperlink{structsatp__connection__state}{satp\+\_\+connection\+\_\+state}} \texorpdfstring{$\ast$}{*} satp\+\_\+connections\+\_\+next (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Retrieve the next available (inactive) connection state from the collection. 
+
+This function searches for and returns a pointer to the next available connection state in the collection. If all connection slots are active, the function returns NULL.
+
+\begin{DoxyReturn}{Returns}
+A pointer to the next available connection state, or NULL if none are available. 
+\end{DoxyReturn}
+\Hypertarget{connections_8h_a8ca97c73ce0072d6842c9f155c8fd733}\index{connections.h@{connections.h}!satp\_connections\_reset@{satp\_connections\_reset}}
+\index{satp\_connections\_reset@{satp\_connections\_reset}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_reset()}{satp\_connections\_reset()}}
+{\footnotesize\ttfamily \label{connections_8h_a8ca97c73ce0072d6842c9f155c8fd733} 
+void satp\+\_\+connections\+\_\+reset (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{instance}{}\end{DoxyParamCaption})}
+
+
+
+Reset a specific connection state in the collection. 
+
+This function resets the connection state identified by the provided instance number. Resetting a connection typically involves clearing its data and marking it as inactive so that the slot can be reused.
+
+
+\begin{DoxyParams}{Parameters}
+{\em instance} & The unique instance number of the connection to reset. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{connections_8h_a51bc6c5ed3e51c75699a85b7cc8cbaf8}\index{connections.h@{connections.h}!satp\_connections\_self\_test@{satp\_connections\_self\_test}}
+\index{satp\_connections\_self\_test@{satp\_connections\_self\_test}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_self\_test()}{satp\_connections\_self\_test()}}
+{\footnotesize\ttfamily \label{connections_8h_a51bc6c5ed3e51c75699a85b7cc8cbaf8} 
+void satp\+\_\+connections\+\_\+self\+\_\+test (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Run the self-\/test routine for the connections collection. 
+
+This function executes a series of internal tests to verify the proper functioning of the SATP connections collection. The self-\/test routine may include the following\+:
+
+
+\begin{DoxyItemize}
+\item Adding new connection states and verifying they are correctly marked as active.
+\item Checking the active status of connection slots.
+\item Retrieving connection states by instance or index.
+\item Resetting connection states and confirming they become inactive.
+\item Ensuring that the collection correctly reports the number of available and total connection slots.
+\end{DoxyItemize}
+
+The self-\/test is used to validate the robustness and reliability of the connection management subsystem. \Hypertarget{connections_8h_a51bf618d6ca0ed427b9fa7d455b854b1}\index{connections.h@{connections.h}!satp\_connections\_size@{satp\_connections\_size}}
+\index{satp\_connections\_size@{satp\_connections\_size}!connections.h@{connections.h}}
+\doxysubsubsection{\texorpdfstring{satp\_connections\_size()}{satp\_connections\_size()}}
+{\footnotesize\ttfamily \label{connections_8h_a51bf618d6ca0ed427b9fa7d455b854b1} 
+size\+\_\+t satp\+\_\+connections\+\_\+size (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+
+
+Get the total number of connection state items in the collection. 
+
+This function returns the total number of connection states maintained in the collection, including both active and inactive items.
+
+\begin{DoxyReturn}{Returns}
+The total size of the connections collection. 
+\end{DoxyReturn}

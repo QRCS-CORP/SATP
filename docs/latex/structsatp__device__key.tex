@@ -1,0 +1,67 @@
+\doxysection{satp\+\_\+device\+\_\+key Struct Reference}
+\hypertarget{structsatp__device__key}{}\label{structsatp__device__key}\index{satp\_device\_key@{satp\_device\_key}}
+
+
+The SATP device key structure. This structure represents the SATP device key, which is derived from the server key. It includes the device key identity, device derivation key, and an expiration time.  
+
+
+
+
+{\ttfamily \#include $<$satp.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__device__key_a00b0407ef2aa5e814fd651e84587587e}{ktree}} \mbox{[}\mbox{\hyperlink{satp_8h_a21645295558e27eed64fc61b87116747}{SATP\+\_\+\+DKEY\+\_\+\+SIZE}} \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{satp_8h_a7f8c8dfaa8d1d7099820c1ccef5b2672}{SATP\+\_\+\+KEY\+\_\+\+TREE\+\_\+\+COUNT}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__device__key_a6aa11b3be71a2d41b2c6249aeeb8e931}{kid}} \mbox{[}\mbox{\hyperlink{satp_8h_a92dfd14570beaf5e896495405760777b}{SATP\+\_\+\+KID\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__device__key_a8d08b7e206abb85c29ad5256a84a2b42}{stc}} \mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__device__key_a6d579765908169e6fcb1bdc8f105132d}{expiration}}
+\item 
+uint8\+\_\+t \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{structsatp__device__key_add9f33b267f2e3694198763fc633feff}{spass}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP device key structure. This structure represents the SATP device key, which is derived from the server key. It includes the device key identity, device derivation key, and an expiration time. 
+
+\label{doc-variable-members}
+\Hypertarget{structsatp__device__key_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structsatp__device__key_a6d579765908169e6fcb1bdc8f105132d}\index{satp\_device\_key@{satp\_device\_key}!expiration@{expiration}}
+\index{expiration@{expiration}!satp\_device\_key@{satp\_device\_key}}
+\doxysubsubsection{\texorpdfstring{expiration}{expiration}}
+{\footnotesize\ttfamily \label{structsatp__device__key_a6d579765908169e6fcb1bdc8f105132d} 
+uint64\+\_\+t expiration}
+
+The expiration time in seconds from epoch \Hypertarget{structsatp__device__key_a6aa11b3be71a2d41b2c6249aeeb8e931}\index{satp\_device\_key@{satp\_device\_key}!kid@{kid}}
+\index{kid@{kid}!satp\_device\_key@{satp\_device\_key}}
+\doxysubsubsection{\texorpdfstring{kid}{kid}}
+{\footnotesize\ttfamily \label{structsatp__device__key_a6aa11b3be71a2d41b2c6249aeeb8e931} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t kid\mbox{[}\mbox{\hyperlink{satp_8h_a92dfd14570beaf5e896495405760777b}{SATP\+\_\+\+KID\+\_\+\+SIZE}}\mbox{]}}
+
+The device identity string \Hypertarget{structsatp__device__key_a00b0407ef2aa5e814fd651e84587587e}\index{satp\_device\_key@{satp\_device\_key}!ktree@{ktree}}
+\index{ktree@{ktree}!satp\_device\_key@{satp\_device\_key}}
+\doxysubsubsection{\texorpdfstring{ktree}{ktree}}
+{\footnotesize\ttfamily \label{structsatp__device__key_a00b0407ef2aa5e814fd651e84587587e} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t ktree\mbox{[}\mbox{\hyperlink{satp_8h_a21645295558e27eed64fc61b87116747}{SATP\+\_\+\+DKEY\+\_\+\+SIZE}} \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{satp_8h_a7f8c8dfaa8d1d7099820c1ccef5b2672}{SATP\+\_\+\+KEY\+\_\+\+TREE\+\_\+\+COUNT}}\mbox{]}}
+
+The device key tree \Hypertarget{structsatp__device__key_add9f33b267f2e3694198763fc633feff}\index{satp\_device\_key@{satp\_device\_key}!spass@{spass}}
+\index{spass@{spass}!satp\_device\_key@{satp\_device\_key}}
+\doxysubsubsection{\texorpdfstring{spass}{spass}}
+{\footnotesize\ttfamily \label{structsatp__device__key_add9f33b267f2e3694198763fc633feff} 
+uint8\+\_\+t\texorpdfstring{$\ast$}{*} spass}
+
+The pointer to the client passphrase hash \Hypertarget{structsatp__device__key_a8d08b7e206abb85c29ad5256a84a2b42}\index{satp\_device\_key@{satp\_device\_key}!stc@{stc}}
+\index{stc@{stc}!satp\_device\_key@{satp\_device\_key}}
+\doxysubsubsection{\texorpdfstring{stc}{stc}}
+{\footnotesize\ttfamily \label{structsatp__device__key_a8d08b7e206abb85c29ad5256a84a2b42} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t stc\mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}}
+
+The server\textquotesingle{}s long term secret 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/\mbox{\hyperlink{satp_8h}{satp.\+h}}\end{DoxyCompactItemize}

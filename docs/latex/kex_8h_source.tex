@@ -1,0 +1,37 @@
+\doxysection{kex.\+h}
+\hypertarget{kex_8h_source}{}\label{kex_8h_source}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/kex.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/kex.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ SATP\_KEX\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ SATP\_KEX\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{satp_8h}{satp.h}}"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00013\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__kex__client__state}{satp\_kex\_client\_state}}}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__client__state_a298b7b0ec67e19004949923263c6a93a}{dk}}[\mbox{\hyperlink{satp_8h_a21645295558e27eed64fc61b87116747}{SATP\_DKEY\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00016\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__client__state_a6aa11b3be71a2d41b2c6249aeeb8e931}{kid}}[\mbox{\hyperlink{satp_8h_a92dfd14570beaf5e896495405760777b}{SATP\_KID\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00017\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__client__state_adc87a285cc4afd6d2202334666960f9a}{hc}}[\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\_HASH\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00018\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__client__state_a4d76d8d8a6b86c5769f24a9700c4041c}{hp}}[\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\_HASH\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00019\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__client__state_ae692475230e282e6df51006ca56e281d}{stc}}[\mbox{\hyperlink{satp_8h_abd6e04bbc39dffe4395782d752919e40}{SATP\_SALT\_SIZE}}];\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00020\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__kex__client__state_a6d579765908169e6fcb1bdc8f105132d}{expiration}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00021\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{structsatp__kex__client__state_add3eb95b082d4a50d86c74c6876e5d4b}{kidx}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00022\ \}\ \mbox{\hyperlink{structsatp__kex__client__state}{satp\_kex\_client\_state}};}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00034\ SATP\_EXPORT\_API\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structsatp__kex__server__state}{satp\_kex\_server\_state}}}
+\DoxyCodeLine{00035\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__server__state_adc87a285cc4afd6d2202334666960f9a}{hc}}[\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\_HASH\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00037\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__server__state_aac9f69b45b27e37b04081c3bce03c1e9}{sdk}}[\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\_SKEY\_SIZE}}];\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00038\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__server__state_a91017fe21ff65720f2ce0f806220179f}{sid}}[\mbox{\hyperlink{satp_8h_a16b831ff71e2d15a824a890f542e24f0}{SATP\_SID\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00039\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__server__state_aa2f6b0d54217666d9653b819cccfbc4c}{sp}}[\mbox{\hyperlink{satp_8h_a2ccf5e1b5e2c43f7295979b7828377e6}{SATP\_HASH\_SIZE}}];\ \ \ \ \ \ }
+\DoxyCodeLine{00040\ \ \ \ \ QSC\_SIMD\_ALIGN\ uint8\_t\ \mbox{\hyperlink{structsatp__kex__server__state_ae692475230e282e6df51006ca56e281d}{stc}}[\mbox{\hyperlink{satp_8h_abd6e04bbc39dffe4395782d752919e40}{SATP\_SALT\_SIZE}}];\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00041\ \ \ \ \ uint64\_t\ \mbox{\hyperlink{structsatp__kex__server__state_a6d579765908169e6fcb1bdc8f105132d}{expiration}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00042\ \}\ \mbox{\hyperlink{structsatp__kex__server__state}{satp\_kex\_server\_state}};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00059\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ satp\_kex\_client\_key\_exchange(\mbox{\hyperlink{structsatp__kex__client__state}{satp\_kex\_client\_state}}*\ kcs,\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns);}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00076\ \mbox{\hyperlink{satp_8h_ad018e7d955cb389223bcc7e5d8a38c5a}{satp\_errors}}\ satp\_kex\_server\_key\_exchange(\mbox{\hyperlink{structsatp__kex__server__state}{satp\_kex\_server\_state}}*\ kss,\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ cns);}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,78 @@
+\doxysection{connections.\+h}
+\hypertarget{connections_8h_source}{}\label{connections_8h_source}\index{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/connections.h@{C:/Users/stepp/Documents/Visual Studio 2022/Projects/C/SATP/SATP/connections.h}}
+\mbox{\hyperlink{connections_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{/*\ 2025\ Quantum\ Resistant\ Cryptographic\ Solutions\ Corporation}}
+\DoxyCodeLine{00002\ \textcolor{comment}{\ *\ All\ Rights\ Reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00004\ \textcolor{comment}{\ *\ NOTICE:\ This\ software\ and\ all\ accompanying\ materials\ are\ the\ exclusive}}
+\DoxyCodeLine{00005\ \textcolor{comment}{\ *\ property\ of\ Quantum\ Resistant\ Cryptographic\ Solutions\ Corporation\ (QRCS).}}
+\DoxyCodeLine{00006\ \textcolor{comment}{\ *\ The\ intellectual\ and\ technical\ concepts\ contained\ within\ this\ implementation}}
+\DoxyCodeLine{00007\ \textcolor{comment}{\ *\ are\ proprietary\ to\ QRCS\ and\ its\ authorized\ licensors\ and\ are\ protected\ under}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\ *\ applicable\ U.S.\ and\ international\ copyright,\ patent,\ and\ trade\ secret\ laws.}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ *\ CRYPTOGRAPHIC\ STANDARDS:}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\ *\ -\/\ This\ software\ includes\ implementations\ of\ cryptographic\ algorithms\ such\ as}}
+\DoxyCodeLine{00012\ \textcolor{comment}{\ *\ \ \ SHA3,\ AES,\ and\ others.\ These\ algorithms\ are\ public\ domain\ or\ standardized}}
+\DoxyCodeLine{00013\ \textcolor{comment}{\ *\ \ \ by\ organizations\ such\ as\ NIST\ and\ are\ NOT\ the\ property\ of\ QRCS.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{\ *\ -\/\ However,\ all\ source\ code,\ optimizations,\ and\ implementations\ in\ this\ library}}
+\DoxyCodeLine{00015\ \textcolor{comment}{\ *\ \ \ are\ original\ works\ of\ QRCS\ and\ are\ protected\ under\ this\ license.}}
+\DoxyCodeLine{00016\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00017\ \textcolor{comment}{\ *\ RESTRICTIONS:}}
+\DoxyCodeLine{00018\ \textcolor{comment}{\ *\ -\/\ Redistribution,\ modification,\ or\ unauthorized\ distribution\ of\ this\ software,}}
+\DoxyCodeLine{00019\ \textcolor{comment}{\ *\ \ \ in\ whole\ or\ in\ part,\ is\ strictly\ prohibited.}}
+\DoxyCodeLine{00020\ \textcolor{comment}{\ *\ -\/\ This\ software\ is\ provided\ for\ non-\/commercial,\ educational,\ and\ research}}
+\DoxyCodeLine{00021\ \textcolor{comment}{\ *\ \ \ purposes\ only.\ Commercial\ use\ in\ any\ form\ is\ expressly\ forbidden.}}
+\DoxyCodeLine{00022\ \textcolor{comment}{\ *\ -\/\ Licensing\ and\ authorized\ distribution\ are\ solely\ at\ the\ discretion\ of\ QRCS.}}
+\DoxyCodeLine{00023\ \textcolor{comment}{\ *\ -\/\ Any\ use\ of\ this\ software\ implies\ acceptance\ of\ these\ restrictions.}}
+\DoxyCodeLine{00024\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00025\ \textcolor{comment}{\ *\ DISCLAIMER:}}
+\DoxyCodeLine{00026\ \textcolor{comment}{\ *\ This\ software\ is\ provided\ "{}as\ is,"{}\ without\ warranty\ of\ any\ kind,\ express\ or}}
+\DoxyCodeLine{00027\ \textcolor{comment}{\ *\ implied,\ including\ but\ not\ limited\ to\ warranties\ of\ merchantability\ or\ fitness}}
+\DoxyCodeLine{00028\ \textcolor{comment}{\ *\ for\ a\ particular\ purpose.\ QRCS\ disclaims\ all\ liability\ for\ any\ direct,\ indirect,}}
+\DoxyCodeLine{00029\ \textcolor{comment}{\ *\ incidental,\ or\ consequential\ damages\ resulting\ from\ the\ use\ or\ misuse\ of\ this\ software.}}
+\DoxyCodeLine{00030\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00031\ \textcolor{comment}{\ *\ FULL\ LICENSE:}}
+\DoxyCodeLine{00032\ \textcolor{comment}{\ *\ This\ software\ is\ subject\ to\ the\ **Quantum\ Resistant\ Cryptographic\ Solutions}}
+\DoxyCodeLine{00033\ \textcolor{comment}{\ *\ Proprietary\ License\ (QRCS-\/PL)**.\ The\ complete\ license\ terms\ are\ included}}
+\DoxyCodeLine{00034\ \textcolor{comment}{\ *\ in\ the\ LICENSE.txt\ file\ distributed\ with\ this\ software.}}
+\DoxyCodeLine{00035\ \textcolor{comment}{\ *}}
+\DoxyCodeLine{00036\ \textcolor{comment}{\ *\ Written\ by:\ John\ G.\ Underhill}}
+\DoxyCodeLine{00037\ \textcolor{comment}{\ *\ Contact:\ john.underhill@protonmail.com}}
+\DoxyCodeLine{00038\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#ifndef\ SATP\_CONNECTIONS\_H}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#define\ SATP\_CONNECTIONS\_H}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{satp_8h}{satp.h}}"{}}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00077\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{connections_8h_ad12249b9062ad578408eb09a350c7a57}{satp\_connections\_active}}(\textcolor{keywordtype}{size\_t}\ index);}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00089\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ \mbox{\hyperlink{connections_8h_a93c89c960900d109df536a7469ed2c5a}{satp\_connections\_add}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{connections_8h_a1c7877bfc51daa7f6e69a80eb7edf0e4}{satp\_connections\_available}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00113\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ \mbox{\hyperlink{connections_8h_a6643f1fdf427e38cb4f279e0da4faf90}{satp\_connections\_get}}(uint32\_t\ instance);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00126\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{connections_8h_af0bf0c306861cd02a1980b3dcdf3c9f8}{satp\_connections\_initialize}}(\textcolor{keywordtype}{size\_t}\ count,\ \textcolor{keywordtype}{size\_t}\ maximum);}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00135\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{connections_8h_a58bbb1cf15df05a812602e829f3e7938}{satp\_connections\_clear}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{connections_8h_a2336e64524e876849960195f3ba55bb9}{satp\_connections\_dispose}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00145\ }
+\DoxyCodeLine{00157\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ \mbox{\hyperlink{connections_8h_aadbefb714b24b5667875540d704c853c}{satp\_connections\_index}}(\textcolor{keywordtype}{size\_t}\ index);}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00168\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{connections_8h_ac394cddcfe7fa4973b5d9bd4f640e797}{satp\_connections\_full}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00179\ \mbox{\hyperlink{structsatp__connection__state}{satp\_connection\_state}}*\ \mbox{\hyperlink{connections_8h_a8d2da1302a02fe5ff3b8fecc6985b5e1}{satp\_connections\_next}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00190\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{connections_8h_a8ca97c73ce0072d6842c9f155c8fd733}{satp\_connections\_reset}}(uint32\_t\ instance);}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00201\ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{connections_8h_a51bf618d6ca0ed427b9fa7d455b854b1}{satp\_connections\_size}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00218\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{connections_8h_a51bc6c5ed3e51c75699a85b7cc8cbaf8}{satp\_connections\_self\_test}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

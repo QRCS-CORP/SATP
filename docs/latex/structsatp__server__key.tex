@@ -1,0 +1,59 @@
+\doxysection{satp\+\_\+server\+\_\+key Struct Reference}
+\hypertarget{structsatp__server__key}{}\label{structsatp__server__key}\index{satp\_server\_key@{satp\_server\_key}}
+
+
+The SATP server key structure. This structure represents the SATP server key, which is derived from the master key. It contains the server\textquotesingle{}s key identity, server derivation key, and expiration time.  
+
+
+
+
+{\ttfamily \#include $<$satp.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__server__key_aac9f69b45b27e37b04081c3bce03c1e9}{sdk}} \mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__server__key_a91017fe21ff65720f2ce0f806220179f}{sid}} \mbox{[}\mbox{\hyperlink{satp_8h_a16b831ff71e2d15a824a890f542e24f0}{SATP\+\_\+\+SID\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__server__key_a8d08b7e206abb85c29ad5256a84a2b42}{stc}} \mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__server__key_a6d579765908169e6fcb1bdc8f105132d}{expiration}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP server key structure. This structure represents the SATP server key, which is derived from the master key. It contains the server\textquotesingle{}s key identity, server derivation key, and expiration time. 
+
+\label{doc-variable-members}
+\Hypertarget{structsatp__server__key_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structsatp__server__key_a6d579765908169e6fcb1bdc8f105132d}\index{satp\_server\_key@{satp\_server\_key}!expiration@{expiration}}
+\index{expiration@{expiration}!satp\_server\_key@{satp\_server\_key}}
+\doxysubsubsection{\texorpdfstring{expiration}{expiration}}
+{\footnotesize\ttfamily \label{structsatp__server__key_a6d579765908169e6fcb1bdc8f105132d} 
+uint64\+\_\+t expiration}
+
+The expiration time in seconds from epoch \Hypertarget{structsatp__server__key_aac9f69b45b27e37b04081c3bce03c1e9}\index{satp\_server\_key@{satp\_server\_key}!sdk@{sdk}}
+\index{sdk@{sdk}!satp\_server\_key@{satp\_server\_key}}
+\doxysubsubsection{\texorpdfstring{sdk}{sdk}}
+{\footnotesize\ttfamily \label{structsatp__server__key_aac9f69b45b27e37b04081c3bce03c1e9} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t sdk\mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}}
+
+The server derivation key \Hypertarget{structsatp__server__key_a91017fe21ff65720f2ce0f806220179f}\index{satp\_server\_key@{satp\_server\_key}!sid@{sid}}
+\index{sid@{sid}!satp\_server\_key@{satp\_server\_key}}
+\doxysubsubsection{\texorpdfstring{sid}{sid}}
+{\footnotesize\ttfamily \label{structsatp__server__key_a91017fe21ff65720f2ce0f806220179f} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t sid\mbox{[}\mbox{\hyperlink{satp_8h_a16b831ff71e2d15a824a890f542e24f0}{SATP\+\_\+\+SID\+\_\+\+SIZE}}\mbox{]}}
+
+Server key ID (domain+branch identifier) \Hypertarget{structsatp__server__key_a8d08b7e206abb85c29ad5256a84a2b42}\index{satp\_server\_key@{satp\_server\_key}!stc@{stc}}
+\index{stc@{stc}!satp\_server\_key@{satp\_server\_key}}
+\doxysubsubsection{\texorpdfstring{stc}{stc}}
+{\footnotesize\ttfamily \label{structsatp__server__key_a8d08b7e206abb85c29ad5256a84a2b42} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t stc\mbox{[}\mbox{\hyperlink{satp_8h_ab89af91e1cfc71dfbb93aac6d33dd2f3}{SATP\+\_\+\+SKEY\+\_\+\+SIZE}}\mbox{]}}
+
+The server long term secret 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/\mbox{\hyperlink{satp_8h}{satp.\+h}}\end{DoxyCompactItemize}

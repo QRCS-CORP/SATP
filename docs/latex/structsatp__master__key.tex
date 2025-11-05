@@ -1,0 +1,51 @@
+\doxysection{satp\+\_\+master\+\_\+key Struct Reference}
+\hypertarget{structsatp__master__key}{}\label{structsatp__master__key}\index{satp\_master\_key@{satp\_master\_key}}
+
+
+The SATP master key structure. This structure holds the SATP master key information, including the key identity, the master derivation key, and the expiration time. The master key is used as the root from which branch keys are derived.  
+
+
+
+
+{\ttfamily \#include $<$satp.\+h$>$}
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__master__key_a1bd713b1d27604605af8f317dd34e029}{mdk}} \mbox{[}\mbox{\hyperlink{satp_8h_a8ff169084319c479c3a8e01addeb3098}{SATP\+\_\+\+MKEY\+\_\+\+SIZE}}\mbox{]}
+\item 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t \mbox{\hyperlink{structsatp__master__key_ab5438540d3582bc07649a11bcdf57300}{mid}} \mbox{[}\mbox{\hyperlink{satp_8h_afad2aa0a7009769010e4fbd5b3229ae2}{SATP\+\_\+\+MID\+\_\+\+SIZE}}\mbox{]}
+\item 
+uint64\+\_\+t \mbox{\hyperlink{structsatp__master__key_a6d579765908169e6fcb1bdc8f105132d}{expiration}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The SATP master key structure. This structure holds the SATP master key information, including the key identity, the master derivation key, and the expiration time. The master key is used as the root from which branch keys are derived. 
+
+\label{doc-variable-members}
+\Hypertarget{structsatp__master__key_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{structsatp__master__key_a6d579765908169e6fcb1bdc8f105132d}\index{satp\_master\_key@{satp\_master\_key}!expiration@{expiration}}
+\index{expiration@{expiration}!satp\_master\_key@{satp\_master\_key}}
+\doxysubsubsection{\texorpdfstring{expiration}{expiration}}
+{\footnotesize\ttfamily \label{structsatp__master__key_a6d579765908169e6fcb1bdc8f105132d} 
+uint64\+\_\+t expiration}
+
+The expiration time in seconds from epoch \Hypertarget{structsatp__master__key_a1bd713b1d27604605af8f317dd34e029}\index{satp\_master\_key@{satp\_master\_key}!mdk@{mdk}}
+\index{mdk@{mdk}!satp\_master\_key@{satp\_master\_key}}
+\doxysubsubsection{\texorpdfstring{mdk}{mdk}}
+{\footnotesize\ttfamily \label{structsatp__master__key_a1bd713b1d27604605af8f317dd34e029} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t mdk\mbox{[}\mbox{\hyperlink{satp_8h_a8ff169084319c479c3a8e01addeb3098}{SATP\+\_\+\+MKEY\+\_\+\+SIZE}}\mbox{]}}
+
+The master derivation key \Hypertarget{structsatp__master__key_ab5438540d3582bc07649a11bcdf57300}\index{satp\_master\_key@{satp\_master\_key}!mid@{mid}}
+\index{mid@{mid}!satp\_master\_key@{satp\_master\_key}}
+\doxysubsubsection{\texorpdfstring{mid}{mid}}
+{\footnotesize\ttfamily \label{structsatp__master__key_ab5438540d3582bc07649a11bcdf57300} 
+QSC\+\_\+\+SIMD\+\_\+\+ALIGN uint8\+\_\+t mid\mbox{[}\mbox{\hyperlink{satp_8h_afad2aa0a7009769010e4fbd5b3229ae2}{SATP\+\_\+\+MID\+\_\+\+SIZE}}\mbox{]}}
+
+Master key ID (domain identifier) 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/stepp/\+Documents/\+Visual Studio 2022/\+Projects/\+C/\+SATP/\+SATP/\mbox{\hyperlink{satp_8h}{satp.\+h}}\end{DoxyCompactItemize}
