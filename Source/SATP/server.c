@@ -435,12 +435,12 @@ bool satp_server_passphrase_hash_verify(const uint8_t* phash, const char* passph
 	return (qsc_intutils_verify(tmph, phash, SATP_HASH_SIZE) == 0U);
 }
 
-void satp_server_pause()
+void satp_server_pause(void)
 {
 	m_server_pause = true;
 }
 
-void satp_server_quit()
+void satp_server_quit(void)
 {
 	size_t clen;
 	qsc_mutex mtx;
@@ -470,7 +470,7 @@ void satp_server_quit()
 	m_server_run = false;
 }
 
-void satp_server_resume()
+void satp_server_resume(void)
 {
 	m_server_pause = false;
 }

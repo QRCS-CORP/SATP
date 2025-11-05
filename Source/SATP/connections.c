@@ -28,7 +28,7 @@ bool satp_connections_active(size_t index)
 	return res;
 }
 
-satp_connection_state* satp_connections_add()
+satp_connection_state* satp_connections_add(void)
 {
 	satp_connection_state* cns;
 
@@ -52,7 +52,7 @@ satp_connection_state* satp_connections_add()
 	return cns;
 }
 
-size_t satp_connections_available()
+size_t satp_connections_available(void)
 {
 	size_t count;
 
@@ -69,7 +69,7 @@ size_t satp_connections_available()
 	return count;
 }
 
-void satp_connections_clear()
+void satp_connections_clear(void)
 {
 	qsc_memutils_clear(m_connection_set.conset, sizeof(satp_connection_state) * m_connection_set.length);
 
@@ -80,7 +80,7 @@ void satp_connections_clear()
 	}
 }
 
-void satp_connections_dispose()
+void satp_connections_dispose(void)
 {
 	if (m_connection_set.conset != NULL)
 	{
@@ -117,7 +117,7 @@ satp_connection_state* satp_connections_index(size_t index)
 	return res;
 }
 
-bool satp_connections_full()
+bool satp_connections_full(void)
 {
 	bool res;
 
@@ -218,13 +218,13 @@ void satp_connections_reset(uint32_t cid)
 	}
 }
 
-size_t satp_connections_size()
+size_t satp_connections_size(void)
 {
 	return m_connection_set.length;
 }
 
 #if defined(SATP_DEBUG_MODE)
-void satp_connections_self_test()
+void satp_connections_self_test(void)
 {
 	satp_connection_state* xn[20] = { 0 };
 	size_t cnt;
