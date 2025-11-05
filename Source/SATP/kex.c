@@ -186,7 +186,6 @@ satp_errors satp_kex_client_key_exchange(satp_kex_client_state* cls, satp_connec
 	satp_network_packet resp = { 0 };
 	uint8_t mreqt[SATP_CONNECT_REQUEST_PACKET_SIZE] = { 0U };
 	uint8_t mresp[SATP_CONNECT_RESPONSE_PACKET_SIZE] = { 0U };
-	size_t rlen;
 	size_t slen;
 	satp_errors err;
 
