@@ -100,7 +100,7 @@ SATP_EXPORT_API void satp_server_passphrase_generate(char* passphrase, size_t le
  * \param passphrase [const] A pointer to the passphrase.
  * \param passlen The passphrase length.
  */
-SATP_EXPORT_API void satp_server_passphrase_hash_generate(uint8_t* phash, char* passphrase, size_t passlen);
+SATP_EXPORT_API void satp_server_passphrase_hash_generate(uint8_t* phash, const char* passphrase, size_t passlen);
 
 /**
  * \brief Verify a passphrase against the hash.
@@ -111,7 +111,7 @@ SATP_EXPORT_API void satp_server_passphrase_hash_generate(uint8_t* phash, char* 
  *
  * \return Returns true if the passphrase hash matches.
  */
-SATP_EXPORT_API bool satp_server_passphrase_hash_verify(const uint8_t* phash, char* passphrase, size_t passlen);
+SATP_EXPORT_API bool satp_server_passphrase_hash_verify(const uint8_t* phash, const char* passphrase, size_t passlen);
 
 /**
  * \brief Pause the server.

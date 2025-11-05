@@ -41,15 +41,16 @@
 #define SATP_H
 
 #include "satpcommon.h"
+#include "logger.h"
 #include "sha3.h"
 #include "socket.h"
 #include "socketclient.h"
 
- /**
- * \file satp.h
- * \brief SATP support header
- * Common defined parameters and functions of the SATP client and server implementations.
- * */
+/**
+* \file satp.h
+* \brief SATP support header
+* Common defined parameters and functions of the SATP client and server implementations.
+*/
 
 /*!
 * \def SATP_USE_RCS_ENCRYPTION
@@ -444,6 +445,44 @@ static const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_
 /** \endcond */
 
 /*!
+* \def SATP_MESSAGE_STRING_DEPTH
+* \brief The depth of the SATP message string array
+*/
+#define SATP_MESSAGE_STRING_DEPTH 22U
+/*!
+* \def SATP_MESSAGE_STRING_WIDTH
+* \brief The width of each SATP message string
+*/
+#define SATP_MESSAGE_STRING_WIDTH 128U
+
+/** \cond */
+static const char SATP_MESSAGE_STRINGS[SATP_MESSAGE_STRING_DEPTH][SATP_MESSAGE_STRING_WIDTH] =
+{
+	"The operation completed succesfully.",
+	"The socket server accept function failed.",
+	"The listener socket listener could not connect.",
+	"The listener socket could not bind to the address.",
+	"The listener socket could not be created.",
+	"The server is connected to remote host: ",
+	"The socket receive function failed.",
+	"The server had a memory allocation failure.",
+	"The key exchange has experienced a failure.",
+	"The server has disconnected from the remote host: ",
+	"The server has disconnected the client due to an error",
+	"The server has had a socket level error: ",
+	"The server has reached the maximum number of connections",
+	"The server listener socket has failed.",
+	"The server has run out of socket connections",
+	"The message decryption has failed",
+	"The keepalive function has failed",
+	"The keepalive period has been exceeded",
+	"The connection failed or was interrupted",
+	"The function received an invalid request",
+	"The host encountered an error: "
+};
+/** \endcond */
+
+/*!
  * \enum satp_errors
  * \brief The SATP error values.
  * This enumeration defines the error codes returned by SATP functions.
@@ -504,6 +543,35 @@ SATP_EXPORT_API typedef enum satp_flags
 } satp_flags;
 
 /*!
+* \enum satp_messages
+* \brief The logging message enumeration
+*/
+SATP_EXPORT_API typedef enum satp_messages
+{
+	satp_messages_none = 0x00U,						/*!< No configuration was specified */
+	satp_messages_accept_fail = 0x01U,				/*!< The socket accept failed */
+	satp_messages_listen_fail = 0x02U,				/*!< The listener socket could not connect */
+	satp_messages_bind_fail = 0x03U,				/*!< The listener socket could not bind to the address */
+	satp_messages_create_fail = 0x04U,				/*!< The listener socket could not be created */
+	satp_messages_connect_success = 0x05U,			/*!< The server connected to a host */
+	satp_messages_receive_fail = 0x06U,				/*!< The socket receive function failed */
+	satp_messages_allocate_fail = 0x07U,			/*!< The server memory allocation request has failed */
+	satp_messages_kex_fail = 0x08U,					/*!< The key exchange has experienced a failure */
+	satp_messages_disconnect = 0x09U,				/*!< The server has disconnected the client */
+	satp_messages_disconnect_fail = 0x0AU,			/*!< The server has disconnected the client due to an error */
+	satp_messages_socket_message = 0x0BU,			/*!< The server has had a socket level error */
+	satp_messages_queue_empty = 0x0CU,				/*!< The server has reached the maximum number of connections */
+	satp_messages_listener_fail = 0x0DU,			/*!< The server listener socket has failed */
+	satp_messages_sockalloc_fail = 0x0EU,			/*!< The server has run out of socket connections */
+	satp_messages_decryption_fail = 0x0FU,			/*!< The message decryption has failed */
+	satp_messages_keepalive_fail = 0x10U,			/*!< The keepalive function has failed */
+	satp_messages_keepalive_timeout = 0x11U,		/*!< The keepalive period has been exceeded */
+	satp_messages_connection_fail = 0x12U,			/*!< The connection failed or was interrupted */
+	satp_messages_invalid_request = 0x13U,			/*!< The function received an invalid request */
+	satp_messages_system_message = 0x14U,			/*!< The host encountered an error */
+} satp_messages;
+
+/*!
  * \struct satp_connection_state
  * \brief The SATP socket connection state structure
  */
@@ -562,12 +630,12 @@ SATP_EXPORT_API typedef struct satp_server_key
 } satp_server_key;
 
 /*!
- * \struct qsmp_keep_alive_state
+ * \struct satp_keep_alive_state
  * \brief The SATP keep alive state structure.
  * This structure tracks the state of keep alive messages within SATP. It includes the epoch time when the last
  * keep alive message was sent, a packet sequence counter, and a flag indicating whether a response has been received.
  */
-SATP_EXPORT_API typedef struct qsmp_keep_alive_state
+SATP_EXPORT_API typedef struct satp_keep_alive_state
 {
 	uint64_t etime;								/*!< The keep alive epoch time */
 	uint64_t seqctr;							/*!< The keep alive packet sequence number */
@@ -609,11 +677,12 @@ SATP_EXPORT_API void satp_connection_dispose(satp_connection_state* cns);
  * \brief Decrypt an error message.
  *
  * \param cns A pointer to the SATP client state structure.
- * \param message The serialized error packet.
+ * \param message [const] The serialized error packet.
+ * \param merr A pointer to an \c satp_errors error value.
  *
- * \return Returns a value of type \c satp_errors indicating the error message.
+ * \return Returns true if the message was decrypted successfully, false on failure.
  */
-SATP_EXPORT_API satp_errors satp_decrypt_error_message(satp_connection_state* cns, uint8_t* message);
+SATP_EXPORT_API bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, const uint8_t* message);
 
 /*!
  * \brief Decrypt an SATP packet.
@@ -685,6 +754,46 @@ SATP_EXPORT_API const char* satp_error_to_string(satp_errors error);
  * \param kid The key identity including client id and key counter.
  */
 SATP_EXPORT_API bool satp_extract_device_key(uint8_t* dk, const uint8_t* sk, const uint8_t* kid);
+
+/*!
+* \brief Get the error string description
+*
+* \param emsg: The message enumeration
+*
+* \return Returns a pointer to the message string or NULL
+*/
+SATP_EXPORT_API const char* satp_get_error_description(satp_messages emsg);
+
+/*!
+* \brief Log the message, socket error, and string description
+*
+* \param emsg: The message enumeration
+* \param err: The socket exception enumeration
+* \param msg: [const] The message string
+*/
+SATP_EXPORT_API void satp_log_error(satp_messages emsg, qsc_socket_exceptions err, const char* msg);
+
+/*!
+* \brief Log a system error message
+*
+* \param err: The system error enumerator
+*/
+SATP_EXPORT_API void satp_log_system_error(satp_errors err);
+
+/*!
+* \brief Log a message
+*
+* \param emsg: The message enumeration
+*/
+SATP_EXPORT_API void satp_log_message(satp_messages emsg);
+
+/*!
+* \brief Log a message and description
+*
+* \param emsg: The message enumeration
+* \param msg: [const] The message string
+*/
+SATP_EXPORT_API void satp_log_write(satp_messages emsg, const char* msg);
 
 /*!
 * \brief Populate a packet structure with an error message

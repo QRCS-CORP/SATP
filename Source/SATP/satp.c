@@ -6,7 +6,7 @@
 
 void satp_connection_close(satp_connection_state* cns, satp_errors err, bool notify)
 {
-	assert(cns != NULL);
+	SATP_ASSERT(cns != NULL);
 
 	if (cns != NULL)
 	{
@@ -15,28 +15,42 @@ void satp_connection_close(satp_connection_state* cns, satp_errors err, bool not
 			if (notify == true)
 			{
 				satp_network_packet resp = { 0U };
-				uint8_t spct[SATP_HEADER_SIZE + SATP_MACTAG_SIZE + 1U] = { 0U };
-				uint8_t pmsg[1U] = { 0U };
 
-				/* send a disconnect message */
+				/* build a disconnect message */
 				cns->txseq += 1U;
-				resp.pmessage = spct + SATP_HEADER_SIZE;
 				resp.flag = satp_flag_error_condition;
 				resp.sequence = cns->txseq;
 				resp.msglen = SATP_MACTAG_SIZE + 1U;
-				resp.pmessage = spct + SATP_HEADER_SIZE;
 				satp_packet_set_utc_time(&resp);
-				satp_packet_header_serialize(&resp, spct);
 
-				/* the error is the message, error=none on disconnect */
-				pmsg[0U] = (uint8_t)err;
+				/* tunnel gets encrypted message */
+				if (cns->exflag == satp_flag_session_established)
+				{
+					uint8_t spct[SATP_HEADER_SIZE + SATP_MACTAG_SIZE + 1U] = { 0U };
+					uint8_t pmsg[1U] = { 0U };
 
-				/* add the header to aad */
-				satp_cipher_set_associated(&cns->txcpr, spct, SATP_HEADER_SIZE);
-				/* encrypt the message */
-				satp_cipher_transform(&cns->txcpr, resp.pmessage, pmsg, sizeof(pmsg));
-				/* send the message */
-				qsc_socket_send(&cns->target, spct, sizeof(spct), qsc_socket_send_flag_none);
+					resp.pmessage = spct + SATP_HEADER_SIZE;
+					satp_packet_header_serialize(&resp, spct);
+					/* the error is the message, error=none on disconnect */
+					pmsg[0U] = (uint8_t)err;
+
+					/* add the header to aad */
+					satp_cipher_set_associated(&cns->txcpr, spct, SATP_HEADER_SIZE);
+					/* encrypt the message */
+					satp_cipher_transform(&cns->txcpr, resp.pmessage, pmsg, sizeof(pmsg));
+					/* send the message */
+					qsc_socket_send(&cns->target, spct, sizeof(spct), qsc_socket_send_flag_none);
+				}
+				else
+				{
+					/* pre-established phase */
+					uint8_t spct[SATP_HEADER_SIZE + 1U] = { 0U };
+
+					satp_packet_header_serialize(&resp, spct);
+					spct[SATP_HEADER_SIZE] = (uint8_t)err;
+					/* send the message */
+					qsc_socket_send(&cns->target, spct, sizeof(spct), qsc_socket_send_flag_none);
+				}
 			}
 
 			/* close the socket */
@@ -45,8 +59,7 @@ void satp_connection_close(satp_connection_state* cns, satp_errors err, bool not
 	}
 }
 
-
-satp_errors satp_decrypt_error_message(satp_connection_state* cns, uint8_t* message)
+bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, const uint8_t* message)
 {
 	SATP_ASSERT(cns != NULL);
 	SATP_ASSERT(message != NULL);
@@ -58,53 +71,57 @@ satp_errors satp_decrypt_error_message(satp_connection_state* cns, uint8_t* mess
 	satp_errors err;
 
 	err = satp_error_invalid_input;
-	satp_packet_header_deserialize(message, &pkt);
-	emsg = message + SATP_HEADER_SIZE;
 
-	if (cns != NULL && message != NULL)
+	if (cns->exflag == satp_flag_session_established)
 	{
-		cns->rxseq += 1;
+		satp_packet_header_deserialize(message, &pkt);
+		emsg = message + SATP_HEADER_SIZE;
 
-		if (pkt.sequence == cns->rxseq)
+		if (cns != NULL && message != NULL)
 		{
-			if (cns->exflag == satp_flag_session_established)
-			{
-				/* anti-replay; verify the packet time */
-				if (satp_packet_time_valid(&pkt) == true)
-				{
-					satp_cipher_set_associated(&cns->rxcpr, message, SATP_HEADER_SIZE);
-					mlen = pkt.msglen - SATP_MACTAG_SIZE;
+			cns->rxseq += 1;
 
-					if (mlen == 1U)
+			if (pkt.sequence == cns->rxseq)
+			{
+				if (cns->exflag == satp_flag_session_established)
+				{
+					/* anti-replay; verify the packet time */
+					if (satp_packet_time_valid(&pkt) == true)
 					{
-						/* authenticate then decrypt the data */
-						if (satp_cipher_transform(&cns->rxcpr, dmsg, emsg, mlen) == true)
+						satp_cipher_set_associated(&cns->rxcpr, message, SATP_HEADER_SIZE);
+						mlen = pkt.msglen - SATP_MACTAG_SIZE;
+
+						if (mlen == 1U)
 						{
-							err = (satp_errors)dmsg[0U];
+							/* authenticate then decrypt the data */
+							if (satp_cipher_transform(&cns->rxcpr, dmsg, emsg, mlen) == true)
+							{
+								err = (satp_errors)dmsg[0U];
+							}
+							else
+							{
+								err = satp_error_cipher_auth_failure;
+							}
 						}
 						else
 						{
-							err = satp_error_cipher_auth_failure;
+							err = satp_error_invalid_request;
 						}
 					}
 					else
 					{
-						err = satp_error_invalid_request;
+						err = satp_error_packet_expired;
 					}
 				}
-				else
+				else if (cns->exflag != satp_flag_keepalive_request)
 				{
-					err = satp_error_packet_expired;
+					err = satp_error_channel_down;
 				}
 			}
-			else if (cns->exflag != satp_flag_keepalive_request)
+			else
 			{
-				err = satp_error_channel_down;
+				err = satp_error_unsequenced;
 			}
-		}
-		else
-		{
-			err = satp_error_unsequenced;
 		}
 	}
 
@@ -113,7 +130,7 @@ satp_errors satp_decrypt_error_message(satp_connection_state* cns, uint8_t* mess
 
 void satp_connection_dispose(satp_connection_state* cns)
 {
-	assert(cns != NULL);
+	SATP_ASSERT(cns != NULL);
 
 	if (cns != NULL)
 	{
@@ -355,9 +372,113 @@ void satp_increment_device_key(uint8_t* sdkey)
 	qsc_intutils_be32to8(sdkey + SATP_DID_SIZE, ctr);
 }
 
+const char* satp_get_error_description(satp_messages message)
+{
+	const char* dsc;
+
+	dsc = NULL;
+
+	if (message < SATP_MESSAGE_STRING_DEPTH && message >= 0)
+	{
+		dsc = SATP_MESSAGE_STRINGS[(size_t)message];
+
+	}
+
+	return dsc;
+}
+
+void satp_log_system_error(satp_errors err)
+{
+	char mtmp[SATP_ERROR_STRING_WIDTH * 2] = { 0 };
+	const char* perr;
+	const char* pmsg;
+
+	pmsg = satp_error_to_string(err);
+	perr = satp_get_error_description(satp_messages_system_message);
+
+	qsc_stringutils_copy_string(mtmp, sizeof(mtmp), pmsg);
+	qsc_stringutils_concat_strings(mtmp, sizeof(mtmp), perr);
+
+	satp_logger_write(mtmp);
+}
+
+void satp_log_error(satp_messages emsg, qsc_socket_exceptions err, const char* msg)
+{
+	SATP_ASSERT(msg != NULL);
+
+	char mtmp[SATP_ERROR_STRING_WIDTH * 2] = { 0 };
+	const char* perr;
+	const char* phdr;
+	const char* pmsg;
+
+	pmsg = satp_get_error_description(emsg);
+
+	if (pmsg != NULL)
+	{
+		if (msg != NULL)
+		{
+			qsc_stringutils_copy_string(mtmp, sizeof(mtmp), pmsg);
+			qsc_stringutils_concat_strings(mtmp, sizeof(mtmp), msg);
+			satp_logger_write(mtmp);
+		}
+		else
+		{
+			satp_logger_write(pmsg);
+		}
+	}
+
+	phdr = satp_get_error_description(satp_messages_socket_message);
+	perr = qsc_socket_error_to_string(err);
+
+	if (pmsg != NULL && perr != NULL)
+	{
+		qsc_stringutils_clear_string(mtmp);
+		qsc_stringutils_copy_string(mtmp, sizeof(mtmp), phdr);
+		qsc_stringutils_concat_strings(mtmp, sizeof(mtmp), perr);
+		satp_logger_write(mtmp);
+	}
+}
+
+void satp_log_message(satp_messages emsg)
+{
+	const char* msg = satp_get_error_description(emsg);
+
+	if (msg != NULL)
+	{
+		satp_logger_write(msg);
+	}
+}
+
+void satp_log_write(satp_messages emsg, const char* msg)
+{
+	SATP_ASSERT(msg != NULL);
+
+	const char* pmsg = satp_get_error_description(emsg);
+
+	if (pmsg != NULL)
+	{
+		if (msg != NULL)
+		{
+			char mtmp[SATP_ERROR_STRING_WIDTH + 1U] = { 0 };
+
+			qsc_stringutils_copy_string(mtmp, sizeof(mtmp), pmsg);
+
+			if ((qsc_stringutils_string_size(msg) + qsc_stringutils_string_size(mtmp)) < sizeof(mtmp))
+			{
+				qsc_stringutils_concat_strings(mtmp, sizeof(mtmp), msg);
+				satp_logger_write(mtmp);
+			}
+		}
+		else
+		{
+			satp_logger_write(pmsg);
+		}
+	}
+}
+
 void satp_packet_error_message(satp_network_packet* packet, satp_errors error)
 {
-	assert(packet != NULL);
+	SATP_ASSERT(packet != NULL);
 
 	if (packet != NULL)
 	{
@@ -638,7 +759,7 @@ size_t satp_packet_to_stream(const satp_network_packet* packet, uint8_t* pstream
 
 void satp_send_network_error(const qsc_socket* sock, satp_errors error)
 {
-	assert(sock != NULL);
+	SATP_ASSERT(sock != NULL);
 
 	if (qsc_socket_is_connected(sock) == true)
 	{

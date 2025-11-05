@@ -74,9 +74,9 @@ static bool client_initialize(satp_kex_client_state* cls, satp_connection_state*
 	return res;
 }
 
-static satp_errors client_receive_loop(void* prcv)
+static void client_receive_loop(void* prcv)
 {
-	assert(prcv != NULL);
+	SATP_ASSERT(prcv != NULL);
 
 	satp_network_packet pkt = { 0U };
 	char cadd[QSC_SOCKET_ADDRESS_MAX_SIZE] = { 0U };
@@ -141,7 +141,7 @@ static satp_errors client_receive_loop(void* prcv)
 									else
 									{
 										/* close the connection on authentication failure */
-										err = satp_error_decryption_failure;
+										satp_log_system_error(err);
 										break;
 									}
 
@@ -150,14 +150,19 @@ static satp_errors client_receive_loop(void* prcv)
 								else
 								{
 									/* close the connection on memory allocation failure */
-									err = satp_error_allocation_failure;
+									satp_log_system_error(satp_error_allocation_failure);
 									break;
 								}
 							}
 							else if (pkt.flag == satp_flag_error_condition)
 							{
-								err = satp_decrypt_error_message(pprcv->pcns, rbuf);
-								break;
+								/* anti-dos: break on error message is conditional 
+								   on succesful authentication/decryption */
+								if (satp_decrypt_error_message(&err, pprcv->pcns, rbuf) == true)
+								{
+									satp_log_system_error(err);
+									break;
+								}
 							}
 							else
 							{
@@ -173,19 +178,19 @@ static satp_errors client_receive_loop(void* prcv)
 										serr == qsc_socket_exception_network_failure ||
 										serr == qsc_socket_exception_shut_down)
 									{
-										err = satp_error_connection_failure;
+										satp_log_system_error(satp_error_connection_failure);
 										break;
 									}
 									else
 									{
-										err = satp_error_receive_failure;
+										satp_log_system_error(satp_error_receive_failure);
 									}
 								}
 							}
 						}
 						else
 						{
-							err = satp_error_receive_failure;
+							satp_log_system_error(satp_error_receive_failure);
 							break;
 						}
 					}
@@ -193,13 +198,13 @@ static satp_errors client_receive_loop(void* prcv)
 				else
 				{
 					/* close the connection on memory allocation failure */
-					err = satp_error_allocation_failure;
+					satp_log_system_error(satp_error_allocation_failure);
 					break;
 				}
 			}
 			else
 			{
-				err = satp_error_receive_failure;
+				satp_log_system_error(satp_error_receive_failure);
 				break;
 			}
 		}
@@ -208,10 +213,8 @@ static satp_errors client_receive_loop(void* prcv)
 	}
 	else
 	{
-		err = satp_error_allocation_failure;
+		satp_log_system_error(satp_error_allocation_failure);
 	}
-
-	return err;
 }
 
 static bool client_authentication_request(const client_receiver_state* prcv, const satp_device_key* ckey)
@@ -286,10 +289,10 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 	void (*send_func)(satp_connection_state*),
 	void (*receive_callback)(satp_connection_state*, const uint8_t*, size_t))
 {
-	assert(ckey != NULL);
-	assert(address != NULL);
-	assert(send_func != NULL);
-	assert(receive_callback != NULL);
+	SATP_ASSERT(ckey != NULL);
+	SATP_ASSERT(address != NULL);
+	SATP_ASSERT(send_func != NULL);
+	SATP_ASSERT(receive_callback != NULL);
 
 	satp_kex_client_state* pcls;
 	client_receiver_state* prcv;
@@ -298,6 +301,8 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 
 	pcls = NULL;
 	prcv = NULL;
+
+	satp_logger_initialize(NULL);
 
 	if (ckey != NULL && address != NULL && send_func != NULL && receive_callback != NULL)
 	{
@@ -346,26 +351,31 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 					}
 					else
 					{
+						satp_log_message(satp_messages_invalid_request);
 						err = satp_error_invalid_input;
 					}
 				}
 				else
 				{
+					satp_log_message(satp_messages_connection_fail);
 					err = satp_error_connection_failure;
 				}
 			}
 			else
 			{
+				satp_log_message(satp_messages_allocate_fail);
 				err = satp_error_allocation_failure;
 			}
 		}
 		else
 		{
+			satp_log_message(satp_messages_allocate_fail);
 			err = satp_error_allocation_failure;
 		}
 	}
 	else
 	{
+		satp_log_message(satp_messages_invalid_request);
 		err = satp_error_invalid_input;
 	}
 
@@ -398,10 +408,10 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 	void (*send_func)(satp_connection_state*),
 	void (*receive_callback)(satp_connection_state*, const uint8_t*, size_t))
 {
-	assert(ckey != NULL);
-	assert(address != NULL);
-	assert(send_func != NULL);
-	assert(receive_callback != NULL);
+	SATP_ASSERT(ckey != NULL);
+	SATP_ASSERT(address != NULL);
+	SATP_ASSERT(send_func != NULL);
+	SATP_ASSERT(receive_callback != NULL);
 
 	satp_kex_client_state* pcls;
 	client_receiver_state* prcv;
@@ -410,6 +420,8 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 
 	pcls = NULL;
 	prcv = NULL;
+
+	satp_logger_initialize(NULL);
 
 	if (ckey != NULL && address != NULL && send_func != NULL && receive_callback != NULL)
 	{
@@ -434,40 +446,55 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 				{
 					/* initialize the client */
 					err = satp_error_none;
-					client_initialize(pcls, prcv->pcns, ckey);
 
-					/* perform the key exchange */
-					err = satp_kex_client_key_exchange(pcls, prcv->pcns);
-
-					if (err == satp_error_none)
+					if (client_initialize(pcls, prcv->pcns, ckey) == true)
 					{
-						/* start the receive loop on a new thread */
-						qsc_async_thread_create(&client_receive_loop, prcv);
+						/* perform the key exchange */
+						err = satp_kex_client_key_exchange(pcls, prcv->pcns);
 
-						/* start the send loop on the main thread */
-						send_func(prcv->pcns);
+						if (err == satp_error_none)
+						{
+							/* send the authentication request */
+							if (client_authentication_request(prcv, ckey) == true)
+							{
+								/* start the receive loop on a new thread */
+								qsc_async_thread_create(&client_receive_loop, prcv);
 
-						/* disconnect the socket */
-						client_connection_dispose(prcv);
+								/* start the send loop on the main thread */
+								send_func(prcv->pcns);
+							}
+
+							/* disconnect the socket */
+							client_connection_dispose(prcv);
+						}
+					}
+					else
+					{
+						satp_log_message(satp_messages_invalid_request);
+						err = satp_error_invalid_input;
 					}
 				}
 				else
 				{
+					satp_log_message(satp_messages_connection_fail);
 					err = satp_error_connection_failure;
 				}
 			}
 			else
 			{
+				satp_log_message(satp_messages_allocate_fail);
 				err = satp_error_allocation_failure;
 			}
 		}
 		else
 		{
+			satp_log_message(satp_messages_allocate_fail);
 			err = satp_error_allocation_failure;
 		}
 	}
 	else
 	{
+		satp_log_message(satp_messages_invalid_request);
 		err = satp_error_invalid_input;
 	}
 

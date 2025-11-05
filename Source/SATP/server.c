@@ -88,9 +88,9 @@ static bool server_authentication_response(server_receiver_state* prcv)
 	return (mlen == SERVER_AUTHENTICATION_RESPONSE_PACKET_SIZE);
 }
 
-static satp_errors server_receive_loop(void* prcv)
+static void server_receive_loop(void* prcv)
 {
-	assert(prcv != NULL);
+	SATP_ASSERT(prcv != NULL);
 
 	satp_network_packet pkt = { 0U };
 	char cadd[QSC_SOCKET_ADDRESS_MAX_SIZE] = { 0U };
@@ -181,14 +181,14 @@ static satp_errors server_receive_loop(void* prcv)
 													else
 													{
 														/* response send failed, set the error and disconnect */
-														err = satp_error_authentication_failure;
+														satp_log_system_error(satp_error_authentication_failure);
 														break;
 													}
 												}
 												else
 												{
 													/* callback authentication failed, set the error and disconnect */
-													err = satp_error_authentication_failure;
+													satp_log_system_error(satp_error_authentication_failure);
 													break;
 												}
 											}
@@ -196,7 +196,7 @@ static satp_errors server_receive_loop(void* prcv)
 										else
 										{
 											/* close the connection on authentication failure */
-											err = satp_error_decryption_failure;
+											satp_log_system_error(satp_error_decryption_failure);
 											break;
 										}
 
@@ -205,19 +205,24 @@ static satp_errors server_receive_loop(void* prcv)
 									else
 									{
 										/* close the connection on memory allocation failure */
-										err = satp_error_allocation_failure;
+										satp_log_system_error(satp_error_allocation_failure);
 										break;
 									}
 								}
 								else if (pkt.flag == satp_flag_error_condition)
 								{
-									err = satp_decrypt_error_message(pprcv->pcns, rbuf);
-									break;
+									/* anti-dos: break on error message is conditional
+									   on succesful authentication/decryption */
+									if (satp_decrypt_error_message(&err, pprcv->pcns, rbuf) == true)
+									{
+										satp_log_system_error(err);
+										break;
+									}
 								}
 								else
 								{
 									/* unknown message type, we fail out of caution but could ignore */
-									err = satp_error_receive_failure;
+									satp_log_system_error(satp_error_receive_failure);
 									break;
 								}
 							}
@@ -235,12 +240,12 @@ static satp_errors server_receive_loop(void* prcv)
 										serr == qsc_socket_exception_network_failure ||
 										serr == qsc_socket_exception_shut_down)
 									{
-										err = satp_error_connection_failure;
+										satp_log_system_error(satp_error_connection_failure);
 										break;
 									}
 									else
 									{
-										err = satp_error_receive_failure;
+										satp_log_system_error(satp_error_receive_failure);
 									}
 								}
 							}
@@ -248,7 +253,7 @@ static satp_errors server_receive_loop(void* prcv)
 						else
 						{
 							/* close the connection on memory allocation failure */
-							err = satp_error_allocation_failure;
+							satp_log_system_error(satp_error_allocation_failure);
 							break;
 						}
 					}
@@ -259,7 +264,7 @@ static satp_errors server_receive_loop(void* prcv)
 			else
 			{
 				/* close the connection on memory allocation failure */
-				err = satp_error_allocation_failure;
+				satp_log_system_error(satp_error_allocation_failure);
 			}
 
 			if (pprcv->disconnect_callback != NULL)
@@ -269,7 +274,7 @@ static satp_errors server_receive_loop(void* prcv)
 		}
 		else
 		{
-			err = satp_error_kex_auth_failure;
+			satp_log_system_error(satp_error_kex_auth_failure);
 		}
 
 		if (pprcv != NULL)
@@ -279,12 +284,6 @@ static satp_errors server_receive_loop(void* prcv)
 			pprcv = NULL;
 		}
 	}
-	else
-	{
-		err = satp_error_allocation_failure;
-	}
-
-	return err;
 }
 
 static satp_errors server_start(const satp_server_key* skey,
@@ -293,9 +292,9 @@ static satp_errors server_start(const satp_server_key* skey,
 	void (*disconnect_callback)(satp_connection_state*),
 	bool (*authentication_callback)(satp_connection_state*, const uint8_t*, size_t))
 {
-	assert(skey != NULL);
-	assert(source != NULL);
-	assert(receive_callback != NULL);
+	SATP_ASSERT(skey != NULL);
+	SATP_ASSERT(source != NULL);
+	SATP_ASSERT(receive_callback != NULL);
 
 	qsc_socket_exceptions res;
 	satp_errors err;
@@ -418,7 +417,7 @@ void satp_server_passphrase_generate(char* passphrase, size_t length)
 	}
 }
 
-void satp_server_passphrase_hash_generate(uint8_t* phash, char* passphrase, size_t passlen)
+void satp_server_passphrase_hash_generate(uint8_t* phash, const char* passphrase, size_t passlen)
 {
 	qsc_scb_state sscb = { 0U };
 
@@ -427,7 +426,7 @@ void satp_server_passphrase_hash_generate(uint8_t* phash, char* passphrase, size
 	qsc_scb_dispose(&sscb);
 }
 
-bool satp_server_passphrase_hash_verify(const uint8_t* phash, char* passphrase, size_t passlen)
+bool satp_server_passphrase_hash_verify(const uint8_t* phash, const char* passphrase, size_t passlen)
 {
 	uint8_t tmph[SATP_HASH_SIZE] = { 0U };
 
@@ -481,13 +480,15 @@ satp_errors satp_server_start_ipv4(const satp_server_key* skey,
 	void (*disconnect_callback)(satp_connection_state*),
 	bool (*authentication_callback)(satp_connection_state*, const uint8_t*, size_t))
 {
-	assert(skey != NULL);
-	assert(receive_callback != NULL);
+	SATP_ASSERT(skey != NULL);
+	SATP_ASSERT(receive_callback != NULL);
 
 	qsc_socket ssck = { 0U };
 	qsc_ipinfo_ipv4_address addt = { 0U };
 	qsc_socket_exceptions res;
 	satp_errors err;
+
+	satp_logger_initialize(NULL);
 
 	addt = qsc_ipinfo_ipv4_address_any();
 	qsc_socket_server_initialize(&ssck);
@@ -504,19 +505,27 @@ satp_errors satp_server_start_ipv4(const satp_server_key* skey,
 			if (res == qsc_socket_exception_success)
 			{
 				err = server_start(skey, &ssck, receive_callback, disconnect_callback, authentication_callback);
+
+				if (err != satp_error_none)
+				{
+					satp_log_system_error(err);
+				}
 			}
 			else
 			{
+				satp_log_message(satp_messages_listener_fail);
 				err = satp_error_listener_fail;
 			}
 		}
 		else
 		{
+			satp_log_message(satp_messages_accept_fail);
 			err = satp_error_connection_failure;
 		}
 	}
 	else
 	{
+		satp_log_message(satp_messages_accept_fail);
 		err = satp_error_connection_failure;
 	}
 
@@ -528,13 +537,15 @@ satp_errors satp_server_start_ipv6(const satp_server_key* skey,
 	void (*disconnect_callback)(satp_connection_state*),
 	bool (*authentication_callback)(satp_connection_state*, const uint8_t*, size_t))
 {
-	assert(skey != NULL);
-	assert(receive_callback != NULL);
+	SATP_ASSERT(skey != NULL);
+	SATP_ASSERT(receive_callback != NULL);
 
 	qsc_socket ssck = { 0U };
 	qsc_ipinfo_ipv6_address addt = { 0U };
 	qsc_socket_exceptions res;
 	satp_errors err;
+
+	satp_logger_initialize(NULL);
 
 	addt = qsc_ipinfo_ipv6_address_any();
 	qsc_socket_server_initialize(&ssck);
@@ -551,19 +562,27 @@ satp_errors satp_server_start_ipv6(const satp_server_key* skey,
 			if (res == qsc_socket_exception_success)
 			{
 				err = server_start(skey, &ssck, receive_callback, disconnect_callback, authentication_callback);
+
+				if (err != satp_error_none)
+				{
+					satp_log_system_error(err);
+				}
 			}
 			else
 			{
+				satp_log_message(satp_messages_listener_fail);
 				err = satp_error_listener_fail;
 			}
 		}
 		else
 		{
+			satp_log_message(satp_messages_accept_fail);
 			err = satp_error_connection_failure;
 		}
 	}
 	else
 	{
+		satp_log_message(satp_messages_accept_fail);
 		err = satp_error_connection_failure;
 	}
 

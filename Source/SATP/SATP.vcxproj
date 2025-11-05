@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="connections.h" />
     <ClInclude Include="kex.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="satpcommon.h" />
     <ClInclude Include="doxymain.h" />
     <ClInclude Include="satp.h" />
@@ -177,6 +178,7 @@
   <ItemGroup>
     <ClCompile Include="connections.c" />
     <ClCompile Include="kex.c" />
+    <ClCompile Include="logger.c" />
     <ClCompile Include="satp.c" />
     <ClCompile Include="client.c" />
     <ClCompile Include="server.c" />
