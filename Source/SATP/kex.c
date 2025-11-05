@@ -186,6 +186,7 @@ satp_errors satp_kex_client_key_exchange(satp_kex_client_state* cls, satp_connec
 	satp_network_packet resp = { 0 };
 	uint8_t mreqt[SATP_CONNECT_REQUEST_PACKET_SIZE] = { 0U };
 	uint8_t mresp[SATP_CONNECT_RESPONSE_PACKET_SIZE] = { 0U };
+	size_t rlen;
 	size_t slen;
 	satp_errors err;
 
@@ -207,38 +208,46 @@ satp_errors satp_kex_client_key_exchange(satp_kex_client_state* cls, satp_connec
 			cns->txseq += 1U;
 			/* blocking receive waits for server */
 			rlen = qsc_socket_receive(&cns->target, mresp, SATP_CONNECT_RESPONSE_PACKET_SIZE, qsc_socket_receive_flag_wait_all);
-			/* convert server response to packet */
-			satp_packet_header_deserialize(mresp, &resp);
-			resp.pmessage = mresp + SATP_HEADER_SIZE;
-			/* validate the packet header */
-			err = satp_packet_header_validate(&resp, satp_flag_connect_response, cns->rxseq, SATP_CONNECT_RESPONSE_MESSAGE_SIZE);
 
-			if (err == satp_error_none)
+			if (rlen == SATP_CONNECT_RESPONSE_PACKET_SIZE)
 			{
-				uint8_t phash[SATP_HASH_SIZE] = { 0U };
-				uint8_t shdr[SATP_HEADER_SIZE] = { 0U };
+				/* convert server response to packet */
+				satp_packet_header_deserialize(mresp, &resp);
+				resp.pmessage = mresp + SATP_HEADER_SIZE;
+				/* validate the packet header */
+				err = satp_packet_header_validate(&resp, satp_flag_connect_response, cns->rxseq, SATP_CONNECT_RESPONSE_MESSAGE_SIZE);
 
-				/* add the header to aead */
-				satp_packet_header_serialize(&resp, shdr);
-				qsc_rcs_set_associated(&cns->rxcpr, shdr, SATP_HEADER_SIZE);
-
-				/* decrypt the message */
-				if (qsc_rcs_transform(&cns->rxcpr, phash, resp.pmessage, SATP_HASH_SIZE) == true)
+				if (err == satp_error_none)
 				{
-					/* verify the server schash */
-					if (qsc_intutils_verify(phash, cls->hc, SATP_HASH_SIZE) == 0)
+					uint8_t phash[SATP_HASH_SIZE] = { 0U };
+					uint8_t shdr[SATP_HEADER_SIZE] = { 0U };
+
+					/* add the header to aead */
+					satp_packet_header_serialize(&resp, shdr);
+					qsc_rcs_set_associated(&cns->rxcpr, shdr, SATP_HEADER_SIZE);
+
+					/* decrypt the message */
+					if (qsc_rcs_transform(&cns->rxcpr, phash, resp.pmessage, SATP_HASH_SIZE) == true)
 					{
-						cns->rxseq += 1U;
+						/* verify the server schash */
+						if (qsc_intutils_verify(phash, cls->hc, SATP_HASH_SIZE) == 0)
+						{
+							cns->rxseq += 1U;
+						}
+						else
+						{
+							err = satp_error_authentication_failure;
+						}
 					}
 					else
 					{
-						err = satp_error_authentication_failure;
+						err = satp_error_decryption_failure;
 					}
 				}
-				else
-				{
-					err = satp_error_decryption_failure;
-				}
+			}
+			else
+			{
+				err = satp_error_receive_failure;
 			}
 		}
 		else
