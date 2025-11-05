@@ -332,7 +332,7 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 							if (client_authentication_request(prcv, ckey) == true)
 							{
 								/* start the receive loop on a new thread */
-								qsc_async_thread_create((void*)&client_receive_loop, prcv);
+								qsc_async_thread_create(&client_receive_loop, prcv);
 
 								/* start the send loop on the main thread */
 								send_func(prcv->pcns);
@@ -440,7 +440,7 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 					if (err == satp_error_none)
 					{
 						/* start the receive loop on a new thread */
-						qsc_async_thread_create((void*)&client_receive_loop, prcv);
+						qsc_async_thread_create(&client_receive_loop, prcv);
 
 						/* start the send loop on the main thread */
 						send_func(prcv->pcns);
