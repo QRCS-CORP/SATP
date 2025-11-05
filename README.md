@@ -18,6 +18,10 @@
 **SATP: A Post-Quantum Hierarchical Key Distribution Protocol with Ephemeral Session Keys and Forward Secrecy**
 *A certificate-free, quantum-safe tunnel that raises in **two packets** and **under one millisecond**.*
 
+[SATP Help Documentation](https://qrcs-corp.github.io/SATP/)  
+[SATP Protocol Specification](https://qrcs-corp.github.io/SATP/pdf/satp_specification.pdf)  
+[SATP Summary Document](https://qrcs-corp.github.io/SATP/pdf/satp_summary.pdf)
+
 ## Overview
 
 SATP is a drop-in replacement for TLS/SSH wherever **public-key overhead, certificate churn, or quantum risk** is unacceptable.
