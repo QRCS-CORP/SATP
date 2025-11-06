@@ -10,7 +10,7 @@
  * \details
  * This structure holds the state information for an SATP client during a key exchange and ongoing communication session.
  */
-SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_kex_client_state
+SATP_EXPORT_API typedef struct satp_kex_client_state
 {
 	uint8_t dk[SATP_DKEY_SIZE];		/*!< The device derivation key */
 	uint8_t kid[SATP_KID_SIZE];		/*!< The device key identity string */
@@ -31,7 +31,7 @@ SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_kex_client_state
  * server derivation key. The structure also holds expiration information and packet sequence numbers for both receiving
  * and transmitting messages. The \c exflag field indicates the current position within the key exchange process.
  */
-SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_kex_server_state
+SATP_EXPORT_API typedef struct satp_kex_server_state
 {
 	uint8_t hc[SATP_HASH_SIZE];		/*!< The device session hash */
 	uint8_t sdk[SATP_SKEY_SIZE];		/*!< The server derivation key */
