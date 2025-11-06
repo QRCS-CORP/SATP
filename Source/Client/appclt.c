@@ -43,18 +43,6 @@ static void client_print_string(const char* message, size_t msglen)
 	}
 }
 
-static void client_print_error(satp_errors error)
-{
-	const char* msg;
-
-	msg = satp_error_to_string(error);
-
-	if (msg != NULL)
-	{
-		client_print_message(msg);
-	}
-}
-
 static void client_print_banner(void)
 {
 	qsc_consoleutils_print_line("***********************************************************");
@@ -203,19 +191,6 @@ static void client_send_loop(satp_connection_state* cns)
 			client_print_message("");
 			mlen = 0;
 		}
-	}
-}
-
-static void qsc_socket_exception_callback(const qsc_socket* source, qsc_socket_exceptions error)
-{
-	SATP_ASSERT(source != NULL);
-
-	const char* emsg;
-
-	if (source != NULL && error != qsc_socket_exception_success)
-	{
-		emsg = qsc_socket_error_to_string(error);
-		client_print_message(emsg);
 	}
 }
 
