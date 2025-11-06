@@ -38,7 +38,6 @@ SATP is purpose-built for closed, high-assurance environments where **public-key
 
 SATP delivers the cryptographic assurance of TLS 1.3 with constant-time operations, zero certificates, and predictable sub-millisecond setup latency.
 
----
 
 ## 2  Cryptographic Core
 
@@ -49,7 +48,6 @@ SATP delivers the cryptographic assurance of TLS 1.3 with constant-time operatio
 | **KMAC-256**           | Packet authentication          | Tag-forgery ≤ 2⁻¹²⁸          |
 | **SCB-KDF**            | Password hardening / auth      | ≥ 2²⁰ CPU·MiB per guess      |
 
----
 
 ## 3  Deployment Snapshots
 
@@ -68,7 +66,6 @@ Sensors authenticate using a single SHAKE hash. Field-battery lifetime +25 %.
 ### 3.5  CubeSat Telemetry
 One 256-bit key per day ⇒ decade-long mission with fixed CPU budget and no certificate uplinks.
 
----
 
 ## Compilation
 
@@ -82,7 +79,6 @@ QSC builds cleanly across **Windows**, **macOS**, and **Linux** using [CMake](ht
 - **macOS:** Clang via Xcode or Homebrew  
 - **Ubuntu:** GCC or Clang  
 
----
 
 ### Building the SATP library and Client/Server projects
 
@@ -125,7 +121,6 @@ Example flag sets:
 Compile QSC, then SATP, followed by the Server and Client binaries.  
 SATP produces small, deterministic binaries suitable for both desktop and embedded targets.
 
----
 
 ## License
 
