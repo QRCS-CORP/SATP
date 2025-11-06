@@ -215,7 +215,7 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 		server_print_passphrase(upass + SATP_DID_SIZE);
 
 		/* hash the passphrase with scb before storing it */
-		satp_server_passphrase_hash_generate((char*)upass + SATP_DID_SIZE, upass + SATP_DID_SIZE, SATP_HASH_SIZE);
+		satp_server_passphrase_hash_generate((uint8_t*)upass + SATP_DID_SIZE, upass + SATP_DID_SIZE, SATP_HASH_SIZE);
 
 		/* copy the user credential associated with this key to the database */
 		server_create_path(fpath, SATP_USERDB_NAME);
