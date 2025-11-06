@@ -593,11 +593,11 @@ SATP_EXPORT_API typedef struct satp_connection_state
  * This structure represents the SATP device key, which is derived from the server key.
  * It includes the device key identity, device derivation key, and an expiration time.
  */
-SATP_EXPORT_API typedef struct satp_device_key
+SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_device_key
 {
-	QSC_SIMD_ALIGN uint8_t ktree[SATP_DKEY_SIZE * SATP_KEY_TREE_COUNT];	/*!< The device key tree */
-	QSC_SIMD_ALIGN uint8_t kid[SATP_KID_SIZE];	/*!< The device identity string */
-	QSC_SIMD_ALIGN uint8_t stc[SATP_SKEY_SIZE]; /*!< The server's long term secret */
+	uint8_t ktree[SATP_DKEY_SIZE * SATP_KEY_TREE_COUNT];	/*!< The device key tree */
+	uint8_t kid[SATP_KID_SIZE];	/*!< The device identity string */
+	uint8_t stc[SATP_SKEY_SIZE]; /*!< The server's long term secret */
 	uint64_t expiration;						/*!< The expiration time in seconds from epoch */
 	uint8_t* spass;								/*!< The pointer to the client passphrase hash */
 } satp_device_key;
@@ -608,10 +608,10 @@ SATP_EXPORT_API typedef struct satp_device_key
  * This structure holds the SATP master key information, including the key identity, the master derivation key,
  * and the expiration time. The master key is used as the root from which branch keys are derived.
  */
-SATP_EXPORT_API typedef struct satp_master_key
+SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_master_key
 {
-    QSC_SIMD_ALIGN uint8_t mdk[SATP_MKEY_SIZE];	/*!< The master derivation key */
-    QSC_SIMD_ALIGN uint8_t mid[SATP_MID_SIZE];	/*!< Master key ID (domain identifier) */
+    uint8_t mdk[SATP_MKEY_SIZE];	/*!< The master derivation key */
+    uint8_t mid[SATP_MID_SIZE];	/*!< Master key ID (domain identifier) */
 	uint64_t expiration;						/*!< The expiration time in seconds from epoch */
 } satp_master_key;
 
@@ -621,11 +621,11 @@ SATP_EXPORT_API typedef struct satp_master_key
  * This structure represents the SATP server key, which is derived from the master key. It contains the server's key identity,
  * server derivation key, and expiration time.
  */
-SATP_EXPORT_API typedef struct satp_server_key
+SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_server_key
 {
-    QSC_SIMD_ALIGN uint8_t sdk[SATP_SKEY_SIZE]; /*!< The server derivation key */
-    QSC_SIMD_ALIGN uint8_t sid[SATP_SID_SIZE];	/*!< Server key ID (domain+branch identifier) */
-	QSC_SIMD_ALIGN uint8_t stc[SATP_SKEY_SIZE]; /*!< The server long term secret */
+    uint8_t sdk[SATP_SKEY_SIZE]; /*!< The server derivation key */
+    uint8_t sid[SATP_SID_SIZE];	/*!< Server key ID (domain+branch identifier) */
+	uint8_t stc[SATP_SKEY_SIZE]; /*!< The server long term secret */
 	uint64_t expiration;						/*!< The expiration time in seconds from epoch */
 } satp_server_key;
 

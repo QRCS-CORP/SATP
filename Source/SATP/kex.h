@@ -10,13 +10,13 @@
  * \details
  * This structure holds the state information for an SATP client during a key exchange and ongoing communication session.
  */
-SATP_EXPORT_API typedef struct satp_kex_client_state
+SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_kex_client_state
 {
-	QSC_SIMD_ALIGN uint8_t dk[SATP_DKEY_SIZE];		/*!< The device derivation key */
-	QSC_SIMD_ALIGN uint8_t kid[SATP_KID_SIZE];		/*!< The device key identity string */
-	QSC_SIMD_ALIGN uint8_t hc[SATP_HASH_SIZE];		/*!< The device session hash */
-	QSC_SIMD_ALIGN uint8_t hp[SATP_HASH_SIZE];		/*!< The device passphrase hash */
-	QSC_SIMD_ALIGN uint8_t stc[SATP_SALT_SIZE];		/*!< The server session salt */
+	uint8_t dk[SATP_DKEY_SIZE];		/*!< The device derivation key */
+	uint8_t kid[SATP_KID_SIZE];		/*!< The device key identity string */
+	uint8_t hc[SATP_HASH_SIZE];		/*!< The device session hash */
+	uint8_t hp[SATP_HASH_SIZE];		/*!< The device passphrase hash */
+	uint8_t stc[SATP_SALT_SIZE];		/*!< The server session salt */
 	uint64_t expiration;							/*!< The expiration time, in seconds from epoch */
 	uint32_t kidx;									/*!< The current key index */
 } satp_kex_client_state;
@@ -31,13 +31,13 @@ SATP_EXPORT_API typedef struct satp_kex_client_state
  * server derivation key. The structure also holds expiration information and packet sequence numbers for both receiving
  * and transmitting messages. The \c exflag field indicates the current position within the key exchange process.
  */
-SATP_EXPORT_API typedef struct satp_kex_server_state
+SATP_EXPORT_API typedef struct QSC_SIMD_ALIGN satp_kex_server_state
 {
-	QSC_SIMD_ALIGN uint8_t hc[SATP_HASH_SIZE];		/*!< The device session hash */
-	QSC_SIMD_ALIGN uint8_t sdk[SATP_SKEY_SIZE];		/*!< The server derivation key */
-	QSC_SIMD_ALIGN uint8_t sid[SATP_SID_SIZE];		/*!< The server identity string */
-	QSC_SIMD_ALIGN uint8_t sp[SATP_HASH_SIZE];		/*!< The passphrase token hash */
-	QSC_SIMD_ALIGN uint8_t stc[SATP_SALT_SIZE];		/*!< The server session salt */
+	uint8_t hc[SATP_HASH_SIZE];		/*!< The device session hash */
+	uint8_t sdk[SATP_SKEY_SIZE];		/*!< The server derivation key */
+	uint8_t sid[SATP_SID_SIZE];		/*!< The server identity string */
+	uint8_t sp[SATP_HASH_SIZE];		/*!< The passphrase token hash */
+	uint8_t stc[SATP_SALT_SIZE];		/*!< The server session salt */
 	uint64_t expiration;							/*!< The expiration time in seconds from epoch */
 } satp_kex_server_state;
 
