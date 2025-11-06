@@ -32,7 +32,7 @@ typedef struct server_receiver_state
 static bool m_server_pause;
 static bool m_server_run;
 
-static void server_poll_sockets()
+static void server_poll_sockets(void)
 {
 	size_t clen;
 	qsc_mutex mtx;
