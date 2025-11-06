@@ -178,7 +178,7 @@ void satp_connections_initialize(size_t count, size_t maximum)
 	}
 }
 
-satp_connection_state* satp_connections_next()
+satp_connection_state* satp_connections_next(void)
 {
 	satp_connection_state* res;
 
