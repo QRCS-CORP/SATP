@@ -69,7 +69,9 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 	const uint8_t* emsg;
 	size_t mlen;
 	satp_errors err;
+	bool res;
 
+	res = false;
 	err = satp_error_invalid_input;
 
 	if (cns->exflag == satp_flag_session_established)
@@ -97,33 +99,16 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 							if (satp_cipher_transform(&cns->rxcpr, dmsg, emsg, mlen) == true)
 							{
 								err = (satp_errors)dmsg[0U];
-							}
-							else
-							{
-								err = satp_error_cipher_auth_failure;
+								res = true;
 							}
 						}
-						else
-						{
-							err = satp_error_invalid_request;
-						}
-					}
-					else
-					{
-						err = satp_error_packet_expired;
 					}
 				}
-				else if (cns->exflag != satp_flag_keepalive_request)
-				{
-					err = satp_error_channel_down;
-				}
-			}
-			else
-			{
-				err = satp_error_unsequenced;
 			}
 		}
 	}
+
+	*merr = err;
 
 	return err;
 }
