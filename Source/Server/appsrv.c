@@ -46,14 +46,6 @@ static void server_print_message(const char* message)
 	}
 }
 
-static void server_print_string(const char* message, size_t msglen)
-{
-	if (message != NULL && msglen != 0U)
-	{
-		qsc_consoleutils_print_line(message);
-	}
-}
-
 static void server_print_prompt(void)
 {
 	qsc_consoleutils_print_safe("server> ");
@@ -281,19 +273,6 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 	}
 
 	return res;
-}
-
-static void qsc_socket_exception_callback(const qsc_socket* source, qsc_socket_exceptions error)
-{
-	SATP_ASSERT(source != NULL);
-
-	const char* emsg;
-
-	if (source != NULL && error != qsc_socket_exception_success)
-	{
-		emsg = qsc_socket_error_to_string(error);
-		server_print_message(emsg);
-	}
 }
 
 static void server_send_echo(satp_connection_state* cns, const char* message, size_t msglen)
