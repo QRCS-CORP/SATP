@@ -145,7 +145,7 @@ static bool server_fetch_user_credential(uint8_t* credential, const uint8_t* did
 	if (res == true)
 	{
 		const uint8_t* pdid;
-		const char* pcred;
+		const uint8_t* pcred;
 
 		pdid = cred;
 		pcred = cred + SATP_DID_SIZE;
@@ -188,10 +188,9 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 	{
 		satp_device_key dkey = { 0U };
 		satp_master_key mkey = { 0U };
-		uint8_t phash[SATP_DID_SIZE + SATP_HASH_SIZE] = { 0U };
 		uint8_t sdkey[SATP_DKEY_ENCODED_SIZE] = { 0U };
 		uint8_t smkey[SATP_MKEY_ENCODED_SIZE] = { 0U };
-		uint8_t upass[SATP_DID_SIZE + SATP_HASH_SIZE + 1U] = { 0 };
+		char upass[SATP_DID_SIZE + SATP_HASH_SIZE + 1U] = { 0 };
 
 		server_print_message("The server-key was not detected, generating new master/server keys.");
 
@@ -216,7 +215,7 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 		server_print_passphrase(upass + SATP_DID_SIZE);
 
 		/* hash the passphrase with scb before storing it */
-		satp_server_passphrase_hash_generate(upass + SATP_DID_SIZE, upass + SATP_DID_SIZE, SATP_HASH_SIZE);
+		satp_server_passphrase_hash_generate((char*)upass + SATP_DID_SIZE, upass + SATP_DID_SIZE, SATP_HASH_SIZE);
 
 		/* copy the user credential associated with this key to the database */
 		server_create_path(fpath, SATP_USERDB_NAME);
@@ -322,8 +321,8 @@ static void server_send_echo(satp_connection_state* cns, const char* message, si
 		mlen = qsc_stringutils_concat_strings(mstr, sizeof(mstr), message);
 		pkt.pmessage = pmsg;
 		satp_encrypt_packet(cns, (uint8_t*)mstr, mlen, &pkt);
-		mlen = satp_packet_to_stream(&pkt, mstr);
-		qsc_socket_send(&cns->target, mstr, mlen, qsc_socket_send_flag_none);
+		mlen = satp_packet_to_stream(&pkt, (uint8_t*)mstr);
+		qsc_socket_send(&cns->target, (uint8_t*)mstr, mlen, qsc_socket_send_flag_none);
 	}
 }
 
@@ -344,14 +343,12 @@ static bool server_authentication_callback(satp_connection_state* cns, const uin
 
 	if (res == true)
 	{
-		const uint8_t* pdid;
 		const char* pcred;
 
 		/* the did is the first half of the message,
 		   the challenge passphrase is the second half of the message,
 		   and the message itself is sent over an encrypted channel. */
-		pdid = message;
-		pcred = message + SATP_DID_SIZE;
+		pcred = (char*)message + SATP_DID_SIZE;
 		
 		/* get the stored credential */
 		server_fetch_user_credential(cred, message);
@@ -389,7 +386,7 @@ static void server_receive_callback(satp_connection_state* cns, const uint8_t* m
 	/* Envelope data in an application header, in a request->response model.
 	   Parse that header here, process requests from the client, and transmit the response. */
 
-	server_send_echo(cns, message, msglen);
+	server_send_echo(cns, (const char*)message, msglen);
 }
 
 int main(void)
