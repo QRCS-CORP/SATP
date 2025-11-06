@@ -144,7 +144,7 @@ static bool client_ipv4_dialogue(satp_device_key* ckey, qsc_ipinfo_ipv4_address*
 	return res;
 }
 
-static void client_receive_callback(const satp_connection_state* cns, const uint8_t* pmsg, size_t msglen)
+static void client_receive_callback(satp_connection_state* cns, const uint8_t* pmsg, size_t msglen)
 {
 	char* cmsg;
 
