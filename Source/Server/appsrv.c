@@ -318,6 +318,8 @@ static bool server_authentication_callback(satp_connection_state* cns, const uin
 	uint8_t cred[SATP_HASH_SIZE] = { 0 };
 	bool res;
 
+	(void)cns;
+
 	res = (msglen == SATP_DID_SIZE + SATP_HASH_SIZE);
 
 	if (res == true)
