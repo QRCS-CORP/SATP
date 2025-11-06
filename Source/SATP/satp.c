@@ -110,7 +110,7 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 
 	*merr = err;
 
-	return err;
+	return res;
 }
 
 void satp_connection_dispose(satp_connection_state* cns)
