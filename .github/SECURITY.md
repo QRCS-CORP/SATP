@@ -44,4 +44,4 @@ If you responsibly disclose a severe issue, we’d be happy to include your name
 
 ---
 
-Thank you for helping us keep DKTP secure.
+Thank you for helping us keep SATP secure.
