@@ -19,8 +19,11 @@
 *A certificate-free, quantum-safe tunnel that raises in **two packets** and **under one millisecond**.*
 
 [SATP Help Documentation](https://qrcs-corp.github.io/SATP/)  
+[SATP Summary Document](https://qrcs-corp.github.io/SATP/pdf/satp_summary.pdf)  
 [SATP Protocol Specification](https://qrcs-corp.github.io/SATP/pdf/satp_specification.pdf)  
-[SATP Summary Document](https://qrcs-corp.github.io/SATP/pdf/satp_summary.pdf)
+[SATP Formal Analysis](https://qrcs-corp.github.io/SATP/pdf/satp_formal.pdf)  
+[SATP Implementation Analysis](https://qrcs-corp.github.io/SATP/pdf/satp_analysis.pdf)  
+[SATP Integration Guide](https://qrcs-corp.github.io/SATP/pdf/satp_integration.pdf) 
 
 ## Overview
 
@@ -124,9 +127,10 @@ SATP produces small, deterministic binaries suitable for both desktop and embedd
 
 ## License
 
-ACQUISITION INQUIRIES:
-QRCS is currently seeking a corporate acquirer for this technology.
-Parties interested in exclusive licensing or acquisition should contact: contact@qrcscorp.ca
+INVESTMENT INQUIRIES:
+QRCS is currently seeking a corporate investor for this technology.
+Parties interested in licensing or investment should connect to us at: contact@qrcscorp.ca  
+Visit https://www.qrcscorp.ca for a full inventory of our products and services.  
 
 PATENT NOTICE:
 One or more patent applications (provisional and/or non-provisional) covering aspects of this software have been filed with the United States Patent and 
