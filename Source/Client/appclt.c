@@ -159,9 +159,6 @@ static void client_send_loop(satp_connection_state* cns)
 
 	mlen = 0;
 
-	/* client authentication challenge */
-
-
 	/* start the sender loop */
 	while (true)
 	{
@@ -169,7 +166,7 @@ static void client_send_loop(satp_connection_state* cns)
 
 		if (qsc_consoleutils_line_contains(sin, "satp quit"))
 		{
-			satp_connection_close(cns, satp_error_none, true);
+			satp_connection_close(cns, satp_error_disconnect_request, true);
 			break;
 		}
 		else

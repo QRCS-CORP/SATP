@@ -1,37 +1,49 @@
-/* 2025 Quantum Resistant Cryptographic Solutions Corporation
+/* 2025-2026 Quantum Resistant Cryptographic Solutions Corporation
  * All Rights Reserved.
  *
- * NOTICE: This software and all accompanying materials are the exclusive 
- * property of Quantum Resistant Cryptographic Solutions Corporation (QRCS).
- * The intellectual and technical concepts contained within this implementation 
- * are proprietary to QRCS and its authorized licensors and are protected under 
- * applicable U.S. and international copyright, patent, and trade secret laws.
+ * NOTICE:
+ * This software and all accompanying materials are the exclusive property of
+ * Quantum Resistant Cryptographic Solutions Corporation (QRCS). The intellectual
+ * and technical concepts contained herein are proprietary to QRCS and are
+ * protected under applicable Canadian, U.S., and international copyright,
+ * patent, and trade secret laws.
  *
- * CRYPTOGRAPHIC STANDARDS:
- * - This software includes implementations of cryptographic algorithms such as 
- *   SHA3, AES, and others. These algorithms are public domain or standardized 
- *   by organizations such as NIST and are NOT the property of QRCS.
- * - However, all source code, optimizations, and implementations in this library 
- *   are original works of QRCS and are protected under this license.
+ * CRYPTOGRAPHIC ALGORITHMS AND IMPLEMENTATIONS:
+ * - This software includes implementations of cryptographic primitives and
+ *   algorithms that are standardized or in the public domain, such as AES
+ *   and SHA-3, which are not proprietary to QRCS.
+ * - This software also includes cryptographic primitives, constructions, and
+ *   algorithms designed by QRCS, including but not limited to RCS, SCB, CSX, QMAC, and
+ *   related components, which are proprietary to QRCS.
+ * - All source code, implementations, protocol compositions, optimizations,
+ *   parameter selections, and engineering work contained in this software are
+ *   original works of QRCS and are protected under this license.
  *
- * RESTRICTIONS:
- * - Redistribution, modification, or unauthorized distribution of this software, 
- *   in whole or in part, is strictly prohibited.
- * - This software is provided for non-commercial, educational, and research 
- *   purposes only. Commercial use in any form is expressly forbidden.
+ * LICENSE AND USE RESTRICTIONS:
+ * - This software is licensed under the Quantum Resistant Cryptographic Solutions
+ *   Public Research and Evaluation License (QRCS-PREL), 2025-2026.
+ * - Permission is granted solely for non-commercial evaluation, academic research,
+ *   cryptographic analysis, interoperability testing, and feasibility assessment.
+ * - Commercial use, production deployment, commercial redistribution, or
+ *   integration into products or services is strictly prohibited without a
+ *   separate written license agreement executed with QRCS.
  * - Licensing and authorized distribution are solely at the discretion of QRCS.
- * - Any use of this software implies acceptance of these restrictions.
+ *
+ * EXPERIMENTAL CRYPTOGRAPHY NOTICE:
+ * Portions of this software may include experimental, novel, or evolving
+ * cryptographic designs. Use of this software is entirely at the user's risk.
  *
  * DISCLAIMER:
- * This software is provided "as is," without warranty of any kind, express or 
- * implied, including but not limited to warranties of merchantability or fitness 
- * for a particular purpose. QRCS disclaims all liability for any direct, indirect, 
- * incidental, or consequential damages resulting from the use or misuse of this software.
+ * THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, SECURITY, OR NON-INFRINGEMENT. QRCS DISCLAIMS ALL
+ * LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES
+ * ARISING FROM THE USE OR MISUSE OF THIS SOFTWARE.
  *
  * FULL LICENSE:
- * This software is subject to the **Quantum Resistant Cryptographic Solutions 
- * Proprietary License (QRCS-PL)**. The complete license terms are included 
- * in the LICENSE.txt file distributed with this software.
+ * This software is subject to the Quantum Resistant Cryptographic Solutions
+ * Public Research and Evaluation License (QRCS-PREL), 2025-2026. The complete license terms
+ * are provided in the accompanying LICENSE file or at https://www.qrcscorp.ca.
  *
  * Written by: John G. Underhill
  * Contact: contact@qrcscorp.ca
@@ -414,33 +426,43 @@
 /* error code strings */
 
 /** \cond */
-#define SATP_ERROR_STRING_DEPTH 22U
+#define SATP_ERROR_STRING_DEPTH 32U
 #define SATP_ERROR_STRING_WIDTH 128U
 
 static const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_WIDTH] =
 {
 	"No error was detected",
+	"The socket accept failed",
+	"The authentication failed",
+	"The authentication succeeded",
+	"The listener socket could not connect",
+	"The memory could not be allocated",
 	"The keep alive check failed",
 	"The cipher authentication has failed",
 	"The communications channel has failed",
 	"The device could not make a connection to the remote host",
 	"The decryption authentication has failed",
-    "The device identity is unrecognized",
+	"The device identity is unrecognized",
 	"The transmission failed at the key exchange establish phase",
+	"The server has run out of socket connections",
 	"The input provided is invalid",
+	"The packet flag was unexpected",
 	"The keep alive has expired with no response",
 	"The key exchange authentication has failed",
-    "The SATP public key has expired",
+	"The SATP public key has expired",
 	"The key identity is not recognized",
+	"The listener function failed to initialize",
+	"The packet has valid time expired",
 	"The packet keep alive is invalid",
-    "The packet was received out of sequence",
-    "The random generator has failed",
-    "The receiver failed at the network layer",
-    "The transmitter failed at the network layer",
-    "The protocol string was not recognized",
+	"The packet was received out of sequence",
+	"The random generator has failed",
+	"The receiver failed at the network layer",
+	"The transmitter failed at the network layer",
+	"The protocol string was not recognized",
 	"The packets sequence number is out of sync",
-    "The expected data could not be verified",
-    "A general failure occurred",
+	"The expected data could not be verified",
+	"The remote host has disconnected",
+	"A general failure occurred"
 };
 /** \endcond */
 
@@ -458,26 +480,26 @@ static const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_
 /** \cond */
 static const char SATP_MESSAGE_STRINGS[SATP_MESSAGE_STRING_DEPTH][SATP_MESSAGE_STRING_WIDTH] =
 {
-	"The operation completed succesfully.",
-	"The socket server accept function failed.",
-	"The listener socket listener could not connect.",
-	"The listener socket could not bind to the address.",
-	"The listener socket could not be created.",
+	"The operation completed succesfully. ",
+	"The socket server accept function failed. ",
+	"The listener socket listener could not connect. ",
+	"The listener socket could not bind to the address. ",
+	"The listener socket could not be created. ",
 	"The server is connected to remote host: ",
-	"The socket receive function failed.",
-	"The server had a memory allocation failure.",
-	"The key exchange has experienced a failure.",
+	"The socket receive function failed. ",
+	"The server had a memory allocation failure. ",
+	"The key exchange has experienced a failure. ",
 	"The server has disconnected from the remote host: ",
-	"The server has disconnected the client due to an error",
+	"The server has disconnected the client due to an error. ",
 	"The server has had a socket level error: ",
-	"The server has reached the maximum number of connections",
-	"The server listener socket has failed.",
-	"The server has run out of socket connections",
-	"The message decryption has failed",
-	"The keepalive function has failed",
-	"The keepalive period has been exceeded",
-	"The connection failed or was interrupted",
-	"The function received an invalid request",
+	"The server has reached the maximum number of connections. ",
+	"The server listener socket has failed. ",
+	"The server has run out of socket connections. ",
+	"The message decryption has failed. ",
+	"The keepalive function has failed. ",
+	"The keepalive period has been exceeded. ",
+	"The connection failed or was interrupted. ",
+	"The function received an invalid request. ",
 	"The host encountered an error: "
 };
 /** \endcond */
@@ -519,7 +541,8 @@ SATP_EXPORT_API typedef enum satp_errors
 	satp_error_unknown_protocol = 0x1BU,		/*!< The protocol string was not recognized */
 	satp_error_unsequenced = 0x1CU,				/*!< The packets sequence number is out of sync */
 	satp_error_verify_failure = 0x1DU,			/*!< The expected data could not be verified */
-	satp_error_general_failure = 0xFFU			/*!< A general failure occurred */
+	satp_error_disconnect_request = 0x1EU,		/*!< The remote host has disconnected */
+	satp_error_general_failure = 0x1FU			/*!< A general failure occurred */
 } satp_errors;
 
 /*!

@@ -31,7 +31,7 @@ void satp_connection_close(satp_connection_state* cns, satp_errors err, bool not
 
 					resp.pmessage = spct + SATP_HEADER_SIZE;
 					satp_packet_header_serialize(&resp, spct);
-					/* the error is the message, error=none on disconnect */
+					/* the error is the message */
 					pmsg[0U] = (uint8_t)err;
 
 					/* add the header to aad */

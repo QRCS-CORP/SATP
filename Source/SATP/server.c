@@ -221,9 +221,8 @@ static void server_receive_loop(void* prcv)
 								}
 								else
 								{
-									/* unknown message type, we fail out of caution but could ignore */
+									/* unknown message type, we log but ignore */
 									satp_log_system_error(satp_error_receive_failure);
-									break;
 								}
 							}
 							else
@@ -393,20 +392,20 @@ void satp_server_passphrase_generate(char* passphrase, size_t length)
 	char trnd[128U] = { 0U };
 	size_t clen;
 
-	clen = 0;
+	clen = 0U;
 
 	while (clen < length)
 	{
 		qsc_acp_generate((uint8_t*)trnd, sizeof(trnd));
 
-		for (size_t i = 0; i < sizeof(trnd); ++i)
+		for (size_t i = 0U; i < sizeof(trnd); ++i)
 		{
 			if (trnd[i] > 32 && trnd[i] < 127)
 			{
 				passphrase[clen] = trnd[i];
 				++clen;
 
-				if (clen >= length - 1)
+				if (clen >= length - 1U)
 				{
 					break;
 				}
@@ -421,7 +420,7 @@ void satp_server_passphrase_hash_generate(uint8_t* phash, const char* passphrase
 {
 	qsc_scb_state sscb = { 0U };
 
-	qsc_scb_initialize(&sscb, (uint8_t*)passphrase, passlen, NULL, 0, 1U, 1U);
+	qsc_scb_initialize(&sscb, (uint8_t*)passphrase, passlen, NULL, 0U, 1U, 1U);
 	qsc_scb_generate(&sscb, phash, SATP_HASH_SIZE);
 	qsc_scb_dispose(&sscb);
 }
