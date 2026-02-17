@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(QSC)
 
 # SATP Static Library
 file(GLOB_RECURSE SATP_SOURCES "Source/SATP/*.c")
-file(GLOB_RECURSE SATP_HEADERS "Source/SATP/include/*.h")
+file(GLOB_RECURSE SATP_HEADERS "Source/SATP/*.h")
 
 add_library(satp STATIC ${SATP_SOURCES} ${SATP_HEADERS})
 target_include_directories(satp PUBLIC "Source/SATP")
