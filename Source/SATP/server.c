@@ -165,7 +165,7 @@ static void server_receive_loop(void* prcv)
 
 										if (err == satp_error_none)
 										{
-											if (auth)
+											if (auth == true)
 											{
 												pprcv->receive_callback(pprcv->pcns, mstr, mlen);
 											}
