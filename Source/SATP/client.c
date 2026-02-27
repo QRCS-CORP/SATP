@@ -60,7 +60,7 @@ static bool client_initialize(satp_kex_client_state* cls, satp_connection_state*
 				/* copy kid and server secret */
 				qsc_memutils_copy(cls->kid, ckey->kid, SATP_KID_SIZE);
 				qsc_memutils_copy(cls->stc, ckey->stc, SATP_SKEY_SIZE);
-				qsc_memutils_clear(cls->hc, SATP_HASH_SIZE);
+				qsc_memutils_secure_erase(cls->hc, SATP_HASH_SIZE);
 
 				cls->expiration = ckey->expiration;
 				cns->rxseq = 0U;
@@ -142,6 +142,7 @@ static void client_receive_loop(void* prcv)
 									{
 										/* close the connection on authentication failure */
 										satp_log_system_error(err);
+										qsc_memutils_alloc_free(rmsg);
 										break;
 									}
 
@@ -296,6 +297,7 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 
 	satp_kex_client_state* pcls;
 	client_receiver_state* prcv;
+	qsc_thread trcv;
 	qsc_socket_exceptions serr;
 	satp_errors err;
 
@@ -339,10 +341,13 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 							if (client_authentication_request(prcv, ckey) == true)
 							{
 								/* start the receive loop on a new thread */
-								qsc_async_thread_create(&client_receive_loop, prcv);
+								trcv = qsc_async_thread_create(&client_receive_loop, prcv);
 
 								/* start the send loop on the main thread */
 								send_func(prcv->pcns);
+
+								/* terminate the receiver thread */
+								(void)qsc_async_thread_terminate(trcv);
 							}
 
 							/* disconnect the socket */
@@ -381,7 +386,7 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 
 	if (pcls != NULL)
 	{
-		qsc_memutils_clear(pcls, sizeof(satp_kex_client_state));
+		qsc_memutils_secure_erase(pcls, sizeof(satp_kex_client_state));
 		qsc_memutils_alloc_free(pcls);
 		pcls = NULL;
 	}
@@ -390,7 +395,7 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 	{
 		if (prcv->pcns != NULL)
 		{
-			qsc_memutils_clear(prcv->pcns, sizeof(satp_connection_state));
+			qsc_memutils_secure_erase(prcv->pcns, sizeof(satp_connection_state));
 			qsc_memutils_alloc_free(prcv->pcns);
 			prcv->pcns = NULL;
 		}
@@ -415,6 +420,7 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 
 	satp_kex_client_state* pcls;
 	client_receiver_state* prcv;
+	qsc_thread trcv;
 	qsc_socket_exceptions serr;
 	satp_errors err;
 
@@ -458,10 +464,13 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 							if (client_authentication_request(prcv, ckey) == true)
 							{
 								/* start the receive loop on a new thread */
-								qsc_async_thread_create(&client_receive_loop, prcv);
+								trcv = qsc_async_thread_create(&client_receive_loop, prcv);
 
 								/* start the send loop on the main thread */
 								send_func(prcv->pcns);
+
+								/* terminate the receiver thread */
+								(void)qsc_async_thread_terminate(trcv);
 							}
 
 							/* disconnect the socket */
@@ -500,7 +509,7 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 
 	if (pcls != NULL)
 	{
-		qsc_memutils_clear(pcls, sizeof(satp_kex_client_state));
+		qsc_memutils_secure_erase(pcls, sizeof(satp_kex_client_state));
 		qsc_memutils_alloc_free(pcls);
 		pcls = NULL;
 	}
@@ -509,7 +518,7 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 	{
 		if (prcv->pcns != NULL)
 		{
-			qsc_memutils_clear(prcv->pcns, sizeof(satp_connection_state));
+			qsc_memutils_secure_erase(prcv->pcns, sizeof(satp_connection_state));
 			qsc_memutils_alloc_free(prcv->pcns);
 			prcv->pcns = NULL;
 		}

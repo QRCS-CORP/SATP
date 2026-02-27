@@ -61,6 +61,7 @@ void satp_connection_close(satp_connection_state* cns, satp_errors err, bool not
 
 bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, const uint8_t* message)
 {
+	SATP_ASSERT(merr != NULL);
 	SATP_ASSERT(cns != NULL);
 	SATP_ASSERT(message != NULL);
 
@@ -74,16 +75,14 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 	res = false;
 	err = satp_error_invalid_input;
 
-	if (cns->exflag == satp_flag_session_established)
+	if (merr != NULL && cns != NULL && message != NULL)
 	{
 		satp_packet_header_deserialize(message, &pkt);
 		emsg = message + SATP_HEADER_SIZE;
 
-		if (cns != NULL && message != NULL)
+		if (cns->exflag == satp_flag_session_established)
 		{
-			cns->rxseq += 1;
-
-			if (pkt.sequence == cns->rxseq)
+			if (pkt.sequence == cns->rxseq + 1U)
 			{
 				if (cns->exflag == satp_flag_session_established)
 				{
@@ -98,6 +97,7 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 							/* authenticate then decrypt the data */
 							if (satp_cipher_transform(&cns->rxcpr, dmsg, emsg, mlen) == true)
 							{
+								cns->rxseq += 1;
 								err = (satp_errors)dmsg[0U];
 								res = true;
 							}
@@ -106,9 +106,9 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 				}
 			}
 		}
-	}
 
-	*merr = err;
+		*merr = err;
+	}
 
 	return res;
 }
@@ -144,9 +144,7 @@ satp_errors satp_decrypt_packet(satp_connection_state* cns, const satp_network_p
 
 	if (cns != NULL && message != NULL && msglen != NULL && packetin != NULL)
 	{
-		cns->rxseq += 1;
-
-		if (packetin->sequence == cns->rxseq)
+		if (packetin->sequence == cns->rxseq + 1U)
 		{
 			if (cns->exflag == satp_flag_session_established)
 			{
@@ -161,6 +159,7 @@ satp_errors satp_decrypt_packet(satp_connection_state* cns, const satp_network_p
 					/* authenticate then decrypt the data */
 					if (satp_cipher_transform(&cns->rxcpr, message, packetin->pmessage, *msglen) == true)
 					{
+						cns->rxseq += 1;
 						err = satp_error_none;
 					}
 					else
@@ -342,19 +341,34 @@ void satp_serialize_server_key(uint8_t* output, const satp_server_key* skey)
 	}
 }
 
-void satp_increment_device_key(uint8_t* sdkey)
+bool satp_increment_device_key(uint8_t* sdkey)
 {
+	SATP_ASSERT(sdkey != NULL);
+
 	uint8_t* kid;
 	uint32_t ctr;
+	bool res;
 
-	/* get the key id */
-	kid = sdkey;
-	ctr = qsc_intutils_be8to32(kid + SATP_DID_SIZE);
-	/* clear the key at the current position */
-	qsc_memutils_clear(sdkey + SATP_KID_SIZE + SATP_SKEY_SIZE + SATP_EXPIRATION_SIZE + (ctr * SATP_DKEY_SIZE), SATP_DKEY_SIZE);
-	/* increment and write the new key index to the kid */
-	++ctr;
-	qsc_intutils_be32to8(sdkey + SATP_DID_SIZE, ctr);
+	res = false;
+
+	if (sdkey != NULL)
+	{
+		/* get the key id */
+		kid = sdkey;
+		ctr = qsc_intutils_be8to32(kid + SATP_DID_SIZE);
+
+		if (ctr < SATP_KEY_TREE_COUNT)
+		{
+			/* clear the key at the current position */
+			qsc_memutils_secure_erase(sdkey + SATP_KID_SIZE + SATP_SKEY_SIZE + SATP_EXPIRATION_SIZE + (ctr * SATP_DKEY_SIZE), SATP_DKEY_SIZE);
+			/* increment and write the new key index to the kid */
+			++ctr;
+			qsc_intutils_be32to8(sdkey + SATP_DID_SIZE, ctr);
+			res = true;
+		}
+	}
+
+	return res;
 }
 
 const char* satp_get_error_description(satp_messages message)
@@ -465,7 +479,7 @@ void satp_packet_error_message(satp_network_packet* packet, satp_errors error)
 {
 	SATP_ASSERT(packet != NULL);
 
-	if (packet != NULL)
+	if (packet != NULL && packet->pmessage != NULL)
 	{
 		packet->flag = satp_flag_error_condition;
 		packet->msglen = SATP_ERROR_MESSAGE_SIZE;
@@ -534,7 +548,7 @@ void satp_generate_device_key(satp_device_key* dkey, const satp_server_key* skey
 		}
 
 		/* reset the counter */
-		qsc_memutils_clear(dkey->kid + SATP_DID_SIZE, SATP_KEY_ID_SIZE);
+		qsc_memutils_secure_erase(dkey->kid + SATP_DID_SIZE, SATP_KEY_ID_SIZE);
 	}
 }
 
@@ -555,7 +569,7 @@ bool satp_generate_master_key(satp_master_key* mkey, const uint8_t* mid)
 		if (res == true)
 		{
 			qsc_memutils_copy(mkey->mdk, rnd, SATP_MKEY_SIZE);
-			qsc_memutils_clear(rnd, SATP_MID_SIZE);
+			qsc_memutils_secure_erase(rnd, SATP_MKEY_SIZE);
 			qsc_memutils_copy(mkey->mid, mid, SATP_MID_SIZE);
 			mkey->expiration = qsc_timestamp_epochtime_seconds() + SATP_KEY_DURATION_SECONDS;
 		}
@@ -648,40 +662,45 @@ satp_errors satp_packet_header_validate(const satp_network_packet* packetin, sat
 {
 	satp_errors merr;
 
-	if (packetin->flag == satp_flag_error_condition)
+	merr = satp_error_invalid_input;
+
+	if (packetin != NULL && packetin->pmessage != NULL)
 	{
-		merr = (satp_errors)packetin->pmessage[0U];
-	}
-	else
-	{
-		if (satp_packet_time_valid(packetin) == true)
+		if (packetin->flag == satp_flag_error_condition)
 		{
-			if (packetin->msglen == msglen)
+			merr = (satp_errors)packetin->pmessage[0U];
+		}
+		else
+		{
+			if (satp_packet_time_valid(packetin) == true)
 			{
-				if (packetin->sequence == sequence)
+				if (packetin->msglen == msglen)
 				{
-					if (packetin->flag == pktflag)
+					if (packetin->sequence == sequence)
 					{
-						merr = satp_error_none;
+						if (packetin->flag == pktflag)
+						{
+							merr = satp_error_none;
+						}
+						else
+						{
+							merr = satp_error_invalid_request;
+						}
 					}
 					else
 					{
-						merr = satp_error_invalid_request;
+						merr = satp_error_packet_unsequenced;
 					}
 				}
 				else
 				{
-					merr = satp_error_packet_unsequenced;
+					merr = satp_error_receive_failure;
 				}
 			}
 			else
 			{
-				merr = satp_error_receive_failure;
+				merr = satp_error_message_time_invalid;
 			}
-		}
-		else
-		{
-			merr = satp_error_message_time_invalid;
 		}
 	}
 
@@ -710,7 +729,14 @@ bool satp_packet_time_valid(const satp_network_packet* packet)
 	if (packet != NULL)
 	{
 		ltime = qsc_timestamp_datetime_utc();
-		res = (ltime >= packet->utctime - SATP_PACKET_TIME_THRESHOLD && ltime <= packet->utctime + SATP_PACKET_TIME_THRESHOLD);
+
+		/* two-way variance to account for differences in system clocks */
+		if (ltime > 0U && ltime < UINT64_MAX &&
+			UINT64_MAX - packet->utctime >= SATP_PACKET_TIME_THRESHOLD &&
+			packet->utctime >= SATP_PACKET_TIME_THRESHOLD)
+		{
+			res = (ltime >= packet->utctime - SATP_PACKET_TIME_THRESHOLD && ltime <= packet->utctime + SATP_PACKET_TIME_THRESHOLD);
+		}
 	}
 
 	return res;

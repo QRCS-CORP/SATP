@@ -29,13 +29,13 @@ typedef struct server_receiver_state
 /** \endcond */
 
 /** \cond */
-static bool m_server_pause;
-static bool m_server_run;
+
+volatile bool m_server_pause = false;
+volatile bool m_server_run = false;
 
 static void server_poll_sockets(void)
 {
 	size_t clen;
-	qsc_mutex mtx;
 
 	clen = satp_connections_size();
 
@@ -45,14 +45,10 @@ static void server_poll_sockets(void)
 
 		if (cns != NULL && satp_connections_active(i) == true)
 		{
-			mtx = qsc_async_mutex_lock_ex();
-
 			if (qsc_socket_is_connected(&cns->target) == false)
 			{
 				satp_connections_reset(cns->cid);
 			}
-
-			qsc_async_mutex_unlock_ex(mtx);
 		}
 	}
 }
@@ -135,124 +131,138 @@ static void server_receive_loop(void* prcv)
 					{
 						satp_packet_header_deserialize(rbuf, &pkt);
 
-						if (pkt.msglen > 0U && pkt.msglen <= SATP_MESSAGE_MAX)
+						if (pkt.msglen > SATP_MACTAG_SIZE && pkt.msglen <= SATP_MESSAGE_MAX)
 						{
+							uint8_t* rtmp;
+
 							plen = pkt.msglen + SATP_HEADER_SIZE;
-							rbuf = (uint8_t*)qsc_memutils_realloc(rbuf, plen);
-						}
+							rtmp = (uint8_t*)qsc_memutils_realloc(rbuf, plen);
 
-						if (rbuf != NULL)
-						{
-							qsc_memutils_clear(rbuf, plen);
-							mlen = qsc_socket_receive(&pprcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
-
-							if (mlen != 0U)
+							if (rtmp != NULL)
 							{
-								pkt.pmessage = rbuf + SATP_HEADER_SIZE;
+								rbuf = rtmp;
+								qsc_memutils_clear(rbuf, plen);
+								mlen = qsc_socket_receive(&pprcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
 
-								if (pkt.flag == satp_flag_encrypted_message)
+								if (mlen != 0U)
 								{
-									uint8_t* mstr;
+									pkt.pmessage = rbuf + SATP_HEADER_SIZE;
 
-									slen = pkt.msglen + SATP_MACTAG_SIZE;
-									mstr = (uint8_t*)qsc_memutils_malloc(slen);
-
-									if (mstr != NULL)
+									if (pkt.flag == satp_flag_encrypted_message)
 									{
-										qsc_memutils_clear(mstr, slen);
+										uint8_t* mstr;
 
-										err = satp_decrypt_packet(pprcv->pcns, &pkt, mstr, &mlen);
+										slen = pkt.msglen - SATP_MACTAG_SIZE;
+										mstr = (uint8_t*)qsc_memutils_malloc(slen);
 
-										if (err == satp_error_none)
+										if (mstr != NULL)
 										{
-											if (auth == true)
+											qsc_memutils_clear(mstr, slen);
+
+											err = satp_decrypt_packet(pprcv->pcns, &pkt, mstr, &mlen);
+
+											if (err == satp_error_none)
 											{
-												pprcv->receive_callback(pprcv->pcns, mstr, mlen);
-											}
-											else
-											{
-												if (pprcv->authentication_callback(pprcv->pcns, mstr, mlen) == true)
+												if (auth == true)
 												{
-													/* authentication challenge succeeded, the client is authenticated */
-													if (server_authentication_response(pprcv) == true)
+													pprcv->receive_callback(pprcv->pcns, mstr, mlen);
+												}
+												else
+												{
+													if (pprcv->authentication_callback(pprcv->pcns, mstr, mlen) == true)
 													{
-														auth = true;
+														/* authentication challenge succeeded, the client is authenticated */
+														if (server_authentication_response(pprcv) == true)
+														{
+															auth = true;
+														}
+														else
+														{
+															/* response send failed, set the error and disconnect */
+															qsc_memutils_alloc_free(mstr);
+															satp_log_system_error(satp_error_authentication_failure);
+															break;
+														}
 													}
 													else
 													{
-														/* response send failed, set the error and disconnect */
+														/* callback authentication failed, set the error and disconnect */
+														qsc_memutils_alloc_free(mstr);
 														satp_log_system_error(satp_error_authentication_failure);
 														break;
 													}
 												}
-												else
-												{
-													/* callback authentication failed, set the error and disconnect */
-													satp_log_system_error(satp_error_authentication_failure);
-													break;
-												}
 											}
+											else
+											{
+												/* close the connection on authentication failure */
+												qsc_memutils_alloc_free(mstr);
+												satp_log_system_error(satp_error_decryption_failure);
+												break;
+											}
+
+											qsc_memutils_secure_erase(mstr, slen);
+											qsc_memutils_alloc_free(mstr);
 										}
 										else
 										{
-											/* close the connection on authentication failure */
-											satp_log_system_error(satp_error_decryption_failure);
+											/* close the connection on memory allocation failure */
+											satp_log_system_error(satp_error_allocation_failure);
 											break;
 										}
-
-										qsc_memutils_alloc_free(mstr);
+									}
+									else if (pkt.flag == satp_flag_error_condition)
+									{
+										/* anti-dos: break on error message is conditional
+										   on succesful authentication/decryption */
+										if (satp_decrypt_error_message(&err, pprcv->pcns, rbuf) == true)
+										{
+											satp_log_system_error(err);
+											break;
+										}
 									}
 									else
 									{
-										/* close the connection on memory allocation failure */
-										satp_log_system_error(satp_error_allocation_failure);
-										break;
-									}
-								}
-								else if (pkt.flag == satp_flag_error_condition)
-								{
-									/* anti-dos: break on error message is conditional
-									   on succesful authentication/decryption */
-									if (satp_decrypt_error_message(&err, pprcv->pcns, rbuf) == true)
-									{
-										satp_log_system_error(err);
+										/* unknown message type, breal out of caution */
+										satp_log_system_error(satp_error_receive_failure);
 										break;
 									}
 								}
 								else
 								{
-									/* unknown message type, we log but ignore */
-									satp_log_system_error(satp_error_receive_failure);
+									qsc_socket_exceptions serr = qsc_socket_get_last_error();
+
+									if (serr != qsc_socket_exception_success)
+									{
+										/* fatal socket errors */
+										if (serr == qsc_socket_exception_circuit_reset ||
+											serr == qsc_socket_exception_circuit_terminated ||
+											serr == qsc_socket_exception_circuit_timeout ||
+											serr == qsc_socket_exception_dropped_connection ||
+											serr == qsc_socket_exception_network_failure ||
+											serr == qsc_socket_exception_shut_down)
+										{
+											satp_log_system_error(satp_error_connection_failure);
+											break;
+										}
+										else
+										{
+											satp_log_system_error(satp_error_receive_failure);
+										}
+									}
 								}
 							}
 							else
 							{
-								qsc_socket_exceptions serr = qsc_socket_get_last_error();
-
-								if (serr != qsc_socket_exception_success)
-								{
-									/* fatal socket errors */
-									if (serr == qsc_socket_exception_circuit_reset ||
-										serr == qsc_socket_exception_circuit_terminated ||
-										serr == qsc_socket_exception_circuit_timeout ||
-										serr == qsc_socket_exception_dropped_connection ||
-										serr == qsc_socket_exception_network_failure ||
-										serr == qsc_socket_exception_shut_down)
-									{
-										satp_log_system_error(satp_error_connection_failure);
-										break;
-									}
-									else
-									{
-										satp_log_system_error(satp_error_receive_failure);
-									}
-								}
+								/* close the connection on memory allocation failure */
+								satp_log_system_error(satp_error_allocation_failure);
+								break;
 							}
 						}
 						else
 						{
-							/* close the connection on memory allocation failure */
-							satp_log_system_error(satp_error_allocation_failure);
+							/* message size exceeds maximum allowable */
+							satp_log_write(satp_messages_invalid_request, cadd);
 							break;
 						}
 					}
@@ -299,93 +309,67 @@ static satp_errors server_start(const satp_server_key* skey,
 	satp_errors err;
 
 	err = satp_error_none;
-	m_server_pause = false;
-	m_server_run = true;
-	satp_connections_initialize(SATP_CONNECTIONS_INIT, SATP_CONNECTIONS_MAX);
 
-	do
+	qsc_async_atomic_bool_store(&m_server_pause, false);
+	qsc_async_atomic_bool_store(&m_server_run, true);
+
+	if (satp_connections_initialize(SATP_CONNECTIONS_MAX) == true)
 	{
-		satp_connection_state* cns = satp_connections_next();
-
-		if (cns != NULL)
+		do
 		{
-			res = qsc_socket_accept(source, &cns->target);
+			satp_connection_state* cns = satp_connections_next();
 
-			if (res == qsc_socket_exception_success)
+			if (cns)
 			{
-				server_receiver_state* prcv = (server_receiver_state*)qsc_memutils_malloc(sizeof(server_receiver_state));
+				res = qsc_socket_accept(source, &cns->target);
 
-				if (prcv != NULL)
+				if (res == qsc_socket_exception_success)
 				{
-					cns->target.connection_status = qsc_socket_state_connected;
-					prcv->pcns = cns;
-					prcv->disconnect_callback = disconnect_callback;
-					prcv->receive_callback = receive_callback;
-					prcv->authentication_callback = authentication_callback;
-					qsc_memutils_copy(prcv->sid, skey->sid, SATP_SID_SIZE);
-					prcv->skey = skey;
+					server_receiver_state* prcv = (server_receiver_state*)qsc_memutils_malloc(sizeof(server_receiver_state));
 
-					qsc_async_thread_create(&server_receive_loop, prcv);
-					server_poll_sockets();
+					if (prcv != NULL)
+					{
+						cns->target.connection_status = qsc_socket_state_connected;
+						prcv->pcns = cns;
+						prcv->disconnect_callback = disconnect_callback;
+						prcv->receive_callback = receive_callback;
+						prcv->authentication_callback = authentication_callback;
+						qsc_memutils_copy(prcv->sid, skey->sid, SATP_SID_SIZE);
+						prcv->skey = skey;
+
+						qsc_async_thread_create(&server_receive_loop, prcv);
+						server_poll_sockets();
+					}
+					else
+					{
+						satp_connections_reset(cns->cid);
+						err = satp_error_allocation_failure;
+					}
 				}
 				else
 				{
 					satp_connections_reset(cns->cid);
-					err = satp_error_allocation_failure;
+					err = satp_error_accept_fail;
 				}
 			}
 			else
 			{
-				satp_connections_reset(cns->cid);
-				err = satp_error_accept_fail;
+				err = satp_error_hosts_exceeded;
 			}
-		}
-		else
-		{
-			err = satp_error_hosts_exceeded;
-		}
 
-		while (m_server_pause == true)
-		{
-			qsc_async_thread_sleep(SATP_SERVER_PAUSE_INTERVAL);
-		}
-	} while (m_server_run == true);
+			while (qsc_async_atomic_bool_load(&m_server_pause) == true)
+			{
+				qsc_async_thread_sleep(SATP_SERVER_PAUSE_INTERVAL);
+			}
+		} 
+		while (qsc_async_atomic_bool_load(&m_server_run) == true);
+	}
 
 	return err;
 }
 /** \endcond */
 
 /* Public Functions */
-
-void satp_server_broadcast(const uint8_t* message, size_t msglen)
-{
-	size_t clen;
-	size_t mlen;
-	qsc_mutex mtx;
-	satp_network_packet pkt = { 0U };
-	uint8_t msgstr[SATP_CONNECTION_MTU] = { 0U };
-
-	clen = satp_connections_size();
-
-	for (size_t i = 0U; i < clen; ++i)
-	{
-		satp_connection_state* cns = satp_connections_index(i);
-
-		if (cns != NULL && satp_connections_active(i) == true)
-		{
-			mtx = qsc_async_mutex_lock_ex();
-
-			if (qsc_socket_is_connected(&cns->target) == true)
-			{
-				satp_encrypt_packet(cns, message, msglen, &pkt);
-				mlen = satp_packet_to_stream(&pkt, msgstr);
-				qsc_socket_send(&cns->target, msgstr, mlen, qsc_socket_send_flag_none);
-			}
-
-			qsc_async_mutex_unlock_ex(mtx);
-		}
-	}
-}
 
 void satp_server_passphrase_generate(char* passphrase, size_t length)
 {
@@ -412,7 +396,7 @@ void satp_server_passphrase_generate(char* passphrase, size_t length)
 			}
 		}
 
-		qsc_memutils_clear(trnd, sizeof(trnd));
+		qsc_memutils_secure_erase(trnd, sizeof(trnd));
 	}
 }
 
@@ -420,7 +404,7 @@ void satp_server_passphrase_hash_generate(uint8_t* phash, const char* passphrase
 {
 	qsc_scb_state sscb = { 0U };
 
-	qsc_scb_initialize(&sscb, (uint8_t*)passphrase, passlen, NULL, 0U, 1U, 1U);
+	qsc_scb_initialize(&sscb, (uint8_t*)passphrase, passlen, NULL, 0U, SATP_SCB_CPU_COST, SATP_SCB_MEMORY_COST);
 	qsc_scb_generate(&sscb, phash, SATP_HASH_SIZE);
 	qsc_scb_dispose(&sscb);
 }
@@ -436,13 +420,12 @@ bool satp_server_passphrase_hash_verify(const uint8_t* phash, const char* passph
 
 void satp_server_pause(void)
 {
-	m_server_pause = true;
+	qsc_async_atomic_bool_store(&m_server_pause, true);
 }
 
 void satp_server_quit(void)
 {
 	size_t clen;
-	qsc_mutex mtx;
 
 	clen = satp_connections_size();
 
@@ -452,26 +435,22 @@ void satp_server_quit(void)
 
 		if (cns != NULL && satp_connections_active(i) == true)
 		{
-			mtx = qsc_async_mutex_lock_ex();
-
 			if (qsc_socket_is_connected(&cns->target) == true)
 			{
 				qsc_socket_close_socket(&cns->target);
 			}
 
 			satp_connections_reset(cns->cid);
-
-			qsc_async_mutex_unlock_ex(mtx);
 		}
 	}
 
+	qsc_async_atomic_bool_store(&m_server_run, false);
 	satp_connections_dispose();
-	m_server_run = false;
 }
 
 void satp_server_resume(void)
 {
-	m_server_pause = false;
+	qsc_async_atomic_bool_store(&m_server_pause, false);
 }
 
 satp_errors satp_server_start_ipv4(const satp_server_key* skey,

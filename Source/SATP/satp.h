@@ -218,7 +218,7 @@
  * \def SATP_MESSAGE_SIZE
  * \brief The message size (in bytes) used during a communications session.
  */
-#define SATP_MESSAGE_SIZE 1024U
+#define SATP_MESSAGE_SIZE 0x10000UL
 
 /*!
  * \def SATP_MESSAGE_MAX
@@ -247,6 +247,30 @@
  * \brief The SATP salt size in bytes.
  */
 #define SATP_SALT_SIZE 32U
+
+/*!
+ * \def SATP_SCB_CPU_COST
+ * \brief The SCB passphrase KDF CPU Cost factor.
+ * 
+ * \details Adjust this parameter according to your hardware and security needs.
+ * Benchmark to ensure ~200 ms per hash on the server CPU.
+ * Changing this parameter effects the number of total iterations the hash function
+ * and memory expansion function undergoes.
+ * Recommended no more than 4 on most server security profiles.
+ */
+#define SATP_SCB_CPU_COST 1U
+
+/*!
+ * \def SATP_SCB_MEMORY_COST
+ * \brief The SCB passphrase KDF Memory Cost factor.
+ * 
+ * \details Adjust this parameter according to your hardware and security needs.
+ * Benchmark to ensure ~200 ms per hash on the server CPU.
+ * Recommended no more than 8 on most server security profiles.
+ * This parameter is a memory multiplier and effects the amount of memory 
+ * allocated by the SCB hashing function
+ */
+#define SATP_SCB_MEMORY_COST 1U
 
 /*!
  * \def SATP_SERVER_PORT
@@ -515,7 +539,7 @@ SATP_EXPORT_API typedef enum satp_errors
 	satp_error_accept_fail = 0x01,				/*!< The socket accept failed */
 	satp_error_authentication_failure = 0x02U,	/*!< The authentication failed */
 	satp_error_authentication_success = 0x03U,	/*!< The authentication succeeded */
-	satp_erroe_listen_fail = 0x04U,				/*!< The listener socket could not connect */
+	satp_error_listen_fail = 0x04U,				/*!< The listener socket could not connect */
 	satp_error_allocation_failure = 0x05U,		/*!< The memory could not be allocated */
 	satp_error_bad_keep_alive = 0x06U,			/*!< The keep alive check failed */
 	satp_error_cipher_auth_failure = 0x07U,		/*!< The cipher authentication has failed */
@@ -867,8 +891,10 @@ SATP_EXPORT_API void satp_serialize_server_key(uint8_t* output, const satp_serve
  * This function clears a key at the current position and increments the kid counter.
  *
  * \param sdkey The input/output serialized SATP server key structure.
+ * 
+ * \return Returns false if the increment dfails; otherwise, returns true.
  */
-SATP_EXPORT_API void satp_increment_device_key(uint8_t* sdkey);
+SATP_EXPORT_API bool satp_increment_device_key(uint8_t* sdkey);
 
 /**
  * \brief Generate a master key-set.

@@ -13,11 +13,11 @@ static void client_kex_reset(satp_kex_client_state* cls)
 
 	if (cls != NULL)
 	{
-		qsc_memutils_clear(cls->dk, SATP_DKEY_SIZE);
-		qsc_memutils_clear(cls->hc, SATP_HASH_SIZE);
-		qsc_memutils_clear(cls->hp, SATP_HASH_SIZE);
-		qsc_memutils_clear(cls->kid, SATP_KID_SIZE);
-		qsc_memutils_clear(cls->stc, SATP_SALT_SIZE);
+		qsc_memutils_secure_erase(cls->dk, SATP_DKEY_SIZE);
+		qsc_memutils_secure_erase(cls->hc, SATP_HASH_SIZE);
+		qsc_memutils_secure_erase(cls->hp, SATP_HASH_SIZE);
+		qsc_memutils_secure_erase(cls->kid, SATP_KID_SIZE);
+		qsc_memutils_secure_erase(cls->stc, SATP_SALT_SIZE);
 		cls->kidx = 0;
 		cls->expiration = 0U;
 	}
@@ -52,7 +52,7 @@ satp_errors client_connect_request(satp_kex_client_state* cls, satp_connection_s
 			qsc_memutils_copy(packetout->pmessage + SATP_KID_SIZE, nh, SATP_STOK_SIZE);
 
 			/* erase the nonce */
-			qsc_memutils_clear(nh, SATP_STOK_SIZE);
+			qsc_memutils_secure_erase(nh, SATP_STOK_SIZE);
 
 			/* assemble the connect-response packet */
 			satp_packet_header_create(packetout, satp_flag_connect_request, cns->txseq, SATP_CONNECT_REQUEST_MESSAGE_SIZE);
@@ -75,8 +75,8 @@ satp_errors client_connect_request(satp_kex_client_state* cls, satp_connection_s
 			qsc_rcs_initialize(&cns->rxcpr, &kp, false);
 
 			/* clear the keys */
-			qsc_memutils_clear((uint8_t*)&kp, sizeof(qsc_rcs_keyparams));
-			qsc_memutils_clear(prnd, sizeof(prnd));
+			qsc_memutils_secure_erase((uint8_t*)&kp, sizeof(qsc_rcs_keyparams));
+			qsc_memutils_secure_erase(prnd, sizeof(prnd));
 
 			cns->exflag = satp_flag_connect_request;
 			err = satp_error_none;
@@ -101,11 +101,11 @@ static void server_kex_reset(satp_kex_server_state* svs)
 
 	if (svs != NULL)
 	{
-		qsc_memutils_clear(svs->sid, SATP_SID_SIZE);
-		qsc_memutils_clear(svs->hc, SATP_HASH_SIZE);
-		qsc_memutils_clear(svs->sdk, SATP_SKEY_SIZE);
-		qsc_memutils_clear(svs->sp, SATP_HASH_SIZE);
-		qsc_memutils_clear(svs->stc, SATP_SALT_SIZE);
+		qsc_memutils_secure_erase(svs->sid, SATP_SID_SIZE);
+		qsc_memutils_secure_erase(svs->hc, SATP_HASH_SIZE);
+		qsc_memutils_secure_erase(svs->sdk, SATP_SKEY_SIZE);
+		qsc_memutils_secure_erase(svs->sp, SATP_HASH_SIZE);
+		qsc_memutils_secure_erase(svs->stc, SATP_SALT_SIZE);
 		svs->expiration = 0U;
 	}
 }
@@ -150,8 +150,8 @@ static satp_errors server_connect_response(satp_kex_server_state* svs, satp_conn
 			qsc_rcs_initialize(&cns->txcpr, &kp, true);
 
 			/* clear the keys */
-			qsc_memutils_clear((uint8_t*)&kp, sizeof(qsc_rcs_keyparams));
-			qsc_memutils_clear(prnd, sizeof(prnd));
+			qsc_memutils_secure_erase((uint8_t*)&kp, sizeof(qsc_rcs_keyparams));
+			qsc_memutils_secure_erase(prnd, sizeof(prnd));
 
 			/* compute the session hash */
 			qsc_cshake256_compute(svs->hc, SATP_HASH_SIZE, nh, SATP_STOK_SIZE, dk, SATP_SKEY_SIZE, svs->stc, SATP_SALT_SIZE);
@@ -182,6 +182,9 @@ static satp_errors server_connect_response(satp_kex_server_state* svs, satp_conn
 
 satp_errors satp_kex_client_key_exchange(satp_kex_client_state* cls, satp_connection_state* cns)
 {
+	SATP_ASSERT(cls != NULL);
+	SATP_ASSERT(cns != NULL);
+
 	satp_network_packet reqt = { 0 };
 	satp_network_packet resp = { 0 };
 	uint8_t mreqt[SATP_CONNECT_REQUEST_PACKET_SIZE] = { 0U };
@@ -190,91 +193,96 @@ satp_errors satp_kex_client_key_exchange(satp_kex_client_state* cls, satp_connec
 	size_t slen;
 	satp_errors err;
 
-	reqt.pmessage = mreqt + SATP_HEADER_SIZE;
-	/* create the connection request packet */
-	err = client_connect_request(cls, cns, &reqt);
-	/* convert the header to bytes */
-	satp_packet_header_serialize(&reqt, mreqt);
+	err = satp_error_invalid_input;
 
-	if (err == satp_error_none)
+	if (cls != NULL && cns != NULL)
 	{
-		/* send the connection request */
-		slen = qsc_socket_send(&cns->target, mreqt, SATP_CONNECT_REQUEST_PACKET_SIZE, qsc_socket_send_flag_none);
-		/* clear the request packet */
-		satp_packet_clear(&reqt);
+		reqt.pmessage = mreqt + SATP_HEADER_SIZE;
+		/* create the connection request packet */
+		err = client_connect_request(cls, cns, &reqt);
+		/* convert the header to bytes */
+		satp_packet_header_serialize(&reqt, mreqt);
 
-		if (slen == SATP_CONNECT_REQUEST_PACKET_SIZE)
+		if (err == satp_error_none)
 		{
-			cns->txseq += 1U;
-			/* blocking receive waits for server */
-			rlen = qsc_socket_receive(&cns->target, mresp, SATP_CONNECT_RESPONSE_PACKET_SIZE, qsc_socket_receive_flag_wait_all);
+			/* send the connection request */
+			slen = qsc_socket_send(&cns->target, mreqt, SATP_CONNECT_REQUEST_PACKET_SIZE, qsc_socket_send_flag_none);
+			/* clear the request packet */
+			satp_packet_clear(&reqt);
 
-			if (rlen == SATP_CONNECT_RESPONSE_PACKET_SIZE)
+			if (slen == SATP_CONNECT_REQUEST_PACKET_SIZE)
 			{
-				/* convert server response to packet */
-				satp_packet_header_deserialize(mresp, &resp);
-				resp.pmessage = mresp + SATP_HEADER_SIZE;
-				/* validate the packet header */
-				err = satp_packet_header_validate(&resp, satp_flag_connect_response, cns->rxseq, SATP_CONNECT_RESPONSE_MESSAGE_SIZE);
+				cns->txseq += 1U;
+				/* blocking receive waits for server */
+				rlen = qsc_socket_receive(&cns->target, mresp, SATP_CONNECT_RESPONSE_PACKET_SIZE, qsc_socket_receive_flag_wait_all);
 
-				if (err == satp_error_none)
+				if (rlen == SATP_CONNECT_RESPONSE_PACKET_SIZE)
 				{
-					uint8_t phash[SATP_HASH_SIZE] = { 0U };
-					uint8_t shdr[SATP_HEADER_SIZE] = { 0U };
+					/* convert server response to packet */
+					satp_packet_header_deserialize(mresp, &resp);
+					resp.pmessage = mresp + SATP_HEADER_SIZE;
+					/* validate the packet header */
+					err = satp_packet_header_validate(&resp, satp_flag_connect_response, cns->rxseq, SATP_CONNECT_RESPONSE_MESSAGE_SIZE);
 
-					/* add the header to aead */
-					satp_packet_header_serialize(&resp, shdr);
-					qsc_rcs_set_associated(&cns->rxcpr, shdr, SATP_HEADER_SIZE);
-
-					/* decrypt the message */
-					if (qsc_rcs_transform(&cns->rxcpr, phash, resp.pmessage, SATP_HASH_SIZE) == true)
+					if (err == satp_error_none)
 					{
-						/* verify the server schash */
-						if (qsc_intutils_verify(phash, cls->hc, SATP_HASH_SIZE) == 0)
+						uint8_t phash[SATP_HASH_SIZE] = { 0U };
+						uint8_t shdr[SATP_HEADER_SIZE] = { 0U };
+
+						/* add the header to aead */
+						satp_packet_header_serialize(&resp, shdr);
+						qsc_rcs_set_associated(&cns->rxcpr, shdr, SATP_HEADER_SIZE);
+
+						/* decrypt the message */
+						if (qsc_rcs_transform(&cns->rxcpr, phash, resp.pmessage, SATP_HASH_SIZE) == true)
 						{
-							cns->rxseq += 1U;
+							/* verify the server schash */
+							if (qsc_intutils_verify(phash, cls->hc, SATP_HASH_SIZE) == 0)
+							{
+								cns->rxseq += 1U;
+							}
+							else
+							{
+								err = satp_error_authentication_failure;
+							}
 						}
 						else
 						{
-							err = satp_error_authentication_failure;
+							err = satp_error_decryption_failure;
 						}
 					}
-					else
-					{
-						err = satp_error_decryption_failure;
-					}
+				}
+				else
+				{
+					err = satp_error_receive_failure;
 				}
 			}
 			else
 			{
-				err = satp_error_receive_failure;
+				err = satp_error_transmit_failure;
 			}
 		}
 		else
 		{
-			err = satp_error_transmit_failure;
+			err = satp_error_connection_failure;
 		}
-	}
-	else
-	{
-		err = satp_error_connection_failure;
-	}
 
-	client_kex_reset(cls);
+		client_kex_reset(cls);
 
-	if (err == satp_error_none)
-	{
-		cns->exflag = satp_flag_session_established;
-	}
-	else
-	{
-		if (cns->target.connection_status == qsc_socket_state_connected)
+		if (err == satp_error_none)
 		{
-			satp_send_network_error(&cns->target, err);
-			qsc_socket_shut_down(&cns->target, qsc_socket_shut_down_flag_both);
+			cns->exflag = satp_flag_session_established;
 		}
+		else
+		{
+			if (cns->target.connection_status == qsc_socket_state_connected)
+			{
+				satp_send_network_error(&cns->target, err);
+				qsc_socket_shut_down(&cns->target, qsc_socket_shut_down_flag_both);
+			}
 
-		satp_connection_dispose(cns);
+			satp_connection_dispose(cns);
+		}
 	}
 
 	return err;
@@ -282,6 +290,9 @@ satp_errors satp_kex_client_key_exchange(satp_kex_client_state* cls, satp_connec
 
 satp_errors satp_kex_server_key_exchange(satp_kex_server_state* svs, satp_connection_state* cns)
 {
+	SATP_ASSERT(svs != NULL);
+	SATP_ASSERT(cns != NULL);
+
 	satp_network_packet reqt = { 0 };
 	satp_network_packet resp = { 0 };
 	uint8_t mreqt[SATP_CONNECT_REQUEST_PACKET_SIZE] = { 0 };
@@ -290,65 +301,68 @@ satp_errors satp_kex_server_key_exchange(satp_kex_server_state* svs, satp_connec
 	size_t slen;
 	satp_errors err;
 
-	err = satp_error_none;
+	err = satp_error_invalid_input;
 
-	/* blocking receive waits for client */
-	rlen = qsc_socket_receive(&cns->target, mreqt, SATP_CONNECT_REQUEST_PACKET_SIZE, qsc_socket_receive_flag_wait_all);
-
-	if (rlen == SATP_CONNECT_REQUEST_PACKET_SIZE)
+	if (svs != NULL && cns != NULL)
 	{
-		/* convert server response to packet */
-		satp_packet_header_deserialize(mreqt, &reqt);
-		reqt.pmessage = mreqt + SATP_HEADER_SIZE;
+		/* blocking receive waits for client */
+		rlen = qsc_socket_receive(&cns->target, mreqt, SATP_CONNECT_REQUEST_PACKET_SIZE, qsc_socket_receive_flag_wait_all);
 
-		/* validate the packet header */
-		err = satp_packet_header_validate(&reqt, satp_flag_connect_request, cns->rxseq, SATP_CONNECT_REQUEST_MESSAGE_SIZE);
-
-		if (err == satp_error_none)
+		if (rlen == SATP_CONNECT_REQUEST_PACKET_SIZE)
 		{
-			cns->rxseq += 1U;
-			resp.pmessage = mresp + SATP_HEADER_SIZE;
-			/* create the connection request packet */
-			err = server_connect_response(svs, cns, &reqt, &resp);
-			/* convert the header to bytes */
-			satp_packet_header_serialize(&resp, mresp);
-		}
-	}
-	else
-	{
-		err = satp_error_receive_failure;
-	}
+			/* convert server response to packet */
+			satp_packet_header_deserialize(mreqt, &reqt);
+			reqt.pmessage = mreqt + SATP_HEADER_SIZE;
 
-	if (err == satp_error_none)
-	{
-		/* send the connection response */
-		slen = qsc_socket_send(&cns->target, mresp, SATP_CONNECT_RESPONSE_PACKET_SIZE, qsc_socket_send_flag_none);
+			/* validate the packet header */
+			err = satp_packet_header_validate(&reqt, satp_flag_connect_request, cns->rxseq, SATP_CONNECT_REQUEST_MESSAGE_SIZE);
 
-		if (slen == SATP_CONNECT_RESPONSE_PACKET_SIZE)
-		{
-			cns->txseq += 1U;
+			if (err == satp_error_none)
+			{
+				cns->rxseq += 1U;
+				resp.pmessage = mresp + SATP_HEADER_SIZE;
+				/* create the connection request packet */
+				err = server_connect_response(svs, cns, &reqt, &resp);
+				/* convert the header to bytes */
+				satp_packet_header_serialize(&resp, mresp);
+			}
 		}
 		else
 		{
-			err = satp_error_transmit_failure;
+			err = satp_error_receive_failure;
 		}
-	}
 
-	server_kex_reset(svs);
-
-	if (err == satp_error_none)
-	{
-		cns->exflag = satp_flag_session_established;
-	}
-	else
-	{
-		if (cns->target.connection_status == qsc_socket_state_connected)
+		if (err == satp_error_none)
 		{
-			satp_send_network_error(&cns->target, err);
-			qsc_socket_shut_down(&cns->target, qsc_socket_shut_down_flag_both);
+			/* send the connection response */
+			slen = qsc_socket_send(&cns->target, mresp, SATP_CONNECT_RESPONSE_PACKET_SIZE, qsc_socket_send_flag_none);
+
+			if (slen == SATP_CONNECT_RESPONSE_PACKET_SIZE)
+			{
+				cns->txseq += 1U;
+			}
+			else
+			{
+				err = satp_error_transmit_failure;
+			}
 		}
 
-		satp_connection_dispose(cns);
+		server_kex_reset(svs);
+
+		if (err == satp_error_none)
+		{
+			cns->exflag = satp_flag_session_established;
+		}
+		else
+		{
+			if (cns->target.connection_status == qsc_socket_state_connected)
+			{
+				satp_send_network_error(&cns->target, err);
+				qsc_socket_shut_down(&cns->target, qsc_socket_shut_down_flag_both);
+			}
+
+			satp_connection_dispose(cns);
+		}
 	}
 
 	return err;

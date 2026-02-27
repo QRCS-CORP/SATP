@@ -105,10 +105,13 @@ static bool client_ipv4_dialogue(satp_device_key* ckey, qsc_ipinfo_ipv4_address*
 			satp_deserialize_device_key(ckey, cskey);
 
 			/* Important: increment key index and erase current key */
-			satp_increment_device_key(cskey);
-			/* save the updated key to file */
-			qsc_fileutils_copy_stream_to_file(fpath, (char*)cskey, sizeof(cskey));
-			res = true;
+			res = satp_increment_device_key(cskey);
+
+			if (res == true)
+			{
+				/* save the updated key to file */
+				qsc_fileutils_copy_stream_to_file(fpath, (char*)cskey, sizeof(cskey));
+			}
 		}
 		else
 		{

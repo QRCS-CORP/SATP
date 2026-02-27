@@ -89,18 +89,6 @@
 bool satp_connections_active(size_t index);
 
 /**
- * \brief Add a new connection state to the collection and mark it as active.
- *
- * \details
- * This function creates a new connection state, adds it to the SATP connections collection, and sets its
- * status to active. If the collection has reached its maximum capacity or if the allocation fails,
- * the function returns NULL.
- *
- * \return A pointer to the newly added connection state, or NULL on failure.
- */
-satp_connection_state* satp_connections_add(void);
-
-/**
  * \brief Get the number of available (inactive) connection states in the collection.
  *
  * \details
@@ -132,10 +120,11 @@ satp_connection_state* satp_connections_get(uint32_t instance);
  * states. The \c count parameter specifies the number of connection states to create initially (minimum of one),
  * and \c maximum defines the upper limit of connection states the collection can hold.
  *
- * \param count The initial number of connection states to create (must be at least one).
- * \param maximum The maximum number of connection states allowed in the collection (must be greater than or equal to \c count).
+ * \param count: The maximum number of connection states the collection can hold.
+ *
+ * \return Returns true if the connection array was allocated successfully, otherwise false
  */
-void satp_connections_initialize(size_t count, size_t maximum);
+bool satp_connections_initialize(size_t count);
 
 /**
  * \brief Clear all connection states in the collection.
@@ -211,24 +200,5 @@ void satp_connections_reset(uint32_t instance);
  * \return The total size of the connections collection.
  */
 size_t satp_connections_size(void);
-
-#if defined(SATP_DEBUG_MODE)
-/**
- * \brief Run the self-test routine for the connections collection.
- *
- * \details
- * This function executes a series of internal tests to verify the proper functioning of the SATP connections collection.
- * The self-test routine may include the following:
- *
- * - Adding new connection states and verifying they are correctly marked as active.
- * - Checking the active status of connection slots.
- * - Retrieving connection states by instance or index.
- * - Resetting connection states and confirming they become inactive.
- * - Ensuring that the collection correctly reports the number of available and total connection slots.
- *
- * The self-test is used to validate the robustness and reliability of the connection management subsystem.
- */
-void satp_connections_self_test(void);
-#endif
 
 #endif

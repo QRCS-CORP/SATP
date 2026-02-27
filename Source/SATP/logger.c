@@ -11,9 +11,12 @@ static char m_log_path[QSC_SYSTEM_MAX_PATH] = { 0 };
 
 static void logger_default_path(char* path, size_t pathlen)
 {
+	SATP_ASSERT(path != NULL);
+	SATP_ASSERT(pathlen != 0U);
+
 	bool res;
 
-	if ((path != NULL) || (pathlen != 0U))
+	if (path != NULL && pathlen != 0U)
 	{
 		qsc_folderutils_get_directory(qsc_folderutils_directories_user_documents, path);
 		qsc_folderutils_append_delimiter(path);
@@ -106,9 +109,12 @@ void satp_logger_print(void)
 
 void satp_logger_read(char* output, size_t otplen)
 {
+	SATP_ASSERT(output != NULL);
+	SATP_ASSERT(otplen > 0U);
+
 	qsc_mutex mtx;
 
-	if ((output != NULL) && (otplen > 0U) && (satp_logger_exists() == true))
+	if (output != NULL && otplen > 0U && satp_logger_exists() == true)
 	{
 		mtx = qsc_async_mutex_lock_ex();
 		qsc_fileutils_safe_read(m_log_path, 0, output, otplen);
@@ -153,6 +159,8 @@ size_t satp_logger_size(void)
 
 bool satp_logger_write(const char* message)
 {
+	SATP_ASSERT(message != NULL);
+
 	char buf[SATP_LOGGING_MESSAGE_MAX + QSC_TIMESTAMP_STRING_SIZE + 4U] = { 0 };
 	char dlm[4] = " : ";
 	qsc_mutex mtx;

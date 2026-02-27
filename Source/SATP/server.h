@@ -86,18 +86,6 @@
 #define SATP_SERVER_PAUSE_INTERVAL 100
 
 /**
- * \brief Broadcast a message to all connected hosts.
- *
- * \details
- * This function iterates over all active connections managed by the server and transmits the specified message
- * to each connected host. It is useful for disseminating announcements or control messages across the network.
- *
- * \param message [const] A pointer to the message data to be broadcast.
- * \param msglen The length (in bytes) of the message.
- */
-SATP_EXPORT_API void satp_server_broadcast(const uint8_t* message, size_t msglen);
-
-/**
  * \brief Generate a readable pseudo-random passphrase.
  *
  * \param passphrase A pointer to the passphrase array.
