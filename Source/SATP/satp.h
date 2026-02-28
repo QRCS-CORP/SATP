@@ -127,28 +127,28 @@
  * process.
  */
 
- /*!
- * \def SATP_CLIENT_PASSWORD_MAX
- * \brief The client passphrase maximum string length
- */
+/*!
+* \def SATP_CLIENT_PASSWORD_MAX
+* \brief The client passphrase maximum string length
+*/
 #define SATP_CLIENT_PASSWORD_MAX 256U
 
- /*!
- * \def SATP_CLIENT_USERNAME_MAX
- * \brief The client username maximum string length
- */
+/*!
+* \def SATP_CLIENT_USERNAME_MAX
+* \brief The client username maximum string length
+*/
 #define SATP_CLIENT_USERNAME_MAX 256U
 
- /*!
- * \def SATP_CONNECTIONS_INIT
- * \brief The intitial SATP connections queue size
- */
+/*!
+* \def SATP_CONNECTIONS_INIT
+* \brief The intitial SATP connections queue size
+*/
 #define SATP_CONNECTIONS_INIT 1000U
 
- /*!
- * \def SATP_CONNECTIONS_MAX
- * \brief The maximum number of connections
- */
+/*!
+* \def SATP_CONNECTIONS_MAX
+* \brief The maximum number of connections
+*/
 #define SATP_CONNECTIONS_MAX 50000U
 
 /*!
@@ -226,10 +226,10 @@
  */
 #define SATP_MESSAGE_MAX (SATP_MESSAGE_SIZE + SATP_HEADER_SIZE)
 
- /*!
- * \def SATP_CONNECTION_MTU
- * \brief The SATP packet buffer size
- */
+/*!
+* \def SATP_CONNECTION_MTU
+* \brief The SATP packet buffer size
+*/
 #define SATP_CONNECTION_MTU 1500U
 
 /*!
@@ -287,11 +287,7 @@
 /*!
  * \brief The SATP configuration string for 256-bit security.
  */
-#if defined(SATP_USE_RCS_ENCRYPTION)
-	static const char SATP_CONFIG_STRING[SATP_CONFIG_SIZE + 1U] = "r01-satp-rcs256-keccak256";
-#else
-	static const char SATP_CONFIG_STRING[SATP_CONFIG_SIZE + 1U] = "r02-satp-aes256-keccak256";
-#endif
+extern const char SATP_CONFIG_STRING[SATP_CONFIG_SIZE + 1U];
 
 /* Exchange thresholds */
 
@@ -343,22 +339,22 @@
  */
 #define SATP_EPOCH_SIZE 2U
 
- /*!
- * \def SATP_ERROR_MESSAGE_SIZE
- * \brief The packet error message size
- */
+/*!
+* \def SATP_ERROR_MESSAGE_SIZE
+* \brief The packet error message size
+*/
 #define SATP_ERROR_MESSAGE_SIZE 1U
 
- /*!
- * \def SATP_ERROR_SEQUENCE
- * \brief The packet error sequence number
- */
+/*!
+* \def SATP_ERROR_SEQUENCE
+* \brief The packet error sequence number
+*/
 #define SATP_ERROR_SEQUENCE 0xFF00000000000000ULL
 
- /*!
- * \def SATP_FLAG_SIZE
- * \brief The packet flag size
- */
+/*!
+* \def SATP_FLAG_SIZE
+* \brief The packet flag size
+*/
 #define SATP_FLAG_SIZE 1
 
 /*!
@@ -453,41 +449,7 @@
 #define SATP_ERROR_STRING_DEPTH 32U
 #define SATP_ERROR_STRING_WIDTH 128U
 
-static const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_WIDTH] =
-{
-	"No error was detected",
-	"The socket accept failed",
-	"The authentication failed",
-	"The authentication succeeded",
-	"The listener socket could not connect",
-	"The memory could not be allocated",
-	"The keep alive check failed",
-	"The cipher authentication has failed",
-	"The communications channel has failed",
-	"The device could not make a connection to the remote host",
-	"The decryption authentication has failed",
-	"The device identity is unrecognized",
-	"The transmission failed at the key exchange establish phase",
-	"The server has run out of socket connections",
-	"The input provided is invalid",
-	"The packet flag was unexpected",
-	"The keep alive has expired with no response",
-	"The key exchange authentication has failed",
-	"The SATP public key has expired",
-	"The key identity is not recognized",
-	"The listener function failed to initialize",
-	"The packet has valid time expired",
-	"The packet keep alive is invalid",
-	"The packet was received out of sequence",
-	"The random generator has failed",
-	"The receiver failed at the network layer",
-	"The transmitter failed at the network layer",
-	"The protocol string was not recognized",
-	"The packets sequence number is out of sync",
-	"The expected data could not be verified",
-	"The remote host has disconnected",
-	"A general failure occurred"
-};
+extern const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_WIDTH];
 /** \endcond */
 
 /*!
@@ -502,30 +464,7 @@ static const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_
 #define SATP_MESSAGE_STRING_WIDTH 128U
 
 /** \cond */
-static const char SATP_MESSAGE_STRINGS[SATP_MESSAGE_STRING_DEPTH][SATP_MESSAGE_STRING_WIDTH] =
-{
-	"The operation completed succesfully. ",
-	"The socket server accept function failed. ",
-	"The listener socket listener could not connect. ",
-	"The listener socket could not bind to the address. ",
-	"The listener socket could not be created. ",
-	"The server is connected to remote host: ",
-	"The socket receive function failed. ",
-	"The server had a memory allocation failure. ",
-	"The key exchange has experienced a failure. ",
-	"The server has disconnected from the remote host: ",
-	"The server has disconnected the client due to an error. ",
-	"The server has had a socket level error: ",
-	"The server has reached the maximum number of connections. ",
-	"The server listener socket has failed. ",
-	"The server has run out of socket connections. ",
-	"The message decryption has failed. ",
-	"The keepalive function has failed. ",
-	"The keepalive period has been exceeded. ",
-	"The connection failed or was interrupted. ",
-	"The function received an invalid request. ",
-	"The host encountered an error: "
-};
+extern const char SATP_MESSAGE_STRINGS[SATP_MESSAGE_STRING_DEPTH][SATP_MESSAGE_STRING_WIDTH];
 /** \endcond */
 
 /*!

@@ -4,6 +4,73 @@
 #include "memutils.h"
 #include "timestamp.h"
 
+#if defined(SATP_USE_RCS_ENCRYPTION)
+	const char SATP_CONFIG_STRING[SATP_CONFIG_SIZE + 1U] = "r01-satp-rcs256-keccak256";
+#else
+	const char SATP_CONFIG_STRING[SATP_CONFIG_SIZE + 1U] = "r02-satp-aes256-keccak256";
+#endif
+
+const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_WIDTH] =
+{
+	"No error was detected",
+	"The socket accept failed",
+	"The authentication failed",
+	"The authentication succeeded",
+	"The listener socket could not connect",
+	"The memory could not be allocated",
+	"The keep alive check failed",
+	"The cipher authentication has failed",
+	"The communications channel has failed",
+	"The device could not make a connection to the remote host",
+	"The decryption authentication has failed",
+	"The device identity is unrecognized",
+	"The transmission failed at the key exchange establish phase",
+	"The server has run out of socket connections",
+	"The input provided is invalid",
+	"The packet flag was unexpected",
+	"The keep alive has expired with no response",
+	"The key exchange authentication has failed",
+	"The SATP public key has expired",
+	"The key identity is not recognized",
+	"The listener function failed to initialize",
+	"The packet has valid time expired",
+	"The packet keep alive is invalid",
+	"The packet was received out of sequence",
+	"The random generator has failed",
+	"The receiver failed at the network layer",
+	"The transmitter failed at the network layer",
+	"The protocol string was not recognized",
+	"The packets sequence number is out of sync",
+	"The expected data could not be verified",
+	"The remote host has disconnected",
+	"A general failure occurred"
+};
+
+const char SATP_MESSAGE_STRINGS[SATP_MESSAGE_STRING_DEPTH][SATP_MESSAGE_STRING_WIDTH] =
+{
+	"The operation completed succesfully. ",
+	"The socket server accept function failed. ",
+	"The listener socket listener could not connect. ",
+	"The listener socket could not bind to the address. ",
+	"The listener socket could not be created. ",
+	"The server is connected to remote host: ",
+	"The socket receive function failed. ",
+	"The server had a memory allocation failure. ",
+	"The key exchange has experienced a failure. ",
+	"The server has disconnected from the remote host: ",
+	"The server has disconnected the client due to an error. ",
+	"The server has had a socket level error: ",
+	"The server has reached the maximum number of connections. ",
+	"The server listener socket has failed. ",
+	"The server has run out of socket connections. ",
+	"The message decryption has failed. ",
+	"The keepalive function has failed. ",
+	"The keepalive period has been exceeded. ",
+	"The connection failed or was interrupted. ",
+	"The function received an invalid request. ",
+	"The host encountered an error: "
+};
+
 void satp_connection_close(satp_connection_state* cns, satp_errors err, bool notify)
 {
 	SATP_ASSERT(cns != NULL);
