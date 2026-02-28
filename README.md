@@ -1,4 +1,4 @@
-# SATP – Symmetric Authenticated Tunneling Protocol
+# SATP - Symmetric Authenticated Tunneling Protocol
 
 [![Build](https://github.com/QRCS-CORP/SATP/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/QRCS-CORP/SATP/actions/workflows/build.yml)
 [![CodeQL](https://github.com/QRCS-CORP/SATP/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/QRCS-CORP/SATP/actions/workflows/codeql-analysis.yml)
