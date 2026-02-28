@@ -107,6 +107,17 @@ static const char SATP_LOGGER_FILE[] = "satp.log";
 static const char SATP_LOGGER_HEAD[] = "SATP Version 1.1a";
 
 /**
+ * \brief Dispose of the logger.
+ *
+ * \details
+ * Flushes any pending state, destroys the mutex created during initialisation,
+ * and resets all internal logger state. This function must be called once when
+ * the logging subsystem is no longer required, typically at application shutdown.
+ * Calling any other logger function after dispose results in undefined behaviour.
+ */
+void satp_logger_dispose(void);
+
+/**
  * \brief Check if the SATP log file exists.
  *
  * \details

@@ -384,6 +384,8 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 		err = satp_error_invalid_input;
 	}
 
+	satp_logger_dispose();
+
 	if (pcls != NULL)
 	{
 		qsc_memutils_secure_erase(pcls, sizeof(satp_kex_client_state));
@@ -506,6 +508,8 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 		satp_log_message(satp_messages_invalid_request);
 		err = satp_error_invalid_input;
 	}
+
+	satp_logger_dispose();
 
 	if (pcls != NULL)
 	{
