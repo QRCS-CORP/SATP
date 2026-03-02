@@ -445,12 +445,12 @@ extern const char SATP_CONFIG_STRING[SATP_CONFIG_SIZE + 1U];
 
 /* error code strings */
 
-/** \cond */
+/** \cond DOXYGEN_NO_DOCUMENT */
 #define SATP_ERROR_STRING_DEPTH 32U
 #define SATP_ERROR_STRING_WIDTH 128U
 
 extern const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_WIDTH];
-/** \endcond */
+/** \endcond DOXYGEN_NO_DOCUMENT */
 
 /*!
 * \def SATP_MESSAGE_STRING_DEPTH
@@ -463,9 +463,9 @@ extern const char SATP_ERROR_STRINGS[SATP_ERROR_STRING_DEPTH][SATP_ERROR_STRING_
 */
 #define SATP_MESSAGE_STRING_WIDTH 128U
 
-/** \cond */
+/** \cond DOXYGEN_NO_DOCUMENT */
 extern const char SATP_MESSAGE_STRINGS[SATP_MESSAGE_STRING_DEPTH][SATP_MESSAGE_STRING_WIDTH];
-/** \endcond */
+/** \endcond DOXYGEN_NO_DOCUMENT */
 
 /*!
  * \enum satp_errors
