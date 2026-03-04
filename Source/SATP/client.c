@@ -119,6 +119,7 @@ static void client_receive_loop(void* prcv)
 
 						if (mlen > 0U)
 						{
+							qsmd_packet_header_deserialize(rbuf, &pkt);
 							pkt.pmessage = rbuf + SATP_HEADER_SIZE;
 
 							if (pkt.flag == satp_flag_encrypted_message)

@@ -2,8 +2,6 @@
 #include "async.h"
 #include "memutils.h"
 
-static qsc_mutex m_pool_mutex;
-
 /** \cond */
 typedef struct satp_connection_set
 {
@@ -13,6 +11,8 @@ typedef struct satp_connection_set
 } satp_connection_set;
 
 static satp_connection_set m_connection_set;
+static qsc_mutex m_pool_mutex;
+static bool m_state_initialized;
 /** \endcond */
 
 bool satp_connections_active(size_t index)
@@ -21,14 +21,17 @@ bool satp_connections_active(size_t index)
 
 	res = false;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	if (index < m_connection_set.count)
+	if (m_state_initialized == true)
 	{
-		res = m_connection_set.active[index];
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		if (index < m_connection_set.count)
+		{
+			res = m_connection_set.active[index];
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return res;
 }
@@ -37,62 +40,73 @@ size_t satp_connections_available(void)
 {
 	size_t count;
 
-	count = 0;
+	count = 0U;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	for (size_t i = 0; i < m_connection_set.count; ++i)
+	if (m_state_initialized == true)
 	{
-		if (m_connection_set.active[i] == false)
-		{
-			++count;
-		}
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		for (size_t i = 0; i < m_connection_set.count; ++i)
+		{
+			if (m_connection_set.active[i] == false)
+			{
+				++count;
+			}
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return count;
 }
 
 void satp_connections_clear(void)
 {
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	qsc_memutils_clear(m_connection_set.conset, sizeof(satp_connection_state) * m_connection_set.count);
-
-	for (size_t i = 0; i < m_connection_set.count; ++i)
+	if (m_state_initialized == true)
 	{
-		m_connection_set.active[i] = false;
-		m_connection_set.conset[i].cid = (uint32_t)i;
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		qsc_memutils_clear(m_connection_set.conset, sizeof(satp_connection_state) * m_connection_set.count);
+
+		for (size_t i = 0; i < m_connection_set.count; ++i)
+		{
+			m_connection_set.active[i] = false;
+			m_connection_set.conset[i].cid = (uint32_t)i;
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 }
 
 void satp_connections_dispose(void)
 {
-	if (m_connection_set.conset != NULL)
+	if (m_state_initialized == true)
 	{
-		satp_connections_clear();
-
 		if (m_connection_set.conset != NULL)
 		{
-			qsc_memutils_alloc_free(m_connection_set.conset);
-			m_connection_set.conset = NULL;
+			satp_connections_clear();
+
+			if (m_connection_set.conset != NULL)
+			{
+				qsc_memutils_alloc_free(m_connection_set.conset);
+				m_connection_set.conset = NULL;
+			}
 		}
-	}
 
-	if (m_connection_set.active != NULL)
-	{
-		qsc_memutils_alloc_free(m_connection_set.active);
-		m_connection_set.active = NULL;
-	}
+		if (m_connection_set.active != NULL)
+		{
+			qsc_memutils_alloc_free(m_connection_set.active);
+			m_connection_set.active = NULL;
+		}
 
-	m_connection_set.count = 0U;
+		m_connection_set.count = 0U;
 
-	if (m_pool_mutex)
-	{
-		(void)qsc_async_mutex_destroy(m_pool_mutex);
+		if (m_pool_mutex)
+		{
+			(void)qsc_async_mutex_destroy(m_pool_mutex);
+		}
+
+		m_state_initialized = false;
 	}
 }
 
@@ -102,14 +116,17 @@ satp_connection_state* satp_connections_index(size_t index)
 
 	res = NULL;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	if (index < m_connection_set.count)
+	if (m_state_initialized == true)
 	{
-		res = &m_connection_set.conset[index];
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		if (index < m_connection_set.count)
+		{
+			res = &m_connection_set.conset[index];
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return res;
 }
@@ -120,18 +137,21 @@ bool satp_connections_full(void)
 
 	res = true;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	for (size_t i = 0; i < m_connection_set.count; ++i)
+	if (m_state_initialized == true)
 	{
-		if (m_connection_set.active[i] == false)
-		{
-			res = false;
-			break;
-		}
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		for (size_t i = 0; i < m_connection_set.count; ++i)
+		{
+			if (m_connection_set.active[i] == false)
+			{
+				res = false;
+				break;
+			}
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return res;
 }
@@ -142,17 +162,20 @@ satp_connection_state* satp_connections_get(uint32_t cid)
 
 	res = NULL;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	for (size_t i = 0; i < m_connection_set.count; ++i)
+	if (m_state_initialized == true)
 	{
-		if (m_connection_set.conset[i].cid == cid)
-		{
-			res = &m_connection_set.conset[i];
-		}
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		for (size_t i = 0; i < m_connection_set.count; ++i)
+		{
+			if (m_connection_set.conset[i].cid == cid)
+			{
+				res = &m_connection_set.conset[i];
+			}
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return res;
 }
@@ -185,6 +208,7 @@ bool satp_connections_initialize(size_t count)
 					m_connection_set.active[i] = false;
 				}
 
+				m_state_initialized = true;
 				res = true;
 			}
 		}
@@ -199,48 +223,59 @@ satp_connection_state* satp_connections_next(void)
 
 	res = NULL;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	for (size_t i = 0; i < m_connection_set.count; ++i)
+	if (m_state_initialized == true)
 	{
-		if (m_connection_set.active[i] == false)
-		{
-			res = &m_connection_set.conset[i];
-			m_connection_set.active[i] = true;
-			break;
-		}
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		for (size_t i = 0; i < m_connection_set.count; ++i)
+		{
+			if (m_connection_set.active[i] == false)
+			{
+				res = &m_connection_set.conset[i];
+				m_connection_set.active[i] = true;
+				break;
+			}
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return res;
 }
 
 void satp_connections_reset(uint32_t cid)
 {
-	qsc_async_mutex_lock(m_pool_mutex);
-
-	for (size_t i = 0; i < m_connection_set.count; ++i)
+	if (m_state_initialized == true)
 	{
-		if (m_connection_set.conset[i].cid == cid)
-		{
-			qsc_memutils_clear(&m_connection_set.conset[i], sizeof(satp_connection_state));
-			m_connection_set.conset[i].cid = (uint32_t)i;
-			m_connection_set.active[i] = false;
-			break;
-		}
-	}
+		qsc_async_mutex_lock(m_pool_mutex);
 
-	qsc_async_mutex_unlock(m_pool_mutex);
+		for (size_t i = 0U; i < m_connection_set.count; ++i)
+		{
+			if (m_connection_set.conset[i].cid == cid)
+			{
+				qsc_memutils_clear(&m_connection_set.conset[i], sizeof(satp_connection_state));
+				m_connection_set.conset[i].cid = (uint32_t)i;
+				m_connection_set.active[i] = false;
+				break;
+			}
+		}
+
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 }
 
 size_t satp_connections_size(void)
 {
 	size_t res;
 
-	qsc_async_mutex_lock(m_pool_mutex);
-	res = m_connection_set.count;
-	qsc_async_mutex_unlock(m_pool_mutex);
+	res = 0U;
+
+	if (m_state_initialized == true)
+	{
+		qsc_async_mutex_lock(m_pool_mutex);
+		res = m_connection_set.count;
+		qsc_async_mutex_unlock(m_pool_mutex);
+	}
 
 	return res;
 }

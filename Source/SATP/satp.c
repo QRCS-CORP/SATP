@@ -126,6 +126,23 @@ void satp_connection_close(satp_connection_state* cns, satp_errors err, bool not
 	}
 }
 
+void satp_connection_dispose(satp_connection_state* cns)
+{
+	SATP_ASSERT(cns != NULL);
+
+	if (cns != NULL)
+	{
+		qsc_rcs_dispose(&cns->rxcpr);
+		qsc_rcs_dispose(&cns->txcpr);
+		qsc_memutils_clear((uint8_t*)&cns->target, sizeof(qsc_socket));
+		cns->rxseq = 0;
+		cns->txseq = 0;
+		cns->cid = 0;
+		cns->exflag = satp_flag_none;
+		cns->receiver = false;
+	}
+}
+
 bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, const uint8_t* message)
 {
 	SATP_ASSERT(merr != NULL);
@@ -156,17 +173,20 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 					/* anti-replay; verify the packet time */
 					if (satp_packet_time_valid(&pkt) == true)
 					{
-						satp_cipher_set_associated(&cns->rxcpr, message, SATP_HEADER_SIZE);
-						mlen = pkt.msglen - SATP_MACTAG_SIZE;
-
-						if (mlen == 1U)
+						if (pkt.msglen > SATP_MACTAG_SIZE)
 						{
-							/* authenticate then decrypt the data */
-							if (satp_cipher_transform(&cns->rxcpr, dmsg, emsg, mlen) == true)
+							satp_cipher_set_associated(&cns->rxcpr, message, SATP_HEADER_SIZE);
+							mlen = pkt.msglen - SATP_MACTAG_SIZE;
+
+							if (mlen == 1U)
 							{
-								cns->rxseq += 1;
-								err = (satp_errors)dmsg[0U];
-								res = true;
+								/* authenticate then decrypt the data */
+								if (satp_cipher_transform(&cns->rxcpr, dmsg, emsg, mlen) == true)
+								{
+									cns->rxseq += 1;
+									err = (satp_errors)dmsg[0U];
+									res = true;
+								}
 							}
 						}
 					}
@@ -178,23 +198,6 @@ bool satp_decrypt_error_message(satp_errors* merr, satp_connection_state* cns, c
 	}
 
 	return res;
-}
-
-void satp_connection_dispose(satp_connection_state* cns)
-{
-	SATP_ASSERT(cns != NULL);
-
-	if (cns != NULL)
-	{
-		qsc_rcs_dispose(&cns->rxcpr);
-		qsc_rcs_dispose(&cns->txcpr);
-		qsc_memutils_clear((uint8_t*)&cns->target, sizeof(qsc_socket));
-		cns->rxseq = 0;
-		cns->txseq = 0;
-		cns->cid = 0;
-		cns->exflag = satp_flag_none;
-		cns->receiver = false;
-	}
 }
 
 satp_errors satp_decrypt_packet(satp_connection_state* cns, const satp_network_packet* packetin, uint8_t* message, size_t* msglen)
@@ -218,20 +221,27 @@ satp_errors satp_decrypt_packet(satp_connection_state* cns, const satp_network_p
 				/* anti-replay; verify the packet time */
 				if (satp_packet_time_valid(packetin) == true)
 				{
-					/* serialize the header and add it to the ciphers associated data */
-					satp_packet_header_serialize(packetin, hdr);
-					satp_cipher_set_associated(&cns->rxcpr, hdr, SATP_HEADER_SIZE);
-					*msglen = packetin->msglen - SATP_MACTAG_SIZE;
-
-					/* authenticate then decrypt the data */
-					if (satp_cipher_transform(&cns->rxcpr, message, packetin->pmessage, *msglen) == true)
+					if (packetin->msglen > SATP_MACTAG_SIZE)
 					{
-						cns->rxseq += 1;
-						err = satp_error_none;
+						/* serialize the header and add it to the ciphers associated data */
+						satp_packet_header_serialize(packetin, hdr);
+						satp_cipher_set_associated(&cns->rxcpr, hdr, SATP_HEADER_SIZE);
+						*msglen = packetin->msglen - SATP_MACTAG_SIZE;
+
+						/* authenticate then decrypt the data */
+						if (satp_cipher_transform(&cns->rxcpr, message, packetin->pmessage, *msglen) == true)
+						{
+							cns->rxseq += 1;
+							err = satp_error_none;
+						}
+						else
+						{
+							err = satp_error_cipher_auth_failure;
+						}
 					}
 					else
 					{
-						err = satp_error_cipher_auth_failure;
+						err = satp_error_receive_failure;
 					}
 				}
 				else
