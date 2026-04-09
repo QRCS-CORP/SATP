@@ -34,7 +34,7 @@
 
 **SATP (Symmetric Authenticated Tunneling Protocol)** is a post-quantum alternative to TLS and SSH designed for closed, high-assurance environments where certificate infrastructure, asymmetric key-exchange overhead, or quantum risk are unacceptable.
 
-Rather than relying on public-key cryptography, SATP uses a hierarchical pre-distributed key tree. A master key generates server keys; server keys generate per-device key trees. Each session consumes one leaf of that tree and is immediately destroyed, providing forward secrecy by construction. No certificates, no CAs, no online trust anchors.
+Rather than relying on public-key cryptography, SATP uses a hierarchical pre-distributed key tree. A master key generates server keys; server keys generate per-device key trees. Each session consumes one leaf of that tree and is immediately destroyed, providing forward secrecy by construction. No certificates, no CAs, no online trust anchors. 
 
 The handshake is two packets:
 
