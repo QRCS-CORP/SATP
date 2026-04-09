@@ -80,7 +80,7 @@ server> The device-key has been saved to C:\Users\<username>\Documents\SATP\devk
 server> Distribute the device-key to the intended client.
 server> The server-key has been saved to C:\Users\<username>\Documents\SATP\srvkey.skey
 server> The master-key has been saved to C:\Users\<username>\Documents\SATP\mstkey.mkey
-server> Waiting for a connection...
+server> Waiting for a connection... 
 ```
 
 Three key files are written to your Documents folder:
