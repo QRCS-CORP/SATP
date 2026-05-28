@@ -50,10 +50,8 @@ static bool client_initialize(satp_kex_client_state* cls, satp_connection_state*
 		{
 			pkey = ckey->ktree + (cls->kidx * SATP_DKEY_SIZE);
 
-			/* Important: check if key is zeroed */
-			res = qsc_memutils_zeroed(pkey, SATP_DKEY_SIZE);
-
-			if (res == false)
+			/* reject a key-tree leaf that has already been consumed */
+			if (qsc_memutils_zeroed(pkey, SATP_DKEY_SIZE) == false)
 			{
 				/* copy the current key from the set */
 				qsc_memutils_copy(cls->dk, pkey, SATP_DKEY_SIZE);
@@ -109,11 +107,14 @@ static void client_receive_loop(void* prcv)
 
 				if (pkt.msglen > 0U && pkt.msglen <= SATP_MESSAGE_MAX)
 				{
-					plen = pkt.msglen + SATP_HEADER_SIZE;
-					rbuf = (uint8_t*)qsc_memutils_realloc(rbuf, plen);
+					uint8_t* rtmp;
 
-					if (rbuf != NULL)
+					plen = pkt.msglen + SATP_HEADER_SIZE;
+					rtmp = (uint8_t*)qsc_memutils_realloc(rbuf, plen);
+
+					if (rtmp != NULL)
 					{
+						rbuf = rtmp;
 						qsc_memutils_clear(rbuf, plen);
 						mlen = qsc_socket_receive(&pprcv->pcns->target, rbuf, plen, qsc_socket_receive_flag_wait_all);
 
@@ -196,11 +197,17 @@ static void client_receive_loop(void* prcv)
 							break;
 						}
 					}
+					else
+					{
+						/* close the connection on memory allocation failure */
+						satp_log_system_error(satp_error_allocation_failure);
+						break;
+					}
 				}
 				else
 				{
-					/* close the connection on memory allocation failure */
-					satp_log_system_error(satp_error_allocation_failure);
+					/* close the connection on invalid message length */
+					satp_log_system_error(satp_error_invalid_input);
 					break;
 				}
 			}
@@ -230,38 +237,46 @@ static bool client_authentication_request(const client_receiver_state* prcv, con
 
 	res = false;
 
-	/* copy the did and username/passphrase hash to the message */
-	qsc_memutils_copy(pmsg, ckey->kid, SATP_DID_SIZE);
-	qsc_memutils_copy(pmsg + SATP_DID_SIZE, ckey->spass, SATP_HASH_SIZE);
-
-	/* encrypt the auth request */
-	pkt.pmessage = sbuf + SATP_HEADER_SIZE;
-	satp_encrypt_packet(prcv->pcns, pmsg, sizeof(pmsg), &pkt);
-
-	/* send to the server */
-	satp_packet_header_serialize(&pkt, sbuf);
-	qsc_socket_send(&prcv->pcns->target, sbuf, CLIENT_AUTHENTICATION_REQUEST_PACKET_SIZE, qsc_socket_send_flag_none);
-
-	/* wait for the server response */
-	mlen = qsc_socket_receive(&prcv->pcns->target, rbuf, sizeof(rbuf), qsc_socket_receive_flag_wait_all);
-
-	if (mlen == CLIENT_AUTHENTICATION_RESPONSE_PACKET_SIZE)
+	if (prcv != NULL && prcv->pcns != NULL && ckey != NULL && ckey->spass != NULL)
 	{
-		uint8_t tbuf[CLIENT_AUTHENTICATION_RESPONSE_PACKET_SIZE] = { 0U };
+		/* copy the did and username/passphrase hash to the message */
+		qsc_memutils_copy(pmsg, ckey->kid, SATP_DID_SIZE);
+		qsc_memutils_copy(pmsg + SATP_DID_SIZE, ckey->spass, SATP_HASH_SIZE);
 
-		/* decrypt the packet */
-		mlen = SATP_SID_SIZE;
-		satp_packet_header_deserialize(rbuf, &pkt);
-		pkt.pmessage = rbuf + SATP_HEADER_SIZE;
-		res = (satp_decrypt_packet(prcv->pcns, &pkt, tbuf, &mlen) == satp_error_none);
-
-		if (res == true)
+		/* encrypt the auth request */
+		pkt.pmessage = sbuf + SATP_HEADER_SIZE;
+		if (satp_encrypt_packet(prcv->pcns, pmsg, sizeof(pmsg), &pkt) == satp_error_none)
 		{
-			/* a return of the server id indicates success */
-			res = (qsc_intutils_verify(ckey->kid, tbuf, SATP_SID_SIZE) == 0U);
+			/* send to the server */
+			satp_packet_header_serialize(&pkt, sbuf);
+			if (qsc_socket_send(&prcv->pcns->target, sbuf, CLIENT_AUTHENTICATION_REQUEST_PACKET_SIZE, qsc_socket_send_flag_none) == CLIENT_AUTHENTICATION_REQUEST_PACKET_SIZE)
+			{
+				/* wait for the server response */
+				mlen = qsc_socket_receive(&prcv->pcns->target, rbuf, sizeof(rbuf), qsc_socket_receive_flag_wait_all);
+
+				if (mlen == CLIENT_AUTHENTICATION_RESPONSE_PACKET_SIZE)
+				{
+					uint8_t tbuf[CLIENT_AUTHENTICATION_RESPONSE_PACKET_SIZE] = { 0U };
+
+					/* decrypt the packet */
+					mlen = SATP_SID_SIZE;
+					satp_packet_header_deserialize(rbuf, &pkt);
+					pkt.pmessage = rbuf + SATP_HEADER_SIZE;
+					res = (satp_decrypt_packet(prcv->pcns, &pkt, tbuf, &mlen) == satp_error_none);
+
+					if (res == true)
+					{
+						/* the returned server id must match the sid prefix embedded in the device id */
+						res = (qsc_intutils_verify(ckey->kid, tbuf, SATP_SID_SIZE) == 0U);
+					}
+
+					qsc_memutils_secure_erase(tbuf, sizeof(tbuf));
+				}
+			}
 		}
 	}
-	
+
+	qsc_memutils_secure_erase(pmsg, sizeof(pmsg));
 	return res;
 }
 
@@ -349,6 +364,10 @@ satp_errors satp_client_connect_ipv4(satp_device_key* ckey,
 
 								/* terminate the receiver thread */
 								(void)qsc_async_thread_terminate(trcv);
+							}
+							else
+							{
+								err = satp_error_authentication_failure;
 							}
 
 							/* disconnect the socket */
@@ -474,6 +493,10 @@ satp_errors satp_client_connect_ipv6(satp_device_key* ckey,
 
 								/* terminate the receiver thread */
 								(void)qsc_async_thread_terminate(trcv);
+							}
+							else
+							{
+								err = satp_error_authentication_failure;
 							}
 
 							/* disconnect the socket */

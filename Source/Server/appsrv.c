@@ -63,8 +63,8 @@ static void server_print_banner(void)
 	qsc_consoleutils_print_line("*************************************************************");
 	qsc_consoleutils_print_line("* SATP: Symmetric Authenticated Tunneling Protocol Listener *");
 	qsc_consoleutils_print_line("*                                                           *");
-	qsc_consoleutils_print_line("* Release:   v1.0.0.0a (A1)                                 *");
-	qsc_consoleutils_print_line("* Date:      March 14, 2025                                 *");
+	qsc_consoleutils_print_line("* Release:   v1.0.0.0b (A1)                                 *");
+	qsc_consoleutils_print_line("* Date:      May 27, 2026                                   *");
 	qsc_consoleutils_print_line("* Contact:   contact@qrcscorp.ca                            *");
 	qsc_consoleutils_print_line("*************************************************************");
 	qsc_consoleutils_print_line("");
@@ -153,6 +153,8 @@ static bool server_fetch_user_credential(uint8_t* credential, const uint8_t* did
 		}
 	}
 
+	qsc_memutils_secure_erase(cred, sizeof(cred));
+
 	return res;
 }
 
@@ -178,7 +180,7 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 		}
 
 		/* clean up */
-		qsc_memutils_clear(sskey, sizeof(sskey));
+		qsc_memutils_secure_erase(sskey, sizeof(sskey));
 	}
 	else
 	{
@@ -217,15 +219,22 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 		server_create_path(fpath, SATP_USERDB_NAME);
 		res = qsc_fileutils_copy_stream_to_file(fpath, upass, sizeof(upass));
 
-		/* serialize the device key and save it to a file */
-		server_create_path(fpath, SATP_DEVKEY_NAME);
-		satp_serialize_device_key(sdkey, &dkey);
-		res = qsc_fileutils_copy_stream_to_file(fpath, (char*)sdkey, sizeof(sdkey));
+		if (res == true)
+		{
+			/* serialize the device key and save it to a file */
+			server_create_path(fpath, SATP_DEVKEY_NAME);
+			satp_serialize_device_key(sdkey, &dkey);
+			res = qsc_fileutils_copy_stream_to_file(fpath, (char*)sdkey, sizeof(sdkey));
+		}
+		else
+		{
+			server_print_message("Could not save the user credential, aborting startup.");
+		}
 
 		/* clean up */
-		qsc_memutils_clear(upass, sizeof(upass));
-		qsc_memutils_clear(sdkey, sizeof(sdkey));
-		qsc_memutils_clear(&dkey, sizeof(satp_device_key));
+		qsc_memutils_secure_erase(upass, sizeof(upass));
+		qsc_memutils_secure_erase(sdkey, sizeof(sdkey));
+		qsc_memutils_secure_erase(&dkey, sizeof(satp_device_key));
 
 		if (res == true)
 		{
@@ -239,7 +248,7 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 			res = qsc_fileutils_copy_stream_to_file(fpath, (char*)sskey, sizeof(sskey));
 
 			/* clean up */
-			qsc_memutils_clear(sskey, sizeof(sskey));
+			qsc_memutils_secure_erase(sskey, sizeof(sskey));
 
 			if (res == true)
 			{
@@ -252,8 +261,8 @@ static bool server_key_dialogue(satp_server_key* skey, uint8_t keyid[SATP_DID_SI
 				res = qsc_fileutils_copy_stream_to_file(fpath, (char*)smkey, sizeof(smkey));
 
 				/* clean up */
-				qsc_memutils_clear(smkey, sizeof(smkey));
-				qsc_memutils_clear(&mkey, sizeof(satp_master_key));
+				qsc_memutils_secure_erase(smkey, sizeof(smkey));
+				qsc_memutils_secure_erase(&mkey, sizeof(satp_master_key));
 
 				if (res == true)
 				{
@@ -339,9 +348,13 @@ static bool server_authentication_callback(satp_connection_state* cns, const uin
 		pcred = (char*)message + SATP_DID_SIZE;
 		
 		/* get the stored credential */
-		server_fetch_user_credential(cred, message);
-		/* verify hash with scb */
-		res = satp_server_passphrase_hash_verify(cred, pcred, SATP_HASH_SIZE);
+		res = server_fetch_user_credential(cred, message);
+
+		if (res == true)
+		{
+			/* verify hash with scb */
+			res = satp_server_passphrase_hash_verify(cred, pcred, SATP_HASH_SIZE);
+		}
 
 		if (res == true)
 		{
@@ -354,6 +367,8 @@ static bool server_authentication_callback(satp_connection_state* cns, const uin
 			server_print_message("Authentication failure! A client failed the logon challenge.");
 		}
 	}
+
+	qsc_memutils_secure_erase(cred, sizeof(cred));
 
 	return res;
 }

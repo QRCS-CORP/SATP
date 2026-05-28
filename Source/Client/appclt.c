@@ -48,8 +48,8 @@ static void client_print_banner(void)
 	qsc_consoleutils_print_line("***********************************************************");
 	qsc_consoleutils_print_line("* SATP: Symmetric Authenticated Tunneling Protocol Client *");
 	qsc_consoleutils_print_line("*                                                         *");
-	qsc_consoleutils_print_line("* Release:   v1.0.0.0a (A1)                               *");
-	qsc_consoleutils_print_line("* Date:      March 14, 2025                               *");
+	qsc_consoleutils_print_line("* Release:   v1.0.0.0b (A1)                               *");
+	qsc_consoleutils_print_line("* Date:      May 27, 2026                                 *");
 	qsc_consoleutils_print_line("* Contact:   contact@qrcscorp.ca                          *");
 	qsc_consoleutils_print_line("***********************************************************");
 	qsc_consoleutils_print_line("");
@@ -57,7 +57,7 @@ static void client_print_banner(void)
 
 static bool client_ipv4_dialogue(satp_device_key* ckey, qsc_ipinfo_ipv4_address* address, uint8_t* spass)
 {
-	uint8_t cskey[SATP_DKEY_ENCODED_SIZE];
+	uint8_t cskey[SATP_DKEY_ENCODED_SIZE] = { 0U };
 	char fpath[QSC_FILEUTILS_MAX_PATH + 1U] = { 0 };
 	char sadd[QSC_IPINFO_IPV4_STRNLEN + 1U] = { 0 };
 	char cpass[SATP_HASH_SIZE + 2U] = { 0U };
@@ -101,16 +101,25 @@ static bool client_ipv4_dialogue(satp_device_key* ckey, qsc_ipinfo_ipv4_address*
 			qsc_stringutils_string_contains(fpath, SATP_DEVKEY_EXT) == true)
 		{
 			/* copy the key from file to structure */
-			qsc_fileutils_copy_file_to_stream(fpath, (char*)cskey, sizeof(cskey));
-			satp_deserialize_device_key(ckey, cskey);
+			res = qsc_fileutils_copy_file_to_stream(fpath, (char*)cskey, sizeof(cskey));
 
-			/* Important: increment key index and erase current key */
-			res = satp_increment_device_key(cskey);
+			if (res == true)
+			{
+				satp_deserialize_device_key(ckey, cskey);
+
+				/* Important: increment key index and erase current key */
+				res = satp_increment_device_key(cskey);
+			}
 
 			if (res == true)
 			{
 				/* save the updated key to file */
-				qsc_fileutils_copy_stream_to_file(fpath, (char*)cskey, sizeof(cskey));
+				res = qsc_fileutils_copy_stream_to_file(fpath, (char*)cskey, sizeof(cskey));
+			}
+
+			if (res == false)
+			{
+				client_print_message("The device key could not be loaded or updated.");
 			}
 		}
 		else
@@ -119,18 +128,23 @@ static bool client_ipv4_dialogue(satp_device_key* ckey, qsc_ipinfo_ipv4_address*
 			client_print_message("The path is invalid or inaccessable.");
 		}
 
-		/* add the passphrase */
-		client_print_message("Enter the login passphrase:");
-		client_print_prompt();
-		slen = qsc_consoleutils_get_line(cpass, sizeof(cpass)) - 1;
-		res = (slen == SATP_HASH_SIZE);
-
 		if (res == true)
 		{
-			qsc_memutils_copy(spass, cpass, slen);
-			qsc_memutils_clear(cpass, sizeof(cpass));
+			/* add the passphrase */
+			client_print_message("Enter the login passphrase:");
+			client_print_prompt();
+			slen = qsc_consoleutils_get_line(cpass, sizeof(cpass)) - 1;
+			res = (slen == SATP_HASH_SIZE);
+
+			if (res == true)
+			{
+				qsc_memutils_copy(spass, cpass, slen);
+			}
 		}
 	}
+
+	qsc_memutils_secure_erase(cpass, sizeof(cpass));
+	qsc_memutils_secure_erase(cskey, sizeof(cskey));
 
 	return res;
 }
@@ -166,25 +180,6 @@ static void client_send_loop(satp_connection_state* cns)
 	while (true)
 	{
 		client_print_prompt();
-
-		if (qsc_consoleutils_line_contains(sin, "satp quit"))
-		{
-			satp_connection_close(cns, satp_error_disconnect_request, true);
-			break;
-		}
-		else
-		{
-			if (mlen > 0)
-			{
-				/* convert the packet to bytes */
-				pkt.pmessage = pmsg;
-				satp_encrypt_packet(cns, (const uint8_t*)sin, mlen, &pkt);
-				qsc_memutils_clear((uint8_t*)sin, sizeof(sin));
-				mlen = satp_packet_to_stream(&pkt, msgstr);
-				qsc_socket_send(&cns->target, msgstr, mlen, qsc_socket_send_flag_none);
-			}
-		}
-
 		mlen = qsc_consoleutils_get_line(sin, sizeof(sin)) - 1;
 
 		if (mlen > 0 && (sin[0] == '\n' || sin[0] == '\r'))
@@ -192,6 +187,24 @@ static void client_send_loop(satp_connection_state* cns)
 			client_print_message("");
 			mlen = 0;
 		}
+
+		if (qsc_consoleutils_line_contains(sin, "satp quit"))
+		{
+			satp_connection_close(cns, satp_error_disconnect_request, true);
+			break;
+		}
+		else if (mlen > 0)
+		{
+			/* convert the packet to bytes */
+			pkt.pmessage = pmsg;
+			if (satp_encrypt_packet(cns, (const uint8_t*)sin, mlen, &pkt) == satp_error_none)
+			{
+				mlen = satp_packet_to_stream(&pkt, msgstr);
+				qsc_socket_send(&cns->target, msgstr, mlen, qsc_socket_send_flag_none);
+			}
+		}
+
+		qsc_memutils_clear((uint8_t*)sin, sizeof(sin));
 	}
 }
 
