@@ -25,8 +25,6 @@
 | [Summary Document](https://qrcs-corp.github.io/SATP/pdf/satp_summary.pdf) | Protocol overview and design rationale |
 | [Protocol Specification](https://qrcs-corp.github.io/SATP/pdf/satp_specification.pdf) | Formal wire-format and state-machine specification |
 | [Formal Analysis](https://qrcs-corp.github.io/SATP/pdf/satp_formal.pdf) | Cryptographic security proofs |
-| [Implementation Analysis](https://qrcs-corp.github.io/SATP/pdf/satp_analysis.pdf) | Side-channel and implementation review |
-| [Integration Guide](https://qrcs-corp.github.io/SATP/pdf/satp_integration.pdf) | Embedding SATP in your application |
 
 ---
 
